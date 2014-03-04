@@ -71,6 +71,7 @@ class Control(object):
                 with_fps = "{} - {:.2f} FPS".format(self.caption, fps)
                 pg.display.set_caption(with_fps)
 
+
 class _State(object):
     """Base class for all game states"""
     def __init__(self):
@@ -117,11 +118,11 @@ def load_all_music(directory, accept=('.wav', '.mp3', '.ogg', '.mdi')):
     for song in os.listdir(directory):
         name, ext = os.path.splitext(song)
         if ext.lower() in accept:
-            song[name] = os.path.join(directory, song)
+            songs[name] = os.path.join(directory, song)
     return songs
 
 
-def load_all_fonts(directory, accept=('ttf')):
+def load_all_fonts(directory, accept=('.ttf')):
     return load_all_music(directory, accept)
 
 
