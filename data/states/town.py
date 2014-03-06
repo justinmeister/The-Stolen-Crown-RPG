@@ -4,6 +4,7 @@ import os
 import pygame as pg
 from .. import setup, tools
 from .. import constants as c
+from ..components.player import Player
 
 class Town(tools._State):
     def __init__(self):
@@ -15,12 +16,15 @@ class Town(tools._State):
         self.persist = persist
         self.current_time = current_time
         self.get_image = setup.tools.get_image
-        self.sprite_sheet_dict = self.create_sprite_sheet_dict()
+        self.town_map_dict = self.create_town_sprite_sheet_dict()
         self.town_map = self.create_town_map()
         self.viewport = self.create_viewport()
+        self.level_surface = self.create_level_surface()
+        self.player = Player()
+        self.start_positions = self.set_sprite_positions()
 
 
-    def create_sprite_sheet_dict(self):
+    def create_town_sprite_sheet_dict(self):
         """Create a dictionary of sprite sheet tiles"""
         dict = {}
         tileset2 = setup.GFX['tileset2']
@@ -84,15 +88,15 @@ class Town(tools._State):
         for row, line in enumerate(tile_map):
             for column, letter in enumerate(line):
                 if letter == '1':
-                    tile = self.sprite_sheet_dict['pavement']
+                    tile = self.town_map_dict['pavement']
                     self.blit_tile_to_map(tile, row, column, map)
 
                 elif letter == '2':
-                    tile = self.sprite_sheet_dict['house wall']
+                    tile = self.town_map_dict['house wall']
                     self.blit_tile_to_map(tile, row, column, map)
 
                 elif letter == '3':
-                    tile = self.sprite_sheet_dict['house roof']
+                    tile = self.town_map_dict['house roof']
                     self.blit_tile_to_map(tile, row, column, map)
 
         tile_map.close()
@@ -107,8 +111,7 @@ class Town(tools._State):
         for row, line in enumerate(tile_map):
             for column, letter in enumerate(line):
                 if letter == 'D':
-                    print 'hi'
-                    tile = self.sprite_sheet_dict['house door']
+                    tile = self.town_map_dict['house door']
                     self.blit_tile_to_map(tile, row, column, map)
 
         tile_map.close()
@@ -117,7 +120,7 @@ class Town(tools._State):
 
 
     def scale_map(self, map):
-        """Doubles the size of map to fit a (800x600) aspect ratio"""
+        """Double resolution of map to 32x32"""
         map['surface'] = pg.transform.scale2x(map['surface'])
         map['rect'] = map['surface'].get_rect()
 
@@ -137,11 +140,57 @@ class Town(tools._State):
         return setup.SCREEN.get_rect(bottom=self.town_map['rect'].bottom)
 
 
+    def create_level_surface(self):
+        """Creates the surface all images are blitted to"""
+        width = self.town_map['rect'].width
+        height = self.town_map['rect'].height
+
+        return pg.Surface((width, height)).convert()
+
+
+    def set_sprite_positions(self):
+        """Set the start positions for all the sprites in the level"""
+        tile_map = open(os.path.join('data', 'states', 'sprite_start_pos.txt'), 'r')
+        dict = {}
+
+        for row, line in enumerate(tile_map):
+            for column, letter in enumerate(line):
+                if letter == 'P':
+                    dict['player'] = pg.Rect(column*32, row*32, 32, 32)
+
+        self.player.rect = dict['player']
+
+        return dict
+
+
     def update(self, surface, keys, current_time):
         """Updates state"""
         self.keys = keys
         self.current_time = current_time
-        surface.blit(self.town_map['surface'], (0,0), self.viewport)
+        self.check_for_player_input()
+        self.player.update()
+
+        self.draw_level(surface)
+
+
+    def draw_level(self, surface):
+        """Blits all images to screen"""
+        self.level_surface.blit(self.town_map['surface'], self.viewport, self.viewport)
+        self.level_surface.blit(self.player.image, self.player.rect)
+
+        surface.blit(self.level_surface, (0,0), self.viewport)
+
+
+    def check_for_player_input(self):
+        """Checks for player input"""
+        if self.keys[pg.K_UP]:
+            self.player.begin_moving('up')
+        elif self.keys[pg.K_DOWN]:
+            self.player.begin_moving('down')
+        elif self.keys[pg.K_LEFT]:
+            self.player.begin_moving('left')
+        elif self.keys[pg.K_RIGHT]:
+            self.player.begin_moving('right')
 
 
 
