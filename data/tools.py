@@ -2,6 +2,7 @@ __author__ = 'justinarmstrong'
 
 import os
 import pygame as pg
+import constants as c
 
 class Control(object):
     """
@@ -135,6 +136,15 @@ def load_all_sfx(directory, accept=('.wav','.mp3','.ogg','.mdi')):
     return effects
 
 
+def get_image(self, x, y, width, height, sprite_sheet):
+    """Extracts image from sprite sheet"""
+    image = pg.Surface([width, height])
+    rect = image.get_rect()
+
+    image.blit(sprite_sheet, (0, 0), (x, y, width, height))
+    image.set_colorkey(c.BLACK)
+
+    return image
 
 
 
