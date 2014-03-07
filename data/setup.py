@@ -10,7 +10,7 @@ import pygame as pg
 from . import tools
 from . import constants as c
 
-ORIGINAL_CAPTION = 'The Lost Crown'
+ORIGINAL_CAPTION = 'The Stolen Crown'
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 pg.init()
