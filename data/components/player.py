@@ -11,8 +11,9 @@ class Player(pg.sprite.Sprite):
         self.spritesheet_dict = self.create_spritesheet()
         self.animation_lists = self.create_animation_lists()
         self.index = 1
-        self.image_list = self.animation_lists['down']
-        self.image = self.spritesheet_dict['facing down 1']
+        self.direction = 'up'
+        self.image_list = self.animation_lists[self.direction]
+        self.image = self.image_list[self.index]
         self.rect = self.image.get_rect()
         self.state_dict = self.create_state_dict()
         self.direction_dict = self.create_direction_dict()

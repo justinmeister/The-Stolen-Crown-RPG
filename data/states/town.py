@@ -28,19 +28,23 @@ class Town(tools._State):
     def create_town_sprite_sheet_dict(self):
         """Create a dictionary of sprite sheet tiles"""
         dict = {}
+        tileset1 = setup.GFX['tileset1']
         tileset2 = setup.GFX['tileset2']
+
 
         dict['pavement'] = self.get_tile(32, 48, tileset2)
         dict['house wall'] = self.get_tile(64, 48, tileset2)
         dict['house roof'] = self.get_tile(0, 144, tileset2)
         dict['house door'] = self.get_tile(48, 64, tileset2)
+        dict['tree'] = self.get_tile(80, 48, tileset1, 16, 32)
+        dict['well'] = self.get_tile(96, 50, tileset1, 16, 32)
 
         return dict
 
 
-    def get_tile(self, x, y, tileset):
+    def get_tile(self, x, y, tileset, width=16, height=16):
         """Gets the surface and rect for a tile"""
-        surface = self.get_image(self, x, y, 16, 16, tileset)
+        surface = self.get_image(self, x, y, width, height, tileset)
         rect = surface.get_rect()
 
         dict = {'surface': surface,
@@ -98,6 +102,14 @@ class Town(tools._State):
 
                 elif letter == '3':
                     tile = self.town_map_dict['house roof']
+                    self.blit_tile_to_map(tile, row, column, map)
+
+                elif letter == 'T':
+                    tile = self.town_map_dict['tree']
+                    self.blit_tile_to_map(tile, row, column, map)
+
+                elif letter == 'W':
+                    tile = self.town_map_dict['well']
                     self.blit_tile_to_map(tile, row, column, map)
 
         tile_map.close()
