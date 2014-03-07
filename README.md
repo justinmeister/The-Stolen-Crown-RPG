@@ -1,4 +1,4 @@
-The-Stolen-Crown-RPG
+The Stolen Crown: A mini-RPG
 ====================
 
 An fantasy mini-RPG built with Python and Pygame.
