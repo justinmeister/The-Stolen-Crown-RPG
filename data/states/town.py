@@ -167,8 +167,7 @@ class Town(tools._State):
         """Updates state"""
         self.keys = keys
         self.current_time = current_time
-        self.check_for_player_input()
-        self.player.update()
+        self.player.update(keys, current_time)
 
         self.draw_level(surface)
 
@@ -181,16 +180,7 @@ class Town(tools._State):
         surface.blit(self.level_surface, (0,0), self.viewport)
 
 
-    def check_for_player_input(self):
-        """Checks for player input"""
-        if self.keys[pg.K_UP]:
-            self.player.begin_moving('up')
-        elif self.keys[pg.K_DOWN]:
-            self.player.begin_moving('down')
-        elif self.keys[pg.K_LEFT]:
-            self.player.begin_moving('left')
-        elif self.keys[pg.K_RIGHT]:
-            self.player.begin_moving('right')
+
 
 
 
