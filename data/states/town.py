@@ -20,6 +20,7 @@ class Town(tools._State):
         self.town_map = self.create_town_map()
         self.viewport = self.create_viewport()
         self.level_surface = self.create_level_surface()
+        self.level_rect = self.level_surface.get_rect()
         self.player = Player()
         self.start_positions = self.set_sprite_positions()
 
@@ -168,6 +169,7 @@ class Town(tools._State):
         self.keys = keys
         self.current_time = current_time
         self.player.update(keys, current_time)
+        self.update_viewport()
 
         self.draw_level(surface)
 
@@ -180,6 +182,10 @@ class Town(tools._State):
         surface.blit(self.level_surface, (0,0), self.viewport)
 
 
+    def update_viewport(self):
+        """Viewport stays centered on character, unless at edge of map"""
+        self.viewport.center = self.player.rect.center
+        self.viewport.clamp_ip(self.level_rect)
 
 
 
