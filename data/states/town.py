@@ -27,19 +27,32 @@ class Town(tools._State):
 
     def create_town_sprite_sheet_dict(self):
         """Create a dictionary of sprite sheet tiles"""
-        dict = {}
+        tile_dict = {}
         tileset1 = setup.GFX['tileset1']
         tileset2 = setup.GFX['tileset2']
+        sword = setup.GFX['sword']
+        shield = setup.GFX['shield']
+        potion = setup.GFX['potion']
+        gem = setup.GFX['gem']
 
+        tile_dict['pavement'] = self.get_tile(32, 48, tileset2)
+        tile_dict['house wall'] = self.get_tile(64, 48, tileset2)
+        tile_dict['house roof'] = self.get_tile(0, 144, tileset2)
+        tile_dict['house door'] = self.get_tile(48, 64, tileset2)
+        tile_dict['tree'] = self.get_tile(80, 48, tileset1, 16, 32)
+        tile_dict['well'] = self.get_tile(96, 50, tileset1, 16, 32)
+        tile_dict['moat'] = self.get_tile(16, 16, tileset2)
+        tile_dict['fence'] = self.get_tile(48, 64, tileset1)
+        tile_dict['grass'] = self.get_tile(0, 16, tileset1)
+        tile_dict['sword'] = self.get_tile(0, 0, sword, 32, 32)
+        tile_dict['shield'] = self.get_tile(0, 0, shield, 32, 32)
+        tile_dict['potion'] = self.get_tile(0, 0, potion, 32, 32)
+        tile_dict['gem'] = self.get_tile(0, 0, gem, 32, 32)
+        tile_dict['castle bridge'] = self.get_tile(48, 27, tileset1, 16, 32 )
+        tile_dict['flower1'] = self.get_tile(64, 64, tileset2)
+        tile_dict['flower2'] = self.get_tile(80, 64, tileset2)
 
-        dict['pavement'] = self.get_tile(32, 48, tileset2)
-        dict['house wall'] = self.get_tile(64, 48, tileset2)
-        dict['house roof'] = self.get_tile(0, 144, tileset2)
-        dict['house door'] = self.get_tile(48, 64, tileset2)
-        dict['tree'] = self.get_tile(80, 48, tileset1, 16, 32)
-        dict['well'] = self.get_tile(96, 50, tileset1, 16, 32)
-
-        return dict
+        return tile_dict
 
 
     def get_tile(self, x, y, tileset, width=16, height=16):
@@ -47,10 +60,10 @@ class Town(tools._State):
         surface = self.get_image(self, x, y, width, height, tileset)
         rect = surface.get_rect()
 
-        dict = {'surface': surface,
-                'rect': rect}
+        tile_dict = {'surface': surface,
+                     'rect': rect}
 
-        return dict
+        return tile_dict
 
 
     def create_town_map(self):
@@ -59,6 +72,7 @@ class Town(tools._State):
         map = self.create_map_layer1(map)
         map = self.create_map_layer2(map)
         map = self.scale_map(map)
+        map = self.create_map_layer3(map)
 
         return map
 
@@ -112,6 +126,19 @@ class Town(tools._State):
                     tile = self.town_map_dict['well']
                     self.blit_tile_to_map(tile, row, column, map)
 
+                elif letter == 'M':
+                    tile = self.town_map_dict['moat']
+                    self.blit_tile_to_map(tile, row, column, map)
+
+                elif letter == 'G':
+                    tile = self.town_map_dict['grass']
+                    self.blit_tile_to_map(tile, row, column, map)
+
+                elif letter == 'B':
+                    tile = self.town_map_dict['castle bridge']
+                    self.blit_tile_to_map(tile, row, column, map)
+
+
         tile_map.close()
 
         return map
@@ -125,6 +152,15 @@ class Town(tools._State):
             for column, letter in enumerate(line):
                 if letter == 'D':
                     tile = self.town_map_dict['house door']
+                    self.blit_tile_to_map(tile, row, column, map)
+                elif letter == 'F':
+                    tile = self.town_map_dict['fence']
+                    self.blit_tile_to_map(tile, row, column, map)
+                elif letter == '$':
+                    tile = self.town_map_dict['flower1']
+                    self.blit_tile_to_map(tile, row, column, map)
+                elif letter == '*':
+                    tile = self.town_map_dict['flower2']
                     self.blit_tile_to_map(tile, row, column, map)
 
         tile_map.close()
@@ -140,10 +176,35 @@ class Town(tools._State):
         return map
 
 
-    def blit_tile_to_map(self, tile, row, column, map):
+    def create_map_layer3(self, map):
+        """Layers for images that are already 32x32"""
+        tile_map = open(os.path.join('data', 'states', 'town_layer3.txt'), 'r')
+
+        for row, line in enumerate(tile_map):
+            for column, letter in enumerate(line):
+                if letter == 'W':
+                    tile = self.town_map_dict['sword']
+                    self.blit_tile_to_map(tile, row, column, map, 32)
+                elif letter == 'A':
+                    tile = self.town_map_dict['shield']
+                    self.blit_tile_to_map(tile, row, column, map, 32)
+                elif letter == 'P':
+                    tile = self.town_map_dict['potion']
+                    self.blit_tile_to_map(tile, row, column, map, 32)
+                elif letter == 'M':
+                    tile = self.town_map_dict['gem']
+                    self.blit_tile_to_map(tile, row, column, map, 32)
+
+        tile_map.close()
+
+        return map
+
+
+
+    def blit_tile_to_map(self, tile, row, column, map, side_length=16):
         """Places tile to map"""
-        tile['rect'].x = column * 16
-        tile['rect'].y = row * 16
+        tile['rect'].x = column * side_length
+        tile['rect'].y = row * side_length
 
         map['surface'].blit(tile['surface'], tile['rect'])
 
