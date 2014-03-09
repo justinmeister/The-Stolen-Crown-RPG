@@ -30,6 +30,7 @@ class Town(tools._State):
         tile_dict = {}
         tileset1 = setup.GFX['tileset1']
         tileset2 = setup.GFX['tileset2']
+        tileset3 = setup.GFX['tileset3']
         sword = setup.GFX['sword']
         shield = setup.GFX['shield']
         potion = setup.GFX['potion']
@@ -51,13 +52,22 @@ class Town(tools._State):
         tile_dict['castle bridge'] = self.get_tile(48, 27, tileset1, 16, 32 )
         tile_dict['flower1'] = self.get_tile(64, 64, tileset2)
         tile_dict['flower2'] = self.get_tile(80, 64, tileset2)
+        tile_dict['horiz castle wall'] = self.get_tile(32, 0, tileset3, 48, 32)
+        tile_dict['vert castle wall'] = self.get_tile(0, 16, tileset3)
+        tile_dict['castle tower'] = self.get_tile(116, 16, tileset1, 48, 64)
+        tile_dict['main castle roof'] = self.get_tile(0, 0, tileset1, 160, 16)
+        tile_dict['left castle roof piece'] = self.get_tile(0, 0, tileset1, 48, 16)
+        tile_dict['right castle roof piece'] = self.get_tile(112, 0, tileset1, 48, 16)
+        tile_dict['castle side'] = self.get_tile(0, 72, tileset3)
+        tile_dict['castle door'] = self.get_tile(32, 64, tileset2, 16, 16, 4)
 
         return tile_dict
 
 
-    def get_tile(self, x, y, tileset, width=16, height=16):
+    def get_tile(self, x, y, tileset, width=16, height=16, scale=1):
         """Gets the surface and rect for a tile"""
         surface = self.get_image(self, x, y, width, height, tileset)
+        surface = pg.transform.scale(surface, (width*scale, height*scale))
         rect = surface.get_rect()
 
         tile_dict = {'surface': surface,
@@ -138,6 +148,18 @@ class Town(tools._State):
                     tile = self.town_map_dict['castle bridge']
                     self.blit_tile_to_map(tile, row, column, map)
 
+                elif letter == 'C':
+                    tile = self.town_map_dict['horiz castle wall']
+                    self.blit_tile_to_map(tile, row, column, map)
+
+                elif letter == 'V':
+                    tile = self.town_map_dict['vert castle wall']
+                    self.blit_tile_to_map(tile, row, column, map)
+
+                elif letter == 'S':
+                    tile = self.town_map_dict['castle side']
+                    self.blit_tile_to_map(tile, row, column, map)
+
 
         tile_map.close()
 
@@ -161,6 +183,27 @@ class Town(tools._State):
                     self.blit_tile_to_map(tile, row, column, map)
                 elif letter == '*':
                     tile = self.town_map_dict['flower2']
+                    self.blit_tile_to_map(tile, row, column, map)
+                elif letter == 'T':
+                    tile = self.town_map_dict['castle tower']
+                    self.blit_tile_to_map(tile, row, column, map)
+                elif letter == 'W':
+                    tile = self.town_map_dict['vert castle wall']
+                    self.blit_tile_to_map(tile, row, column, map)
+                elif letter == 'M':
+                    tile = self.town_map_dict['main castle roof']
+                    self.blit_tile_to_map(tile, row, column, map)
+                elif letter == 'L':
+                    tile = self.town_map_dict['left castle roof piece']
+                    self.blit_tile_to_map(tile, row, column, map)
+                elif letter == 'R':
+                    tile = self.town_map_dict['right castle roof piece']
+                    self.blit_tile_to_map(tile, row, column, map)
+                elif letter == '#':
+                    tile = self.town_map_dict['tree']
+                    self.blit_tile_to_map(tile, row, column, map)
+                elif letter == 'O':
+                    tile = self.town_map_dict['castle door']
                     self.blit_tile_to_map(tile, row, column, map)
 
         tile_map.close()
