@@ -62,8 +62,6 @@ class Player(pg.sprite.Sprite):
         return dict
 
 
-
-
     def create_state_dict(self):
         """Creates a dictionary of all the states the player
         can be in"""
@@ -74,8 +72,8 @@ class Player(pg.sprite.Sprite):
 
 
     def create_direction_dict(self):
-        """Creates a dictionary of directions with truth values
-        corresponding to the player's direction"""
+        """Creates a dictionary of x and y velocities set to
+        direction keys"""
         dict = {'up': (0, -2),
                 'down': (0, 2),
                 'left': (-2, 0),
@@ -89,8 +87,8 @@ class Player(pg.sprite.Sprite):
         self.keys = keys
         self.current_time = current_time
         self.check_for_input()
-        state = self.state_dict[self.state]
-        state()
+        state_function = self.state_dict[self.state]
+        state_function()
 
 
     def resting(self):
@@ -106,9 +104,6 @@ class Player(pg.sprite.Sprite):
 
     def moving(self):
         """When the player is moving between tiles"""
-        self.rect.x += self.x_vel
-        self.rect.y += self.y_vel
-
         if (self.current_time - self.timer) > 100:
             if self.index < (len(self.image_list) - 1):
                 self.index += 1
@@ -118,19 +113,17 @@ class Player(pg.sprite.Sprite):
 
         self.image = self.image_list[self.index]
 
-        if self.rect.x % 32 == 0 and self.rect.y % 32 == 0:
-            self.begin_resting()
-
         assert(self.rect.x % 32 == 0 or self.rect.y % 32 == 0), \
             'Not centered on tile'
 
 
     def begin_moving(self, direction):
         """Transitions the player into the moving state"""
-        self.state = 'moving'
         self.direction = direction
         self.image_list = self.animation_lists[direction]
         self.timer = self.current_time
+        self.state = 'moving'
+
 
         if self.rect.x % 32 == 0:
             self.y_vel = self.direction_dict[self.direction][1]
@@ -143,6 +136,8 @@ class Player(pg.sprite.Sprite):
         self.state = 'resting'
         self.index = 1
         self.x_vel = self.y_vel = 0
+
+
 
 
     def check_for_input(self):

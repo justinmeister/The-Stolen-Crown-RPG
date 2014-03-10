@@ -2,9 +2,9 @@ __author__ = 'justinarmstrong'
 
 import os
 import pygame as pg
-from .. import setup, tools
+from .. import setup, tools, collision
 from .. import constants as c
-from ..components.player import Player
+from .. components.player import Player
 
 class Town(tools._State):
     def __init__(self):
@@ -18,11 +18,14 @@ class Town(tools._State):
         self.get_image = setup.tools.get_image
         self.town_map_dict = self.create_town_sprite_sheet_dict()
         self.town_map = self.create_town_map()
+        self.blockers = self.create_blockers()
         self.viewport = self.create_viewport()
         self.level_surface = self.create_level_surface()
         self.level_rect = self.level_surface.get_rect()
         self.player = Player()
         self.start_positions = self.set_sprite_positions()
+        self.collision_handler = collision.CollisionHandler(self.player,
+                                                            self.blockers)
 
 
     def create_town_sprite_sheet_dict(self):
@@ -252,6 +255,22 @@ class Town(tools._State):
         map['surface'].blit(tile['surface'], tile['rect'])
 
 
+    def create_blockers(self):
+        """Creates invisible rect objects that will prevent the player from
+        walking into trees, buildings and other solid objects"""
+        tile_map = open(os.path.join('data', 'states', 'town_blocker_layer.txt'), 'r')
+        blocker_list = []
+
+        for row, line in enumerate(tile_map):
+            for column, letter in enumerate(line):
+                if letter == 'B':
+                    blocker_list.append(pg.Rect(column*32, row*32, 32, 32))
+
+        tile_map.close()
+
+        return blocker_list
+
+
     def create_viewport(self):
         """Create the viewport to view the level through"""
         return setup.SCREEN.get_rect(bottom=self.town_map['rect'].bottom)
@@ -285,6 +304,7 @@ class Town(tools._State):
         self.keys = keys
         self.current_time = current_time
         self.player.update(keys, current_time)
+        self.collision_handler.update()
         self.update_viewport()
 
         self.draw_level(surface)
