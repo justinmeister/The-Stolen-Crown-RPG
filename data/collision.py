@@ -1,11 +1,13 @@
 __author__ = 'justinarmstrong'
+import pygame as pg
 
 class CollisionHandler(object):
     """Handles collisions between the user, blockers and computer
     characters"""
-    def __init__(self, player, blockers):
+    def __init__(self, player, blockers, sprites):
         self.player = player
         self.blockers = blockers
+        self.sprites = sprites
         self.collided = False
 
     def update(self):
@@ -26,11 +28,21 @@ class CollisionHandler(object):
                 self.collided = True
 
         if self.collided:
-            if self.player.x_vel != 0:
-                self.player.rect.x -= self.player.x_vel
-            else:
-                self.player.rect.y -= self.player.y_vel
-
+            self.reset_after_collision()
             self.collided = False
             self.player.begin_resting()
+
+        elif pg.sprite.spritecollide(self.player, self.sprites, False):
+            self.reset_after_collision()
+            self.player.begin_resting()
+
+
+    def reset_after_collision(self):
+        """Put player back to original position"""
+        if self.player.x_vel != 0:
+                self.player.rect.x -= self.player.x_vel
+        else:
+            self.player.rect.y -= self.player.y_vel
+
+
 

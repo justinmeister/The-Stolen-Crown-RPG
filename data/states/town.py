@@ -5,6 +5,7 @@ import pygame as pg
 from .. import setup, tools, collision
 from .. import constants as c
 from .. components.player import Player
+from .. components import person
 
 class Town(tools._State):
     def __init__(self):
@@ -22,10 +23,12 @@ class Town(tools._State):
         self.viewport = self.create_viewport()
         self.level_surface = self.create_level_surface()
         self.level_rect = self.level_surface.get_rect()
-        self.player = Player()
+        self.player = person.Player('up')
+        self.town_sprites = pg.sprite.Group()
         self.start_positions = self.set_sprite_positions()
         self.collision_handler = collision.CollisionHandler(self.player,
-                                                            self.blockers)
+                                                            self.blockers,
+                                                            self.town_sprites)
 
 
     def create_town_sprite_sheet_dict(self):
@@ -287,16 +290,16 @@ class Town(tools._State):
     def set_sprite_positions(self):
         """Set the start positions for all the sprites in the level"""
         tile_map = open(os.path.join('data', 'states', 'sprite_start_pos.txt'), 'r')
-        dict = {}
 
         for row, line in enumerate(tile_map):
             for column, letter in enumerate(line):
                 if letter == 'P':
-                    dict['player'] = pg.Rect(column*32, row*32, 32, 32)
+                    self.player.rect = pg.Rect(column*32, row*32, 32, 32)
+                elif letter == 'F':
+                    fem_villager = person.FemaleVillager(column*32, row*32)
+                    self.town_sprites.add(fem_villager)
 
-        self.player.rect = dict['player']
-
-        return dict
+        tile_map.close()
 
 
     def update(self, surface, keys, current_time):
@@ -314,6 +317,7 @@ class Town(tools._State):
         """Blits all images to screen"""
         self.level_surface.blit(self.town_map['surface'], self.viewport, self.viewport)
         self.level_surface.blit(self.player.image, self.player.rect)
+        self.town_sprites.draw(self.level_surface)
 
         surface.blit(self.level_surface, (0,0), self.viewport)
 

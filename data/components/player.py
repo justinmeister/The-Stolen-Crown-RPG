@@ -33,16 +33,16 @@ class Player(pg.sprite.Sprite):
                 image_list.append(self.get_image(
                     self, column*32, row*32, 32, 32, sheet))
 
-        dict = {'facing up 1': image_list[0],
-                'facing up 2': image_list[1],
-                'facing down 1': image_list[2],
-                'facing down 2': image_list[3],
-                'facing left 1': image_list[4],
-                'facing left 2': image_list[5],
-                'facing right 1': image_list[6],
-                'facing right 2': image_list[7]}
+        image_dict = {'facing up 1': image_list[0],
+                      'facing up 2': image_list[1],
+                      'facing down 1': image_list[2],
+                      'facing down 2': image_list[3],
+                      'facing left 1': image_list[4],
+                      'facing left 2': image_list[5],
+                      'facing right 1': image_list[6],
+                      'facing right 2': image_list[7]}
 
-        return dict
+        return image_dict
 
 
     def create_animation_lists(self):
@@ -54,12 +54,12 @@ class Player(pg.sprite.Sprite):
         up_list = [image_dict['facing up 1'], image_dict['facing up 2']]
         down_list = [image_dict['facing down 1'], image_dict['facing down 2']]
 
-        dict = {'left': left_list,
+        direction_dict = {'left': left_list,
                 'right': right_list,
                 'up': up_list,
                 'down': down_list}
 
-        return dict
+        return direction_dict
 
 
     def create_state_dict(self):
