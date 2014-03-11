@@ -212,7 +212,7 @@ class Player(Person):
 class Soldier(Person):
     """Soldier for the castle"""
 
-    def __init__(self):
+    def __init__(self, x, y):
         super(Soldier, self).__init__('soldier', x, y)
 
 

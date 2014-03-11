@@ -41,6 +41,7 @@ class Town(tools._State):
         shield = setup.GFX['shield']
         potion = setup.GFX['potion']
         gem = setup.GFX['gem']
+        castle_door = setup.GFX['castledoor']
 
         tile_dict['pavement'] = self.get_tile(32, 48, tileset2)
         tile_dict['house wall'] = self.get_tile(64, 48, tileset2)
@@ -65,7 +66,14 @@ class Town(tools._State):
         tile_dict['left castle roof piece'] = self.get_tile(0, 0, tileset1, 48, 16)
         tile_dict['right castle roof piece'] = self.get_tile(112, 0, tileset1, 48, 16)
         tile_dict['castle side'] = self.get_tile(0, 72, tileset3)
-        tile_dict['castle door'] = self.get_tile(32, 64, tileset2, 16, 16, 4)
+        tile_dict['castle door'] = self.get_tile(0, 0, castle_door, 64, 96)
+        tile_dict['carpet topleft'] = self.get_tile(112, 112, tileset2)
+        tile_dict['carpet topright'] = self.get_tile(144, 112, tileset2)
+        tile_dict['carpet bottomleft'] = self.get_tile(112, 144, tileset2)
+        tile_dict['carpet bottomright'] = self.get_tile(144, 144, tileset2)
+        tile_dict['carpet left'] = self.get_tile(112, 128, tileset2)
+        tile_dict['carpet right'] = self.get_tile(144, 128, tileset2)
+        tile_dict['castle window'] = self.get_tile(128, 59, tileset1)
 
         return tile_dict
 
@@ -73,7 +81,7 @@ class Town(tools._State):
     def get_tile(self, x, y, tileset, width=16, height=16, scale=1):
         """Gets the surface and rect for a tile"""
         surface = self.get_image(self, x, y, width, height, tileset)
-        surface = pg.transform.scale(surface, (width*scale, height*scale))
+        surface = pg.transform.scale(surface, (int(width*scale), int(height*scale)))
         rect = surface.get_rect()
 
         tile_dict = {'surface': surface,
@@ -166,6 +174,30 @@ class Town(tools._State):
                     tile = self.town_map_dict['castle side']
                     self.blit_tile_to_map(tile, row, column, map)
 
+                elif letter == 'Q':
+                    tile = self.town_map_dict['carpet topleft']
+                    self.blit_tile_to_map(tile, row, column, map)
+
+                elif letter == 'E':
+                    tile = self.town_map_dict['carpet topright']
+                    self.blit_tile_to_map(tile, row, column, map)
+
+                elif letter == 'R':
+                    tile = self.town_map_dict['carpet bottomleft']
+                    self.blit_tile_to_map(tile, row, column, map)
+
+                elif letter == 'U':
+                    tile = self.town_map_dict['carpet bottomright']
+                    self.blit_tile_to_map(tile, row, column, map)
+
+                elif letter == 'P':
+                    tile = self.town_map_dict['carpet left']
+                    self.blit_tile_to_map(tile, row, column, map)
+
+                elif letter == 'A':
+                    tile = self.town_map_dict['carpet right']
+                    self.blit_tile_to_map(tile, row, column, map)
+
 
         tile_map.close()
 
@@ -210,6 +242,9 @@ class Town(tools._State):
                     self.blit_tile_to_map(tile, row, column, map)
                 elif letter == 'O':
                     tile = self.town_map_dict['castle door']
+                    self.blit_tile_to_map(tile, row, column, map)
+                elif letter == 'Q':
+                    tile = self.town_map_dict['castle window']
                     self.blit_tile_to_map(tile, row, column, map)
 
         tile_map.close()
@@ -298,6 +333,9 @@ class Town(tools._State):
                 elif letter == 'F':
                     fem_villager = person.FemaleVillager(column*32, row*32)
                     self.town_sprites.add(fem_villager)
+                elif letter == 'S':
+                    soldier = person.Soldier(column*32, row*32)
+                    self.town_sprites.add(soldier)
 
         tile_map.close()
 
@@ -319,7 +357,6 @@ class Town(tools._State):
         self.level_surface.blit(self.town_map['surface'], self.viewport, self.viewport)
         self.level_surface.blit(self.player.image, self.player.rect)
         self.town_sprites.draw(self.level_surface)
-
 
         surface.blit(self.level_surface, (0,0), self.viewport)
 
