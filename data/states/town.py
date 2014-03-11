@@ -262,16 +262,16 @@ class Town(tools._State):
         """Creates invisible rect objects that will prevent the player from
         walking into trees, buildings and other solid objects"""
         tile_map = open(os.path.join('data', 'states', 'town_blocker_layer.txt'), 'r')
-        blocker_list = []
+        blockers = []
 
         for row, line in enumerate(tile_map):
             for column, letter in enumerate(line):
                 if letter == 'B':
-                    blocker_list.append(pg.Rect(column*32, row*32, 32, 32))
+                    blockers.append(pg.Rect(column*32, row*32, 32, 32))
 
         tile_map.close()
 
-        return blocker_list
+        return blockers
 
 
     def create_viewport(self):
@@ -313,11 +313,13 @@ class Town(tools._State):
         self.draw_level(surface)
 
 
+
     def draw_level(self, surface):
         """Blits all images to screen"""
         self.level_surface.blit(self.town_map['surface'], self.viewport, self.viewport)
         self.level_surface.blit(self.player.image, self.player.rect)
         self.town_sprites.draw(self.level_surface)
+
 
         surface.blit(self.level_surface, (0,0), self.viewport)
 

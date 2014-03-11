@@ -1,4 +1,5 @@
 __author__ = 'justinarmstrong'
+import math
 import pygame as pg
 from .. import setup
 
@@ -17,12 +18,15 @@ class Person(pg.sprite.Sprite):
         self.image_list = self.animation_dict[self.direction]
         self.image = self.image_list[self.index]
         self.rect = self.image.get_rect(left=x, top=y)
+        self.old_rect = self.rect
         self.state_dict = self.create_state_dict()
         self.vector_dict = self.create_vector_dict()
-        self.state = 'resting'
         self.x_vel = 0
         self.y_vel = 0
         self.timer = 0.0
+        self.current_time = 0.0
+        self.state = 'resting'
+        self.blockers = self.set_blockers()
 
 
     def create_spritesheet_dict(self, sheet_key):
@@ -83,9 +87,40 @@ class Person(pg.sprite.Sprite):
         return vector_dict
 
 
-    def update(self, *args):
+    def update(self, keys, current_time):
         """Implemented by inheriting classes"""
-        pass
+        self.blockers = self.set_blockers()
+        self.current_time = current_time
+        self.check_for_input()
+        state_function = self.state_dict[self.state]
+        state_function()
+
+
+    def set_blockers(self):
+        """Sets blockers to prevent collision with other sprites"""
+        blockers = []
+
+        if self.state == 'resting':
+            blockers.append(pg.Rect(self.rect.x, self.rect.y, 32, 32))
+
+        elif self.state == 'moving':
+            if self.rect.x % 32 == 0:
+                tile_float = self.rect.y / float(32)
+                tile1 = (self.rect.x, math.ceil(tile_float)*32)
+                tile2 = (self.rect.x, math.floor(tile_float)*32)
+                tile_rect1 = pg.Rect(tile1[0], tile1[1], 32, 32)
+                tile_rect2 = pg.Rect(tile2[0], tile2[1], 32, 32)
+                blockers.extend([tile_rect1, tile_rect2])
+
+            elif self.rect.y % 32 == 0:
+                tile_float = self.rect.x / float(32)
+                tile1 = (math.ceil(tile_float)*32, self.rect.y)
+                tile2 = (math.floor(tile_float)*32, self.rect.y)
+                tile_rect1 = pg.Rect(tile1[0], tile1[1], 32, 32)
+                tile_rect2 = pg.Rect(tile2[0], tile2[1], 32, 32)
+                blockers.extend([tile_rect1, tile_rect2])
+
+        return blockers
 
 
     def resting(self):
@@ -103,6 +138,14 @@ class Person(pg.sprite.Sprite):
 
     def moving(self):
         """Increment index and set self.image for animation."""
+        self.animation()
+
+        assert(self.rect.x % 32 == 0 or self.rect.y % 32 == 0), \
+            'Not centered on tile'
+
+
+    def animation(self):
+        """Adjust sprite image frame based on timer"""
         if (self.current_time - self.timer) > 100:
             if self.index < (len(self.image_list) - 1):
                 self.index += 1
@@ -112,8 +155,6 @@ class Person(pg.sprite.Sprite):
 
         self.image = self.image_list[self.index]
 
-        assert(self.rect.x % 32 == 0 or self.rect.y % 32 == 0), \
-            'Not centered on tile'
 
 
     def begin_moving(self, direction):
@@ -122,6 +163,7 @@ class Person(pg.sprite.Sprite):
         self.image_list = self.animation_dict[direction]
         self.timer = self.current_time
         self.state = 'moving'
+        self.old_rect = self.rect
 
         if self.rect.x % 32 == 0:
             self.y_vel = self.vector_dict[self.direction][1]
@@ -145,6 +187,7 @@ class Player(Person):
 
     def update(self, keys, current_time):
         """Updates player behavior"""
+        self.blockers = self.set_blockers()
         self.keys = keys
         self.current_time = current_time
         self.check_for_input()
@@ -166,16 +209,11 @@ class Player(Person):
 
 
 
-
-
-
-
-
 class Soldier(Person):
     """Soldier for the castle"""
 
     def __init__(self):
-        super(Soldier, self).__init__('soldier')
+        super(Soldier, self).__init__('soldier', x, y)
 
 
 class FemaleVillager(Person):
@@ -189,5 +227,5 @@ class MaleVillager(Person):
     """Male Person for town"""
 
     def __init__(self):
-        super(MaleVillager, self).__init__('male villager')
+        super(MaleVillager, self).__init__('male villager', x, y)
 

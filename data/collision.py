@@ -6,19 +6,38 @@ class CollisionHandler(object):
     characters"""
     def __init__(self, player, blockers, sprites):
         self.player = player
-        self.blockers = blockers
+        self.blockers = self.make_blocker_list(blockers, sprites)
         self.sprites = sprites
         self.collided = False
 
+
+    def make_blocker_list(self, blockers, sprites):
+        """Return a combined list of sprite blockers and object blockers"""
+        for sprite in sprites:
+            blockers.extend(sprite.blockers)
+
+        return blockers
+
     def update(self):
         """Checks for collisions between game objects"""
+        self.update_blockers()
         self.player.rect.x += self.player.x_vel
         self.player.rect.y += self.player.y_vel
+        self.check_for_blockers()
 
+        self.update_blockers()
+        for sprite in self.sprites:
+            sprite.rect.x += sprite.x_vel
+            sprite.rect.y += sprite.y_vel
         self.check_for_blockers()
 
         if self.player.rect.x % 32 == 0 and self.player.rect.y % 32 == 0:
             self.player.begin_resting()
+
+
+    def update_blockers(self):
+        """Update blockers list"""
+
 
 
     def check_for_blockers(self):
@@ -30,10 +49,6 @@ class CollisionHandler(object):
         if self.collided:
             self.reset_after_collision()
             self.collided = False
-            self.player.begin_resting()
-
-        elif pg.sprite.spritecollide(self.player, self.sprites, False):
-            self.reset_after_collision()
             self.player.begin_resting()
 
 
