@@ -27,6 +27,8 @@ class Person(pg.sprite.Sprite):
         self.current_time = 0.0
         self.state = 'resting'
         self.blockers = self.set_blockers()
+        self.location = self.get_tile_location()
+        self.dialogue = 'Hello there!'
 
 
     def create_spritesheet_dict(self, sheet_key):
@@ -94,6 +96,7 @@ class Person(pg.sprite.Sprite):
         self.check_for_input()
         state_function = self.state_dict[self.state]
         state_function()
+        self.location = self.get_tile_location()
 
 
     def set_blockers(self):
@@ -121,6 +124,25 @@ class Person(pg.sprite.Sprite):
                 blockers.extend([tile_rect1, tile_rect2])
 
         return blockers
+
+
+    def get_tile_location(self):
+        """Converts pygame coordinates into tile coordinates"""
+        if self.rect.x == 0:
+            tile_x = 1
+        elif self.rect.x % 32 == 0:
+            tile_x = (self.rect.x / 32) + 1
+        else:
+            tile_x = 0
+
+        if self.rect.y == 0:
+            tile_y = 1
+        elif self.rect.y % 32 == 0:
+            tile_y = (self.rect.y / 32) + 1
+        else:
+            tile_y = 0
+
+        return (tile_x, tile_y)
 
 
     def resting(self):
@@ -193,6 +215,7 @@ class Player(Person):
         self.check_for_input()
         state_function = self.state_dict[self.state]
         state_function()
+        self.location = self.get_tile_location()
 
 
     def check_for_input(self):
@@ -214,6 +237,7 @@ class Soldier(Person):
 
     def __init__(self, x, y):
         super(Soldier, self).__init__('soldier', x, y)
+
 
 
 class FemaleVillager(Person):

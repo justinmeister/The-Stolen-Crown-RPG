@@ -28,7 +28,10 @@ class Town(tools._State):
         self.collision_handler = collision.CollisionHandler(self.player,
                                                             self.blockers,
                                                             self.town_sprites)
-        self.text_box_group = pg.sprite.Group()
+        self.textbox_group = pg.sprite.Group()
+        self.dialogue_handler = textbox.DialogueHandler(self.player,
+                                                        self.town_sprites,
+                                                        self.textbox_group)
 
 
     def create_town_sprite_sheet_dict(self):
@@ -346,9 +349,8 @@ class Town(tools._State):
         self.current_time = current_time
         self.player.update(keys, current_time)
         self.collision_handler.update()
-        self.dialogue_handler(keys)
         self.update_viewport()
-        self.text_box_group.update(current_time)
+        self.dialogue_handler.update(keys, current_time)
 
         self.draw_level(surface)
 
@@ -361,7 +363,7 @@ class Town(tools._State):
         self.town_sprites.draw(self.level_surface)
 
         surface.blit(self.level_surface, (0,0), self.viewport)
-        self.text_box_group.draw(surface)
+        self.textbox_group.draw(surface)
 
 
     def update_viewport(self):
@@ -369,11 +371,6 @@ class Town(tools._State):
         self.viewport.center = self.player.rect.center
         self.viewport.clamp_ip(self.level_rect)
 
-
-    def dialogue_handler(self, keys):
-        """Handles creation of dialogue boxes"""
-        if keys[pg.K_SPACE]:
-            self.text_box_group.add(textbox.Dialogue(self.level_rect.centerx))
 
 
 
