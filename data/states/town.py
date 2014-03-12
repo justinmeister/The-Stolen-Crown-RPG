@@ -4,8 +4,7 @@ import os
 import pygame as pg
 from .. import setup, tools, collision
 from .. import constants as c
-from .. components.player import Player
-from .. components import person
+from .. components import person, textbox
 
 class Town(tools._State):
     def __init__(self):
@@ -29,6 +28,7 @@ class Town(tools._State):
         self.collision_handler = collision.CollisionHandler(self.player,
                                                             self.blockers,
                                                             self.town_sprites)
+        self.text_box_group = pg.sprite.Group()
 
 
     def create_town_sprite_sheet_dict(self):
@@ -346,7 +346,9 @@ class Town(tools._State):
         self.current_time = current_time
         self.player.update(keys, current_time)
         self.collision_handler.update()
+        self.dialogue_handler(keys)
         self.update_viewport()
+        self.text_box_group.update(current_time)
 
         self.draw_level(surface)
 
@@ -359,6 +361,7 @@ class Town(tools._State):
         self.town_sprites.draw(self.level_surface)
 
         surface.blit(self.level_surface, (0,0), self.viewport)
+        self.text_box_group.draw(surface)
 
 
     def update_viewport(self):
@@ -366,6 +369,11 @@ class Town(tools._State):
         self.viewport.center = self.player.rect.center
         self.viewport.clamp_ip(self.level_rect)
 
+
+    def dialogue_handler(self, keys):
+        """Handles creation of dialogue boxes"""
+        if keys[pg.K_SPACE]:
+            self.text_box_group.add(textbox.Dialogue(self.level_rect.centerx))
 
 
 
