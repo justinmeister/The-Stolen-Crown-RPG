@@ -136,7 +136,7 @@ def load_all_sfx(directory, accept=('.wav','.mp3','.ogg','.mdi')):
     return effects
 
 
-def get_image(self, x, y, width, height, sprite_sheet):
+def get_image(x, y, width, height, sprite_sheet):
     """Extracts image from sprite sheet"""
     image = pg.Surface([width, height])
     rect = image.get_rect()
@@ -145,6 +145,9 @@ def get_image(self, x, y, width, height, sprite_sheet):
     image.set_colorkey(c.BLACK)
 
     return image
+
+
+
 
 
 

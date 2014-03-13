@@ -28,7 +28,6 @@ class Person(pg.sprite.Sprite):
         self.state = 'resting'
         self.blockers = self.set_blockers()
         self.location = self.get_tile_location()
-        self.dialogue = 'Hello there!'
 
 
     def create_spritesheet_dict(self, sheet_key):
@@ -45,7 +44,7 @@ class Person(pg.sprite.Sprite):
         for row in range(2):
             for column in range(4):
                 image_list.append(
-                    self.get_image(self, column*32, row*32, 32, 32, sheet))
+                    self.get_image(column*32, row*32, 32, 32, sheet))
 
         for key, image in zip(image_keys, image_list):
             image_dict[key] = image
@@ -237,6 +236,7 @@ class Soldier(Person):
 
     def __init__(self, x, y):
         super(Soldier, self).__init__('soldier', x, y)
+        self.dialogue = 'Welcome to the castle, citizen.'
 
 
 
@@ -245,6 +245,7 @@ class FemaleVillager(Person):
 
     def __init__(self, x, y):
         super(FemaleVillager, self).__init__('femalevillager', x, y)
+        self.dialogue = 'Hey there, Mr. Traveller.  What brings you to our town?'
 
 
 class MaleVillager(Person):
@@ -252,4 +253,5 @@ class MaleVillager(Person):
 
     def __init__(self):
         super(MaleVillager, self).__init__('male villager', x, y)
+        self.dialogue = 'Good morrow to you, Sir.'
 

@@ -1,4 +1,5 @@
 __author__ = 'justinarmstrong'
+import random
 import pygame as pg
 from .. import setup
 from .. import constants as c
@@ -13,6 +14,7 @@ class Dialogue(pg.sprite.Sprite):
         self.font = pg.font.Font(setup.FONTS['Fixedsys500c'], 20)
         self.dialogue_image = self.font.render(dialogue, True,  c.BLACK)
         self.dialogue_rect = self.dialogue_image.get_rect(left=50, top=50)
+        self.image.blit(self.dialogue_image, self.dialogue_rect)
 
     def update(self, current_time):
         """Updates scrolling text"""
@@ -27,16 +29,15 @@ class Dialogue(pg.sprite.Sprite):
         text_rect = self.dialogue_rect
 
         self.image.blit(text_image, text_rect)
-    
 
 
     def terminate_check(self):
         """Remove textbox from sprite group after 2 seconds"""
+
         if self.timer == 0.0:
             self.timer = self.current_time
         elif (self.current_time - self.timer) > 2000:
             self.kill()
-
 
 
 class DialogueHandler(object):
@@ -47,6 +48,7 @@ class DialogueHandler(object):
         self.sprites = sprites
         self.textbox_group = textbox_group
         self.textbox_onscreen = False
+        self.image_list = []
 
 
     def update(self, keys, current_time):
