@@ -18,17 +18,16 @@ class CollisionHandler(object):
 
         return blockers
 
-    def update(self):
+
+    def update(self, keys, current_time):
         """Checks for collisions between game objects"""
         self.update_blockers()
-        self.player.rect.x += self.player.x_vel
-        self.player.rect.y += self.player.y_vel
+        self.player.rect.move_ip(self.player.x_vel, self.player.y_vel)
         self.check_for_blockers()
 
         self.update_blockers()
         for sprite in self.sprites:
-            sprite.rect.x += sprite.x_vel
-            sprite.rect.y += sprite.y_vel
+            sprite.rect.move_ip(sprite.x_vel, sprite.y_vel)
         self.check_for_blockers()
 
         if self.player.rect.x % 32 == 0 and self.player.rect.y % 32 == 0:
@@ -37,6 +36,7 @@ class CollisionHandler(object):
 
     def update_blockers(self):
         """Update blockers list"""
+        pass
 
 
 

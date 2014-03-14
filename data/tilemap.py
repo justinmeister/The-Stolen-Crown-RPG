@@ -17,6 +17,7 @@ def create_town_sprite_sheet_dict():
     potion = setup.GFX['potion']
     gem = setup.GFX['gem']
     castle_door = setup.GFX['castledoor']
+    medieval_signs = setup.GFX['medievalsigns']
 
     tile_dict['pavement'] = get_tile(32, 48, tileset2)
     tile_dict['house wall'] = get_tile(64, 48, tileset2)
@@ -49,6 +50,7 @@ def create_town_sprite_sheet_dict():
     tile_dict['carpet left'] = get_tile(112, 128, tileset2)
     tile_dict['carpet right'] = get_tile(144, 128, tileset2)
     tile_dict['castle window'] = get_tile(128, 59, tileset1)
+    tile_dict['inn sign'] = get_tile(0, 96, medieval_signs, 32, 32)
 
     return tile_dict
 
@@ -253,6 +255,9 @@ def create_map_layer3(map):
             elif letter == 'M':
                 tile = town_map_dict['gem']
                 blit_tile_to_map(tile, row, column, map, 32)
+            elif letter == 'I':
+                tile = town_map_dict['inn sign']
+                blit_tile_to_map(tile, row, column, map, 32)
 
     tile_map.close()
 
@@ -317,6 +322,4 @@ def set_sprite_positions(player, level_sprites):
 
 get_image = tools.get_image
 town_map_dict = create_town_sprite_sheet_dict()
-
-
 

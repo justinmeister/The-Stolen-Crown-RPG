@@ -10,6 +10,8 @@ import pygame as pg
 from . import tools
 from . import constants as c
 
+GAME = 'BEGIN GAME'
+
 ORIGINAL_CAPTION = 'The Stolen Crown'
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -23,4 +25,6 @@ FONTS = tools.load_all_fonts(os.path.join('resources', 'fonts'))
 MUSIC = tools.load_all_music(os.path.join('resources', 'music'))
 GFX = tools.load_all_gfx(os.path.join('resources', 'graphics'))
 SFX = tools.load_all_sfx(os.path.join('resources', 'sound'))
+
+FONT = pg.font.Font(FONTS['Fixedsys500c'], 20)
 

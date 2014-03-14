@@ -72,7 +72,8 @@ class Person(pg.sprite.Sprite):
     def create_state_dict(self):
         """Return a dictionary of all state methods"""
         state_dict = {'resting': self.resting,
-                      'moving': self.moving}
+                      'moving': self.moving,
+                      'animated resting': self.animated_resting}
 
         return state_dict
 
@@ -88,11 +89,10 @@ class Person(pg.sprite.Sprite):
         return vector_dict
 
 
-    def update(self, keys, current_time):
+    def update(self, current_time):
         """Implemented by inheriting classes"""
         self.blockers = self.set_blockers()
         self.current_time = current_time
-        self.check_for_input()
         state_function = self.state_dict[self.state]
         state_function()
         self.location = self.get_tile_location()
@@ -165,9 +165,13 @@ class Person(pg.sprite.Sprite):
             'Not centered on tile'
 
 
-    def animation(self):
+    def animated_resting(self):
+        self.animation(500)
+
+
+    def animation(self, freq=100):
         """Adjust sprite image frame based on timer"""
-        if (self.current_time - self.timer) > 100:
+        if (self.current_time - self.timer) > freq:
             if self.index < (len(self.image_list) - 1):
                 self.index += 1
             else:
@@ -236,7 +240,7 @@ class Soldier(Person):
 
     def __init__(self, x, y):
         super(Soldier, self).__init__('soldier', x, y)
-        self.dialogue = 'Welcome to the castle, citizen.'
+        self.state = 'animated resting'
 
 
 
@@ -245,7 +249,6 @@ class FemaleVillager(Person):
 
     def __init__(self, x, y):
         super(FemaleVillager, self).__init__('femalevillager', x, y)
-        self.dialogue = 'Hey there, Mr. Traveller.  What brings you to our town?'
 
 
 class MaleVillager(Person):
@@ -253,5 +256,4 @@ class MaleVillager(Person):
 
     def __init__(self):
         super(MaleVillager, self).__init__('male villager', x, y)
-        self.dialogue = 'Good morrow to you, Sir.'
 

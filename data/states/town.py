@@ -3,7 +3,8 @@ __author__ = 'justinarmstrong'
 import pygame as pg
 from .. import tools, collision
 from .. import tilemap as tm
-from ..components import person, textbox
+from .. components import person, textbox
+
 
 
 class Town(tools._State):
@@ -24,25 +25,46 @@ class Town(tools._State):
         self.town_sprites = pg.sprite.Group()
         self.start_positions = tm.set_sprite_positions(self.player,
                                                        self.town_sprites)
+        self.set_sprite_dialogue()
         self.collision_handler = collision.CollisionHandler(self.player,
                                                             self.blockers,
                                                             self.town_sprites)
-        self.textbox_group = pg.sprite.Group()
         self.dialogue_handler = textbox.DialogueHandler(self.player,
-                                                        self.town_sprites,
-                                                        self.textbox_group)
+                                                        self.town_sprites)
+
+
+    def set_sprite_dialogue(self):
+        """Sets unique dialogue for each sprite"""
+        for sprite in self.town_sprites:
+            if sprite.location == (9, 49):
+                sprite.dialogue = 'Welcome to our town, Mr. Traveller!'
+            elif sprite.location == (16, 42):
+                sprite.dialogue = 'You seem tired, why not rest at our Inn?'
+            elif sprite.location == (14, 14):
+                sprite.dialogue = 'Welcome to the castle, citizen.'
+            elif sprite.location == (11, 14):
+                sprite.dialogue = 'I have heard rumours that the King has lost something...'
+            elif sprite.location == (11, 8):
+                sprite.dialogue = 'Be careful. There are monsters surrounding our town.'
+            elif sprite.location == (14, 8):
+                sprite.dialogue = 'Move along, citizen.'
 
 
     def update(self, surface, keys, current_time):
         """Updates state"""
-        self.keys = keys
-        self.current_time = current_time
         self.player.update(keys, current_time)
-        self.collision_handler.update()
-        self.update_viewport()
+        self.town_sprites.update(current_time)
+        self.collision_handler.update(keys, current_time)
         self.dialogue_handler.update(keys, current_time)
+        self.viewport_update()
 
         self.draw_level(surface)
+
+
+    def viewport_update(self):
+        """Viewport stays centered on character, unless at edge of map"""
+        self.viewport.center = self.player.rect.center
+        self.viewport.clamp_ip(self.level_rect)
 
 
     def draw_level(self, surface):
@@ -52,13 +74,10 @@ class Town(tools._State):
         self.town_sprites.draw(self.level_surface)
 
         surface.blit(self.level_surface, (0, 0), self.viewport)
-        self.textbox_group.draw(surface)
+        self.dialogue_handler.draw(surface)
 
 
-    def update_viewport(self):
-        """Viewport stays centered on character, unless at edge of map"""
-        self.viewport.center = self.player.rect.center
-        self.viewport.clamp_ip(self.level_rect)
+
 
 
 
