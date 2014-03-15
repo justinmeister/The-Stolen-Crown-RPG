@@ -40,6 +40,7 @@ class Town(tools._State):
                 sprite.dialogue = 'Welcome to our town, Mr. Traveller!'
             elif sprite.location == (16, 42):
                 sprite.dialogue = 'You seem tired, why not rest at our Inn?'
+                sprite.begin_auto_resting()
             elif sprite.location == (14, 14):
                 sprite.dialogue = 'Welcome to the castle, citizen.'
             elif sprite.location == (11, 14):

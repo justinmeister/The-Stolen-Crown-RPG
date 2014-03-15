@@ -1,5 +1,5 @@
 __author__ = 'justinarmstrong'
-import math
+import math, random
 import pygame as pg
 from .. import setup
 
@@ -24,8 +24,9 @@ class Person(pg.sprite.Sprite):
         self.x_vel = 0
         self.y_vel = 0
         self.timer = 0.0
+        self.move_timer = 0.0
         self.current_time = 0.0
-        self.state = 'resting'
+        self.state = 'animated resting'
         self.blockers = self.set_blockers()
         self.location = self.get_tile_location()
 
@@ -73,7 +74,9 @@ class Person(pg.sprite.Sprite):
         """Return a dictionary of all state methods"""
         state_dict = {'resting': self.resting,
                       'moving': self.moving,
-                      'animated resting': self.animated_resting}
+                      'animated resting': self.animated_resting,
+                      'autoresting': self.auto_resting,
+                      'automoving': self.auto_moving}
 
         return state_dict
 
@@ -81,10 +84,10 @@ class Person(pg.sprite.Sprite):
     def create_vector_dict(self):
         """Return a dictionary of x and y velocities set to
         direction keys."""
-        vector_dict = {'up': (0, -2),
-                       'down': (0, 2),
-                       'left': (-2, 0),
-                       'right': (2, 0)}
+        vector_dict = {'up': (0, -1),
+                       'down': (0, 1),
+                       'left': (-1, 0),
+                       'right': (1, 0)}
 
         return vector_dict
 
@@ -102,10 +105,10 @@ class Person(pg.sprite.Sprite):
         """Sets blockers to prevent collision with other sprites"""
         blockers = []
 
-        if self.state == 'resting':
+        if self.state == 'animated resting' or self.state == 'autoresting':
             blockers.append(pg.Rect(self.rect.x, self.rect.y, 32, 32))
 
-        elif self.state == 'moving':
+        elif self.state == 'moving' or self.state == 'automoving':
             if self.rect.x % 32 == 0:
                 tile_float = self.rect.y / float(32)
                 tile1 = (self.rect.x, math.ceil(tile_float)*32)
@@ -187,8 +190,8 @@ class Person(pg.sprite.Sprite):
         self.direction = direction
         self.image_list = self.animation_dict[direction]
         self.timer = self.current_time
+        self.move_timer = self.current_time
         self.state = 'moving'
-        self.old_rect = self.rect
 
         if self.rect.x % 32 == 0:
             self.y_vel = self.vector_dict[self.direction][1]
@@ -203,11 +206,71 @@ class Person(pg.sprite.Sprite):
         self.x_vel = self.y_vel = 0
 
 
+    def begin_auto_moving(self, direction):
+        """Transition sprite to a automatic moving state"""
+        self.direction = direction
+        self.image_list = self.animation_dict[direction]
+        self.state = 'automoving'
+        self.x_vel = self.vector_dict[direction][0]
+        self.y_vel = self.vector_dict[direction][1]
+        self.move_timer = self.current_time
+
+
+    def begin_auto_resting(self):
+        """Transition sprite to an automatic resting state"""
+        self.state = 'autoresting'
+        self.index = 0
+        self.x_vel = self.y_vel = 0
+        self.move_timer = self.current_time
+
+
+    def auto_resting(self):
+        """
+        Determine when to move a sprite from resting to moving in a random
+        direction.
+        """
+        #self.image = self.image_list[self.index]
+        self.animation(700)
+
+        assert(self.rect.y % 32 == 0), ('Player not centered on tile: '
+                                        + str(self.rect.y))
+        assert(self.rect.x % 32 == 0), ('Player not centered on tile'
+                                        + str(self.rect.x))
+
+        if (self.current_time - self.move_timer) > 2000:
+            direction_list = ['up', 'down', 'left', 'right']
+            random.shuffle(direction_list)
+            direction = direction_list[0]
+            self.begin_auto_moving(direction)
+            self.move_timer = self.current_time
+
+
+
+    def auto_moving(self):
+        """Animate sprite and check to stop"""
+        self.animation()
+
+        assert(self.rect.x % 32 == 0 or self.rect.y % 32 == 0), \
+            'Not centered on tile'
+
+
+
 class Player(Person):
     """User controlled character"""
 
     def __init__(self, direction):
         super(Player, self).__init__('player', 0, 0, direction)
+
+
+    def create_vector_dict(self):
+        """Return a dictionary of x and y velocities set to
+        direction keys."""
+        vector_dict = {'up': (0, -2),
+                       'down': (0, 2),
+                       'left': (-2, 0),
+                       'right': (2, 0)}
+
+        return vector_dict
 
 
     def update(self, keys, current_time):
