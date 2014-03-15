@@ -16,6 +16,7 @@ class Town(tools._State):
         """Called when the State object is created"""
         self.persist = persist
         self.current_time = current_time
+        self.state = 'normal'
         self.town_map = tm.create_town_map()
         self.viewport = tm.create_viewport(self.town_map)
         self.blockers = tm.create_blockers()
@@ -30,13 +31,15 @@ class Town(tools._State):
                                                             self.blockers,
                                                             self.town_sprites)
         self.dialogue_handler = textbox.DialogueHandler(self.player,
-                                                        self.town_sprites)
+                                                        self.town_sprites,
+                                                        self)
+        self.state_dict = self.make_state_dict()
 
 
     def set_sprite_dialogue(self):
         """Sets unique dialogue for each sprite"""
         for sprite in self.town_sprites:
-            if sprite.location == (9, 49):
+            if sprite.location == (10, 47):
                 sprite.dialogue = 'Welcome to our town, Mr. Traveller!'
             elif sprite.location == (16, 42):
                 sprite.dialogue = 'You seem tired, why not rest at our Inn?'
@@ -51,8 +54,16 @@ class Town(tools._State):
                 sprite.dialogue = 'Move along, citizen.'
 
 
-    def update(self, surface, keys, current_time):
-        """Updates state"""
+    def make_state_dict(self):
+        """Make a dictionary of states the level can be in"""
+        state_dict = {'normal': self.running_normally,
+                      'dialogue': self.handling_dialogue}
+
+        return state_dict
+
+
+    def running_normally(self, surface, keys, current_time):
+        """Update level normally"""
         self.player.update(keys, current_time)
         self.town_sprites.update(current_time)
         self.collision_handler.update(keys, current_time)
@@ -60,6 +71,18 @@ class Town(tools._State):
         self.viewport_update()
 
         self.draw_level(surface)
+
+
+    def handling_dialogue(self, surface, keys, current_time):
+        """Update only dialogue boxes"""
+        self.dialogue_handler.update(keys, current_time)
+        self.draw_level(surface)
+
+
+    def update(self, surface, keys, current_time):
+        """Updates state"""
+        state_function = self.state_dict[self.state]
+        state_function(surface, keys, current_time)
 
 
     def viewport_update(self):
@@ -76,6 +99,11 @@ class Town(tools._State):
 
         surface.blit(self.level_surface, (0, 0), self.viewport)
         self.dialogue_handler.draw(surface)
+
+
+    def get_event(self, event):
+        """Set event to level attribute"""
+        self.event = event
 
 
 

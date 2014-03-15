@@ -44,7 +44,9 @@ class Control(object):
         self.state.previous = previous
 
     def event_loop(self):
-        for event in pg.event.get():
+        self.events = pg.event.get()
+
+        for event in self.events:
             if event.type == pg.QUIT:
                 self.done = True
             elif event.type == pg.KEYDOWN:
