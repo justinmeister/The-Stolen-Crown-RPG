@@ -29,6 +29,7 @@ class Person(pg.sprite.Sprite):
         self.state = 'animated resting'
         self.blockers = self.set_blockers()
         self.location = self.get_tile_location()
+        self.dialogue = ['Placeholder Dialogue']
 
 
     def create_spritesheet_dict(self, sheet_key):
@@ -96,6 +97,7 @@ class Person(pg.sprite.Sprite):
         """Implemented by inheriting classes"""
         self.blockers = self.set_blockers()
         self.current_time = current_time
+        self.image_list = self.animation_dict[self.direction]
         state_function = self.state_dict[self.state]
         state_function()
         self.location = self.get_tile_location()
@@ -126,6 +128,7 @@ class Person(pg.sprite.Sprite):
                 blockers.extend([tile_rect1, tile_rect2])
 
         return blockers
+
 
 
     def get_tile_location(self):
