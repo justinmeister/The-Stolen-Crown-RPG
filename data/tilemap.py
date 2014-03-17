@@ -3,7 +3,8 @@ __author__ = 'justinarmstrong'
 import os
 import pygame as pg
 import tools, setup
-from components import person
+from components import person, portal
+import constants as c
 
 
 def create_town_sprite_sheet_dict():
@@ -318,6 +319,20 @@ def set_sprite_positions(player, level_sprites):
                 level_sprites.add(soldier)
 
     tile_map.close()
+
+
+def make_level_portals():
+    """Create portals to different levels on doors"""
+    tile_map = open(os.path.join('data', 'states', 'level_change_map.txt'), 'r')
+    portal_group = pg.sprite.Group()
+
+    for row, line in enumerate(tile_map):
+        for column, letter in enumerate(line):
+            if letter == 'A':
+                portal_group.add(portal.Portal(column, row, c.MAIN_MENU))
+
+    return portal_group
+
 
 
 get_image = tools.get_image

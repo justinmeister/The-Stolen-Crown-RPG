@@ -4,6 +4,7 @@ import pygame as pg
 from .. import tools, collision
 from .. import tilemap as tm
 from .. components import person, textbox
+from .. import constants as c
 
 
 
@@ -34,6 +35,7 @@ class Town(tools._State):
                                                         self.town_sprites,
                                                         self)
         self.state_dict = self.make_state_dict()
+        self.portals = tm.make_level_portals()
 
 
     def set_sprite_dialogue(self):
@@ -70,6 +72,7 @@ class Town(tools._State):
     def running_normally(self, surface, keys, current_time):
         """Update level normally"""
         self.check_for_dialogue()
+        self.check_for_portals()
         self.player.update(keys, current_time)
         self.town_sprites.update(current_time)
         self.collision_handler.update(keys, current_time)
@@ -77,6 +80,16 @@ class Town(tools._State):
         self.viewport_update()
 
         self.draw_level(surface)
+
+
+    def check_for_portals(self):
+        """Check if the player walks into a door, requiring a level change"""
+        portal = pg.sprite.spritecollideany(self.player, self.portals)
+
+        if portal and self.player.state == 'resting':
+            #self.next = portal.name
+            self.next = c.TOWN
+            self.done = True
 
 
     def handling_dialogue(self, surface, keys, current_time):
