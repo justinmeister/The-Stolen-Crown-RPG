@@ -14,8 +14,10 @@ from .. components import person, textbox
 
 
 class LevelState(tools._State):
-    def __init__(self, name):
+    def __init__(self, name, width, height):
         super(LevelState, self).__init__(name)
+        self.map_width = width
+        self.map_height = height
 
 
     def startup(self, current_time, persist):
@@ -23,7 +25,9 @@ class LevelState(tools._State):
         self.persist = persist
         self.current_time = current_time
         self.state = 'normal'
-        self.town_map = tm.create_town_map(self.name)
+        self.town_map = tm.create_town_map(self.name,
+                                           self.map_width,
+                                           self.map_height)
         self.viewport = tm.create_viewport(self.town_map)
         self.blockers = tm.create_blockers(self.name)
         self.level_surface = tm.create_level_surface(self.town_map)

@@ -107,6 +107,7 @@ class DialogueHandler(object):
                     self.level.state = 'normal'
                     self.textbox = None
                     self.last_textbox_timer = current_time
+                    self.reset_sprite_direction()
 
 
     def check_for_dialogue(self, sprite):
@@ -130,6 +131,13 @@ class DialogueHandler(object):
             if sprite.location == [tile_x + 1, tile_y]:
                 self.textbox = DialogueBox(400, sprite.dialogue)
                 sprite.direction = 'left'
+
+
+    def reset_sprite_direction(self):
+        """Reset sprite to default direction"""
+        for sprite in self.sprites:
+            if sprite.state == 'resting':
+                sprite.direction = sprite.default_direction
 
 
     def draw(self, surface):

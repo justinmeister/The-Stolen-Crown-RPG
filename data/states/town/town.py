@@ -7,8 +7,8 @@ only purpose of town.py is to assign dialogue to each sprite
 from .. import level_state
 
 class Town(level_state.LevelState):
-    def __init__(self, name):
-        super(Town, self).__init__(name)
+    def __init__(self, name, width, height):
+        super(Town, self).__init__(name, width, height)
 
     def set_sprite_dialogue(self):
         """Sets unique dialogue for each sprite"""

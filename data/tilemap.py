@@ -13,10 +13,7 @@ def create_town_sprite_sheet_dict():
     tileset1 = setup.GFX['tileset1']
     tileset2 = setup.GFX['tileset2']
     tileset3 = setup.GFX['tileset3']
-    sword = setup.GFX['sword']
-    shield = setup.GFX['shield']
-    potion = setup.GFX['potion']
-    gem = setup.GFX['gem']
+    shopsigns = setup.GFX['shopsigns']
     castle_door = setup.GFX['castledoor']
     medieval_signs = setup.GFX['medievalsigns']
 
@@ -29,10 +26,10 @@ def create_town_sprite_sheet_dict():
     tile_dict['moat'] = get_tile(16, 16, tileset2)
     tile_dict['fence'] = get_tile(48, 64, tileset1)
     tile_dict['grass'] = get_tile(0, 16, tileset1)
-    tile_dict['sword'] = get_tile(0, 0, sword, 32, 32)
-    tile_dict['shield'] = get_tile(0, 0, shield, 32, 32)
-    tile_dict['potion'] = get_tile(0, 0, potion, 32, 32)
-    tile_dict['gem'] = get_tile(0, 0, gem, 32, 32)
+    tile_dict['sword'] = get_tile(96, 0, shopsigns, 32, 32)
+    tile_dict['shield'] = get_tile(64, 0, shopsigns, 32, 32)
+    tile_dict['potion'] = get_tile(32, 0, shopsigns, 32, 32)
+    tile_dict['gem'] = get_tile(0, 0, shopsigns, 32, 32)
     tile_dict['castle bridge'] = get_tile(48, 27, tileset1, 16, 32 )
     tile_dict['flower1'] = get_tile(64, 64, tileset2)
     tile_dict['flower2'] = get_tile(80, 64, tileset2)
@@ -50,13 +47,16 @@ def create_town_sprite_sheet_dict():
     tile_dict['carpet bottomleft'] = get_tile(112, 144, tileset2)
     tile_dict['carpet bottomright'] = get_tile(144, 144, tileset2)
     tile_dict['carpet bottom'] = get_tile(128, 144, tileset2)
-    tile_dict['carpet top'] = get_tile(128, 144, tileset2)
+    tile_dict['carpet top'] = get_tile(128, 112, tileset2)
     tile_dict['carpet left'] = get_tile(112, 128, tileset2)
     tile_dict['carpet right'] = get_tile(144, 128, tileset2)
     tile_dict['carpet center'] = get_tile(128, 128, tileset2)
     tile_dict['castle window'] = get_tile(128, 59, tileset1)
     tile_dict['marble floor'] = get_tile(80, 96, tileset3)
     tile_dict['inn sign'] = get_tile(0, 96, medieval_signs, 32, 32)
+    tile_dict['banner1'] = get_tile(112, 38, tileset3, 16, 22)
+    tile_dict['banner2'] = get_tile(128, 38, tileset3, 16, 22)
+    tile_dict['banner3'] = get_tile(144, 38, tileset3, 16, 22)
 
     return tile_dict
 
@@ -73,9 +73,9 @@ def get_tile(x, y, tileset, width=16, height=16, scale=1):
     return tile_dict
 
 
-def create_town_map(state):
+def create_town_map(state, width, height):
     """Blits the different layers of the map onto one surface"""
-    map = create_background(state)
+    map = create_background(state, width, height)
     map = create_map_layer1(map, state)
     map = create_map_layer2(map, state)
     map = scale_map(map)
@@ -84,10 +84,10 @@ def create_town_map(state):
     return map
 
 
-def create_background(state_name):
+def create_background(state_name, width, height):
     """Creates the background surface that the rest of
     the town map will be blitted on"""
-    size = (25*16, 50*16)
+    size = (width*16, height*16)
     surface = pg.Surface(size)
     if state_name == c.CASTLE:
         tile = pg.Surface((16, 16))
@@ -118,87 +118,91 @@ def create_map_layer1(map, state):
     for row, line in enumerate(tile_map):
         for column, letter in enumerate(line):
             if letter == '1':
-                tile = town_map_dict['pavement']
+                tile = tile_dict['pavement']
                 blit_tile_to_map(tile, row, column, map)
 
             elif letter == '2':
-                tile = town_map_dict['house wall']
+                tile = tile_dict['house wall']
                 blit_tile_to_map(tile, row, column, map)
 
             elif letter == '3':
-                tile = town_map_dict['house roof']
+                tile = tile_dict['house roof']
                 blit_tile_to_map(tile, row, column, map)
 
             elif letter == 'T':
-                tile = town_map_dict['tree']
+                tile = tile_dict['tree']
                 blit_tile_to_map(tile, row, column, map)
 
             elif letter == 'W':
-                tile = town_map_dict['well']
+                tile = tile_dict['well']
                 blit_tile_to_map(tile, row, column, map)
 
             elif letter == 'M':
-                tile = town_map_dict['moat']
+                tile = tile_dict['moat']
                 blit_tile_to_map(tile, row, column, map)
 
             elif letter == 'G':
-                tile = town_map_dict['grass']
+                tile = tile_dict['grass']
                 blit_tile_to_map(tile, row, column, map)
 
             elif letter == 'B':
-                tile = town_map_dict['castle bridge']
+                tile = tile_dict['castle bridge']
                 blit_tile_to_map(tile, row, column, map)
 
             elif letter == 'C':
-                tile = town_map_dict['horiz castle wall']
+                tile = tile_dict['horiz castle wall']
                 blit_tile_to_map(tile, row, column, map)
 
             elif letter == 'V':
-                tile = town_map_dict['left vert castle wall']
+                tile = tile_dict['left vert castle wall']
                 blit_tile_to_map(tile, row, column, map)
 
             elif letter == 'X':
-                tile = town_map_dict['right vert castle wall']
+                tile = tile_dict['right vert castle wall']
                 blit_tile_to_map(tile, row, column, map)
 
             elif letter == 'S':
-                tile = town_map_dict['castle side']
+                tile = tile_dict['castle side']
                 blit_tile_to_map(tile, row, column, map)
 
             elif letter == 'Q':
-                tile = town_map_dict['carpet topleft']
+                tile = tile_dict['carpet topleft']
                 blit_tile_to_map(tile, row, column, map)
 
             elif letter == 'E':
-                tile = town_map_dict['carpet topright']
+                tile = tile_dict['carpet topright']
+                blit_tile_to_map(tile, row, column, map)
+
+            elif letter == 'J':
+                tile = tile_dict['carpet top']
                 blit_tile_to_map(tile, row, column, map)
 
             elif letter == 'R':
-                tile = town_map_dict['carpet bottomleft']
+                tile = tile_dict['carpet bottomleft']
                 blit_tile_to_map(tile, row, column, map)
 
             elif letter == 'U':
-                tile = town_map_dict['carpet bottomright']
+                tile = tile_dict['carpet bottomright']
                 blit_tile_to_map(tile, row, column, map)
 
             elif letter == 'D':
-                tile = town_map_dict['carpet bottom']
+                tile = tile_dict['carpet bottom']
                 blit_tile_to_map(tile, row, column, map)
 
             elif letter == 'P':
-                tile = town_map_dict['carpet left']
+                tile = tile_dict['carpet left']
                 blit_tile_to_map(tile, row, column, map)
 
             elif letter == 'A':
-                tile = town_map_dict['carpet right']
+                tile = tile_dict['carpet right']
                 blit_tile_to_map(tile, row, column, map)
 
             elif letter == 'F':
-                tile = town_map_dict['carpet center']
+                tile = tile_dict['carpet center']
                 blit_tile_to_map(tile, row, column, map)
 
             elif letter == 'H':
-                tile = town_map_dict['marble floor']
+                tile = tile_dict['marble floor']
                 blit_tile_to_map(tile, row, column, map)
 
 
@@ -214,40 +218,49 @@ def create_map_layer2(map, state):
     for row, line in enumerate(tile_map):
         for column, letter in enumerate(line):
             if letter == 'D':
-                tile = town_map_dict['house door']
+                tile = tile_dict['house door']
                 blit_tile_to_map(tile, row, column, map)
             elif letter == 'F':
-                tile = town_map_dict['fence']
+                tile = tile_dict['fence']
                 blit_tile_to_map(tile, row, column, map)
             elif letter == '$':
-                tile = town_map_dict['flower1']
+                tile = tile_dict['flower1']
                 blit_tile_to_map(tile, row, column, map)
             elif letter == '*':
-                tile = town_map_dict['flower2']
+                tile = tile_dict['flower2']
                 blit_tile_to_map(tile, row, column, map)
             elif letter == 'T':
-                tile = town_map_dict['castle tower']
+                tile = tile_dict['castle tower']
                 blit_tile_to_map(tile, row, column, map)
             elif letter == 'W':
-                tile = town_map_dict['left vert castle wall']
+                tile = tile_dict['left vert castle wall']
                 blit_tile_to_map(tile, row, column, map)
             elif letter == 'M':
-                tile = town_map_dict['main castle roof']
+                tile = tile_dict['main castle roof']
                 blit_tile_to_map(tile, row, column, map)
             elif letter == 'L':
-                tile = town_map_dict['left castle roof piece']
+                tile = tile_dict['left castle roof piece']
                 blit_tile_to_map(tile, row, column, map)
             elif letter == 'R':
-                tile = town_map_dict['right castle roof piece']
+                tile = tile_dict['right castle roof piece']
                 blit_tile_to_map(tile, row, column, map)
             elif letter == '#':
-                tile = town_map_dict['tree']
+                tile = tile_dict['tree']
                 blit_tile_to_map(tile, row, column, map)
             elif letter == 'O':
-                tile = town_map_dict['castle door']
+                tile = tile_dict['castle door']
                 blit_tile_to_map(tile, row, column, map)
             elif letter == 'Q':
-                tile = town_map_dict['castle window']
+                tile = tile_dict['castle window']
+                blit_tile_to_map(tile, row, column, map)
+            elif letter == 'A':
+                tile = tile_dict['banner1']
+                blit_tile_to_map(tile, row, column, map)
+            elif letter == 'B':
+                tile = tile_dict['banner2']
+                blit_tile_to_map(tile, row, column, map)
+            elif letter == 'C':
+                tile = tile_dict['banner3']
                 blit_tile_to_map(tile, row, column, map)
 
     tile_map.close()
@@ -270,19 +283,19 @@ def create_map_layer3(map, state):
     for row, line in enumerate(tile_map):
         for column, letter in enumerate(line):
             if letter == 'W':
-                tile = town_map_dict['sword']
+                tile = tile_dict['sword']
                 blit_tile_to_map(tile, row, column, map, 32)
             elif letter == 'A':
-                tile = town_map_dict['shield']
+                tile = tile_dict['shield']
                 blit_tile_to_map(tile, row, column, map, 32)
             elif letter == 'P':
-                tile = town_map_dict['potion']
+                tile = tile_dict['potion']
                 blit_tile_to_map(tile, row, column, map, 32)
             elif letter == 'M':
-                tile = town_map_dict['gem']
+                tile = tile_dict['gem']
                 blit_tile_to_map(tile, row, column, map, 32)
             elif letter == 'I':
-                tile = town_map_dict['inn sign']
+                tile = tile_dict['inn sign']
                 blit_tile_to_map(tile, row, column, map, 32)
 
     tile_map.close()
@@ -351,6 +364,9 @@ def set_sprite_positions(player, level_sprites, state, game_data):
             elif letter == 'B':
                 soldier = person.Soldier(column*32, row*32, 'left', 'resting')
                 level_sprites.add(soldier)
+            elif letter == 'C':
+                king = person.King(column*32, row*32, 'down', 'resting')
+                level_sprites.add(king)
 
     tile_map.close()
 
@@ -372,5 +388,5 @@ def make_level_portals(state):
 
 
 get_image = tools.get_image
-town_map_dict = create_town_sprite_sheet_dict()
+tile_dict = create_town_sprite_sheet_dict()
 

@@ -33,7 +33,8 @@ class Person(pg.sprite.Sprite):
         self.state = state
         self.blockers = self.set_blockers()
         self.location = self.get_tile_location()
-        self.dialogue = ['Placeholder Dialogue']
+        self.dialogue = ['Location: ' + str(self.location)]
+        self.default_direction = direction
 
 
     def create_spritesheet_dict(self, sheet_key):
@@ -229,7 +230,7 @@ class Person(pg.sprite.Sprite):
     def begin_auto_resting(self):
         """Transition sprite to an automatic resting state"""
         self.state = 'autoresting'
-        self.index = 0
+        self.index = 1
         self.x_vel = self.y_vel = 0
         self.move_timer = self.current_time
 
@@ -330,4 +331,10 @@ class MaleVillager(Person):
 
     def __init__(self):
         super(MaleVillager, self).__init__('male villager', x, y)
+
+
+class King(Person):
+    """King of the town"""
+    def __init__(self, x, y, direction='down', state='resting'):
+        super(King, self).__init__('king', x, y, direction, state)
 

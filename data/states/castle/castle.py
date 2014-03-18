@@ -8,10 +8,18 @@ from .. import level_state
 from ... import constants as c
 
 class Castle(level_state.LevelState):
-    def __init__(self, name):
-        super(Castle, self).__init__(name)
+    def __init__(self, name, width, height):
+        super(Castle, self).__init__(name, width, height)
         self.parent_level = c.TOWN
 
     def set_sprite_dialogue(self):
         """Sets unique dialogue for each sprite"""
-        return None
+        for sprite in self.level_sprites:
+            if sprite.location == [12, 6]:
+                sprite.dialogue = ["Please!  You must help me!",
+                                   "An evil sorceror has stolen my magic crown!",
+                                   "Without the crown's magic, our town will be overun by monsters!",
+                                   "Take this 500 gold for supplies.",
+                                   "Our town's fate is in your hands!"]
+            else:
+                sprite.dialogue = ['Hail to the King!']

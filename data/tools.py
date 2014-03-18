@@ -157,7 +157,7 @@ def create_game_data_dict():
                  'last state': None,
                  'last direction': 'up',
                  'town start pos': [12, 49],
-                 'castle start pos': [12, 49]}
+                 'castle start pos': [12, 26]}
 
     return data_dict
 
