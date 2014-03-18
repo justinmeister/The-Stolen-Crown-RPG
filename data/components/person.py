@@ -8,12 +8,15 @@ class Person(pg.sprite.Sprite):
     """Base class for all world characters
     controlled by the computer"""
 
-    def __init__(self, sheet_key, x, y, direction='down'):
+    def __init__(self, sheet_key, x, y, direction='down', state='animated resting'):
         super(Person, self).__init__()
         self.get_image = setup.tools.get_image
         self.spritesheet_dict = self.create_spritesheet_dict(sheet_key)
         self.animation_dict = self.create_animation_dict()
-        self.index = 0
+        if direction == 'left':
+            self.index = 1
+        else:
+            self.index = 0
         self.direction = direction
         self.image_list = self.animation_dict[self.direction]
         self.image = self.image_list[self.index]
@@ -26,10 +29,11 @@ class Person(pg.sprite.Sprite):
         self.timer = 0.0
         self.move_timer = 0.0
         self.current_time = 0.0
-        self.state = 'animated resting'
+        self.state = state
         self.blockers = self.set_blockers()
         self.location = self.get_tile_location()
         self.dialogue = ['Placeholder Dialogue']
+        self.name = sheet_key
 
 
     def create_spritesheet_dict(self, sheet_key):
@@ -93,7 +97,7 @@ class Person(pg.sprite.Sprite):
         return vector_dict
 
 
-    def update(self, current_time):
+    def update(self, current_time, *args):
         """Implemented by inheriting classes"""
         self.blockers = self.set_blockers()
         self.current_time = current_time
@@ -101,6 +105,7 @@ class Person(pg.sprite.Sprite):
         state_function = self.state_dict[self.state]
         state_function()
         self.location = self.get_tile_location()
+
 
 
     def set_blockers(self):
@@ -304,9 +309,8 @@ class Player(Person):
 class Soldier(Person):
     """Soldier for the castle"""
 
-    def __init__(self, x, y):
-        super(Soldier, self).__init__('soldier', x, y)
-        self.state = 'animated resting'
+    def __init__(self, x, y, direction='down', state='animated resting'):
+        super(Soldier, self).__init__('soldier', x, y, direction, state)
 
 
 

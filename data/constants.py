@@ -8,6 +8,7 @@ import pygame as pg
 
 TOWN = 'town'
 MAIN_MENU = 'main menu'
+CASTLE = 'castle'
 
 ##Colors
 

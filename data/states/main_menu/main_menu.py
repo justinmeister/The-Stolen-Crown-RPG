@@ -1,13 +1,13 @@
 __author__ = 'justinarmstrong'
 
 import pygame as pg
-from .. import setup, tools
-from .. import constants as c
+from ... import setup, tools
+from ... import constants as c
 
 
 class Menu(tools._State):
-    def __init__(self):
-        tools._State.__init__(self)
+    def __init__(self, name):
+        super(Menu, self).__init__(name)
         self.next = c.TOWN
         self.surface = setup.SCREEN
         self.rect = self.surface.get_rect()
