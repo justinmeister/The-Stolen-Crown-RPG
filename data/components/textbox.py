@@ -17,25 +17,35 @@ class NextArrow(pg.sprite.Sprite):
 
 class DialogueBox(object):
     """Text box used for dialogue"""
-    def __init__(self, x, dialogue, index=0):
-        self.bground = setup.GFX['dialoguebox']
-        self.rect = self.bground.get_rect(centerx=x)
-        self.image = pg.Surface(self.rect.size)
-        self.image.set_colorkey(c.BLACK)
-        self.image.blit(self.bground, (0, 0))
+    def __init__(self, dialogue, index=0, image_key='dialoguebox'):
+        self.bground = setup.GFX[image_key]
+        self.rect = self.bground.get_rect(centerx=400)
         self.timer = 0.0
         self.arrow_timer = 0.0
         self.font = pg.font.Font(setup.FONTS['Fixedsys500c'], 22)
         self.dialogue_list = dialogue
         self.index = index
-        self.dialogue_image = self.font.render(dialogue[self.index],
-                                               False,
-                                               c.NEAR_BLACK)
-        self.dialogue_rect = self.dialogue_image.get_rect(left=50, top=50)
-        self.image.blit(self.dialogue_image, self.dialogue_rect)
+        self.image = self.make_dialogue_box_image()
         self.arrow = NextArrow()
         self.check_to_draw_arrow()
         self.done = False
+        self.name = image_key
+
+
+    def make_dialogue_box_image(self):
+        """Make the image of the dialogue box"""
+        image = pg.Surface(self.rect.size)
+        image.set_colorkey(c.BLACK)
+        image.blit(self.bground, (0, 0))
+
+        dialogue_image = self.font.render(self.dialogue_list[self.index],
+                                          False,
+                                          c.NEAR_BLACK)
+        dialogue_rect = dialogue_image.get_rect(left=50, top=50)
+        image.blit(dialogue_image, dialogue_rect)
+
+        return image
+
 
 
     def update(self, current_time, keys):
@@ -47,15 +57,7 @@ class DialogueBox(object):
 
     def draw_box(self, current_time, x=400):
         """Reveal dialogue on textbox"""
-        bground = setup.GFX['dialoguebox']
-        rect = bground.get_rect(centerx=x)
-        text_image = self.dialogue_image
-        text_rect = self.dialogue_rect
-        self.image = pg.Surface(rect.size)
-        self.image.set_colorkey(c.BLACK)
-
-        self.image.blit(bground, (0, 0))
-        self.image.blit(text_image, text_rect)
+        self.image = self.make_dialogue_box_image()
         self.check_to_draw_arrow()
 
 
@@ -77,11 +79,28 @@ class DialogueBox(object):
             pass
 
 
-class InfoBox(DialogueBox):
+class ItemBox(DialogueBox):
     """Text box for information like obtaining new items"""
-    def __init__(self, x, dialogue):
-        super(InfoBox, self).__init__(x, dialogue)
-        self.image = setup.GFX['infobox']
+    def __init__(self, dialogue, index=0, image_key='infobox'):
+        super(ItemBox, self).__init__(dialogue, index, image_key)
+
+
+    def make_dialogue_box_image(self):
+        """Make the image of the dialogue box"""
+        image = pg.Surface(self.rect.size)
+        image.set_colorkey(c.BLACK)
+        image.blit(self.bground, (0, 0))
+
+        dialogue = 'You received ' + self.dialogue_list[self.index] + '.'
+
+        dialogue_image = self.font.render(dialogue,
+                                          False,
+                                          c.NEAR_BLACK)
+        dialogue_rect = dialogue_image.get_rect(left=50, top=50)
+        image.blit(dialogue_image, dialogue_rect)
+
+        return image
+
 
 
 class DialogueHandler(object):
@@ -90,9 +109,11 @@ class DialogueHandler(object):
     def __init__(self, player, sprites, level_object):
         self.player = player
         self.sprites = sprites
+        self.talking_sprite = None
         self.textbox = None
         self.level = level_object
         self.last_textbox_timer = 0.0
+        self.game_data = level_object.persist
 
 
     def update(self, keys, current_time):
@@ -106,10 +127,17 @@ class DialogueHandler(object):
             self.textbox.update(current_time, keys)
 
             if self.textbox.done:
+
                 if self.textbox.index < (len(self.textbox.dialogue_list) - 1):
                     index = self.textbox.index + 1
                     dialogue = self.textbox.dialogue_list
-                    self.textbox = DialogueBox(400, dialogue, index)
+                    if self.textbox.name == 'dialoguebox':
+                        self.textbox = DialogueBox(dialogue, index)
+                    elif self.textbox.name == 'infobox':
+                        self.textbox = ItemBox(dialogue, index)
+                elif self.talking_sprite.item:
+                    item = self.check_for_item()
+                    self.textbox = ItemBox(item, 0)
                 else:
                     self.level.state = 'normal'
                     self.textbox = None
@@ -124,20 +152,37 @@ class DialogueHandler(object):
 
         if player.direction == 'up':
             if sprite.location == [tile_x, tile_y - 1]:
-                self.textbox = DialogueBox(400, sprite.dialogue)
+                self.textbox = DialogueBox(sprite.dialogue)
                 sprite.direction = 'down'
+                self.talking_sprite = sprite
         elif player.direction == 'down':
             if sprite.location == [tile_x, tile_y + 1]:
-                self.textbox = DialogueBox(400, sprite.dialogue)
+                self.textbox = DialogueBox(sprite.dialogue)
                 sprite.direction = 'up'
+                self.talking_sprite = sprite
         elif player.direction == 'left':
             if sprite.location == [tile_x - 1, tile_y]:
-                self.textbox = DialogueBox(400, sprite.dialogue)
+                self.textbox = DialogueBox(sprite.dialogue)
                 sprite.direction = 'right'
+                self.talking_sprite = sprite
         elif player.direction == 'right':
             if sprite.location == [tile_x + 1, tile_y]:
-                self.textbox = DialogueBox(400, sprite.dialogue)
+                self.textbox = DialogueBox(sprite.dialogue)
                 sprite.direction = 'left'
+                self.talking_sprite = sprite
+
+
+    def check_for_item(self):
+        """Checks if sprite has an item to give to the player"""
+        item = self.talking_sprite.item
+        if item:
+            self.player.item_list.append(item)
+            self.talking_sprite.item = None
+            if self.talking_sprite.name == 'king':
+                self.game_data['king item'] = None
+
+        return item
+
 
 
     def reset_sprite_direction(self):

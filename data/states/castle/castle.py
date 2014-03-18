@@ -21,5 +21,6 @@ class Castle(level_state.LevelState):
                                    "Without the crown's magic, our town will be overun by monsters!",
                                    "Take this 500 gold for supplies.",
                                    "Our town's fate is in your hands!"]
+                sprite.item = self.persist['king item']
             else:
                 sprite.dialogue = ['Hail to the King!']

@@ -35,6 +35,7 @@ class Person(pg.sprite.Sprite):
         self.location = self.get_tile_location()
         self.dialogue = ['Location: ' + str(self.location)]
         self.default_direction = direction
+        self.item = None
 
 
     def create_spritesheet_dict(self, sheet_key):
@@ -272,6 +273,7 @@ class Player(Person):
 
     def __init__(self, direction):
         super(Player, self).__init__('player', 0, 0, direction)
+        self.item_list = []
 
 
     def create_vector_dict(self):
