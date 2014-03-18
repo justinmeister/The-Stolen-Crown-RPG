@@ -28,3 +28,5 @@ SFX = tools.load_all_sfx(os.path.join('resources', 'sound'))
 
 FONT = pg.font.Font(FONTS['Fixedsys500c'], 20)
 
+
+

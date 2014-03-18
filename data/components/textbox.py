@@ -115,19 +115,19 @@ class DialogueHandler(object):
         tile_x, tile_y = player.location
 
         if player.direction == 'up':
-            if sprite.location == (tile_x, tile_y - 1):
+            if sprite.location == [tile_x, tile_y - 1]:
                 self.textbox = DialogueBox(400, sprite.dialogue)
                 sprite.direction = 'down'
         elif player.direction == 'down':
-            if sprite.location == (tile_x, tile_y + 1):
+            if sprite.location == [tile_x, tile_y + 1]:
                 self.textbox = DialogueBox(400, sprite.dialogue)
                 sprite.direction = 'up'
         elif player.direction == 'left':
-            if sprite.location == (tile_x - 1, tile_y):
+            if sprite.location == [tile_x - 1, tile_y]:
                 self.textbox = DialogueBox(400, sprite.dialogue)
                 sprite.direction = 'right'
         elif player.direction == 'right':
-            if sprite.location == (tile_x + 1, tile_y):
+            if sprite.location == [tile_x + 1, tile_y]:
                 self.textbox = DialogueBox(400, sprite.dialogue)
                 sprite.direction = 'left'
 

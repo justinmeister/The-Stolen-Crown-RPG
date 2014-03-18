@@ -150,6 +150,18 @@ def get_image(x, y, width, height, sprite_sheet):
     return image
 
 
+def create_game_data_dict():
+    """Create a dictionary of persistant values the player
+    carries between states"""
+    data_dict = {'last location': None,
+                 'last state': None,
+                 'last direction': 'up',
+                 'town start pos': [12, 49],
+                 'castle start pos': [12, 49]}
+
+    return data_dict
+
+
 
 
 

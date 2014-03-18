@@ -16,6 +16,7 @@ class Menu(tools._State):
         self.rendered_text = self.font.render(text, 1, c.BLACK)
         self.text_rect = self.rendered_text.get_rect()
         self.text_rect.center = self.rect.center
+        self.persist = tools.create_game_data_dict()
 
 
     def update(self, surface, keys, current_time):
@@ -25,4 +26,5 @@ class Menu(tools._State):
 
     def get_event(self, event):
         if event.type == pg.KEYDOWN:
+            self.persist['last state'] = self.name
             self.done = True

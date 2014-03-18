@@ -8,8 +8,9 @@ class Person(pg.sprite.Sprite):
     """Base class for all world characters
     controlled by the computer"""
 
-    def __init__(self, sheet_key, x, y, direction='down', state='animated resting'):
+    def __init__(self, sheet_key, x, y, direction='right', state='resting'):
         super(Person, self).__init__()
+        self.name = sheet_key
         self.get_image = setup.tools.get_image
         self.spritesheet_dict = self.create_spritesheet_dict(sheet_key)
         self.animation_dict = self.create_animation_dict()
@@ -33,7 +34,6 @@ class Person(pg.sprite.Sprite):
         self.blockers = self.set_blockers()
         self.location = self.get_tile_location()
         self.dialogue = ['Placeholder Dialogue']
-        self.name = sheet_key
 
 
     def create_spritesheet_dict(self, sheet_key):
@@ -112,7 +112,7 @@ class Person(pg.sprite.Sprite):
         """Sets blockers to prevent collision with other sprites"""
         blockers = []
 
-        if self.state == 'animated resting' or self.state == 'autoresting':
+        if self.state == 'resting' or self.state == 'autoresting':
             blockers.append(pg.Rect(self.rect.x, self.rect.y, 32, 32))
 
         elif self.state == 'moving' or self.state == 'automoving':
@@ -139,20 +139,22 @@ class Person(pg.sprite.Sprite):
     def get_tile_location(self):
         """Converts pygame coordinates into tile coordinates"""
         if self.rect.x == 0:
-            tile_x = 1
+            tile_x = 0
         elif self.rect.x % 32 == 0:
-            tile_x = (self.rect.x / 32) + 1
+            tile_x = (self.rect.x / 32)
         else:
             tile_x = 0
 
+
         if self.rect.y == 0:
-            tile_y = 1
+            tile_y = 0
         elif self.rect.y % 32 == 0:
-            tile_y = (self.rect.y / 32) + 1
+            tile_y = (self.rect.y / 32)
+
         else:
             tile_y = 0
 
-        return (tile_x, tile_y)
+        return [tile_x, tile_y]
 
 
     def resting(self):
@@ -238,7 +240,8 @@ class Person(pg.sprite.Sprite):
         direction.
         """
         #self.image = self.image_list[self.index]
-        self.animation(700)
+        self.image_list = self.animation_dict[self.direction]
+        self.image = self.image_list[self.index]
 
         assert(self.rect.y % 32 == 0), ('Player not centered on tile: '
                                         + str(self.rect.y))
@@ -309,7 +312,7 @@ class Player(Person):
 class Soldier(Person):
     """Soldier for the castle"""
 
-    def __init__(self, x, y, direction='down', state='animated resting'):
+    def __init__(self, x, y, direction='down', state='resting'):
         super(Soldier, self).__init__('soldier', x, y, direction, state)
 
 
@@ -319,6 +322,7 @@ class FemaleVillager(Person):
 
     def __init__(self, x, y):
         super(FemaleVillager, self).__init__('femalevillager', x, y)
+        self.index = 1
 
 
 class MaleVillager(Person):

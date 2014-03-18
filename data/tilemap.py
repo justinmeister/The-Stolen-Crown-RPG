@@ -328,15 +328,18 @@ def create_viewport(map):
     return setup.SCREEN.get_rect(bottom=map['rect'].bottom)
 
 
-def set_sprite_positions(player, level_sprites, state):
+def set_sprite_positions(player, level_sprites, state, game_data):
     """Set the start positions for all the sprites in the level"""
+    start_pos_key = state + ' start pos'
+    x =  game_data[start_pos_key][0]*32
+    y = game_data[start_pos_key][1]*32
+    player.rect = pg.Rect(x, y, 32, 32)
+
     tile_map = open(os.path.join('data', 'states', state, 'sprite_start_pos.txt'), 'r')
 
     for row, line in enumerate(tile_map):
         for column, letter in enumerate(line):
-            if letter == 'P':
-                player.rect = pg.Rect(column*32, row*32, 32, 32)
-            elif letter == 'F':
+            if letter == 'F':
                 fem_villager = person.FemaleVillager(column*32, row*32)
                 level_sprites.add(fem_villager)
             elif letter == 'S':
@@ -361,6 +364,8 @@ def make_level_portals(state):
         for column, letter in enumerate(line):
             if letter == 'A':
                 portal_group.add(portal.Portal(column, row, c.CASTLE))
+            elif letter == 'B':
+                portal_group.add(portal.Portal(column, row, c.TOWN))
 
     return portal_group
 

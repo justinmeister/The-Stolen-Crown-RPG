@@ -6,6 +6,7 @@ from.  This class inherits from the generic state class
 found in the tools.py module.
 """
 
+import copy
 import pygame as pg
 from .. import tools, collision
 from .. import tilemap as tm
@@ -27,20 +28,22 @@ class LevelState(tools._State):
         self.blockers = tm.create_blockers(self.name)
         self.level_surface = tm.create_level_surface(self.town_map)
         self.level_rect = self.level_surface.get_rect()
-        self.player = person.Player('up')
-        self.town_sprites = pg.sprite.Group()
+        self.player = person.Player(persist['last direction'])
+        self.level_sprites = pg.sprite.Group()
         self.start_positions = tm.set_sprite_positions(self.player,
-                                                       self.town_sprites,
-                                                       self.name)
+                                                       self.level_sprites,
+                                                       self.name,
+                                                       self.persist)
         self.set_sprite_dialogue()
         self.collision_handler = collision.CollisionHandler(self.player,
                                                             self.blockers,
-                                                            self.town_sprites)
+                                                            self.level_sprites)
         self.dialogue_handler = textbox.DialogueHandler(self.player,
-                                                        self.town_sprites,
+                                                        self.level_sprites,
                                                         self)
         self.state_dict = self.make_state_dict()
         self.portals = tm.make_level_portals(self.name)
+        self.parent_level = None
 
 
     def set_sprite_dialogue(self):
@@ -61,7 +64,7 @@ class LevelState(tools._State):
         self.check_for_dialogue()
         self.check_for_portals()
         self.player.update(keys, current_time)
-        self.town_sprites.update(current_time)
+        self.level_sprites.update(current_time)
         self.collision_handler.update(keys, current_time)
         self.dialogue_handler.update(keys, current_time)
         self.viewport_update()
@@ -74,8 +77,41 @@ class LevelState(tools._State):
         portal = pg.sprite.spritecollideany(self.player, self.portals)
 
         if portal and self.player.state == 'resting':
+            self.player.location = self.player.get_tile_location()
             self.next = portal.name
+            self.update_game_data()
             self.done = True
+
+
+    def update_game_data(self):
+        """Update the persistant game data dictionary"""
+        self.persist['last location'] = self.player.location
+        self.persist['last direction'] = self.player.direction
+        self.persist['last state'] = self.name
+
+        self.set_new_start_pos()
+
+
+    def set_new_start_pos(self):
+        """Set new start position based on previous state"""
+        location = copy.deepcopy(self.persist['last location'])
+        direction = self.persist['last direction']
+        state = self.persist['last state']
+
+        if direction == 'up':
+            location[1] += 1
+        elif direction == 'down':
+            location[1] -= 1
+        elif direction == 'left':
+            location[0] += 1
+        elif direction == 'right':
+            location[0] -= 1
+
+        self.persist[state + ' start pos'] = location
+
+
+
+
 
 
     def handling_dialogue(self, surface, keys, current_time):
@@ -106,7 +142,7 @@ class LevelState(tools._State):
         """Blits all images to screen"""
         self.level_surface.blit(self.town_map['surface'], self.viewport, self.viewport)
         self.level_surface.blit(self.player.image, self.player.rect)
-        self.town_sprites.draw(self.level_surface)
+        self.level_sprites.draw(self.level_surface)
 
         surface.blit(self.level_surface, (0, 0), self.viewport)
         self.dialogue_handler.draw(surface)
