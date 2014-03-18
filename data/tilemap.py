@@ -367,6 +367,9 @@ def set_sprite_positions(player, level_sprites, state, game_data):
             elif letter == 'C':
                 king = person.King(column*32, row*32, 'down', 'resting')
                 level_sprites.add(king)
+            elif letter == 'D':
+                well = person.Well(column*32, row*32)
+                level_sprites.add(well)
 
     tile_map.close()
 

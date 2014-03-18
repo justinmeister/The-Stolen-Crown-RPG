@@ -22,7 +22,7 @@ class Person(pg.sprite.Sprite):
         self.image_list = self.animation_dict[self.direction]
         self.image = self.image_list[self.index]
         self.rect = self.image.get_rect(left=x, top=y)
-        self.old_rect = self.rect
+        #self.old_rect = self.rect
         self.state_dict = self.create_state_dict()
         self.vector_dict = self.create_vector_dict()
         self.x_vel = 0
@@ -337,4 +337,32 @@ class King(Person):
     """King of the town"""
     def __init__(self, x, y, direction='down', state='resting'):
         super(King, self).__init__('king', x, y, direction, state)
+
+
+class Well(pg.sprite.Sprite):
+    """Talking well"""
+    def __init__(self, x, y):
+        super(Well, self).__init__()
+        self.image = pg.Surface((32, 32))
+        self.image.set_colorkey((0,0,0))
+        self.rect = self.image.get_rect(left=x, top=y)
+        self.location = self.get_location()
+        self.dialogue = ["I'm a well!"]
+        self.blockers = [self.rect]
+        self.x_vel = self.y_vel = 0
+        self.state = 'resting'
+        self.direction = 'down'
+        self.default_direction = self.direction
+
+    def get_location(self):
+        """Get tile location"""
+        x = self.rect.x / 32
+        y = self.rect.y / 32
+
+        return [x, y]
+
+    def begin_auto_resting(self):
+        """Placeholder"""
+        pass
+
 

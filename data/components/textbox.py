@@ -17,7 +17,7 @@ class NextArrow(pg.sprite.Sprite):
 
 class DialogueBox(object):
     """Text box used for dialogue"""
-    def __init__(self, x, dialogue, dialogue_index=0):
+    def __init__(self, x, dialogue, index=0):
         self.bground = setup.GFX['dialoguebox']
         self.rect = self.bground.get_rect(centerx=x)
         self.image = pg.Surface(self.rect.size)
@@ -27,7 +27,7 @@ class DialogueBox(object):
         self.arrow_timer = 0.0
         self.font = pg.font.Font(setup.FONTS['Fixedsys500c'], 22)
         self.dialogue_list = dialogue
-        self.index = dialogue_index
+        self.index = index
         self.dialogue_image = self.font.render(dialogue[self.index],
                                                False,
                                                c.NEAR_BLACK)
@@ -75,6 +75,13 @@ class DialogueBox(object):
             self.image.blit(self.arrow.image, self.arrow.rect)
         else:
             pass
+
+
+class InfoBox(DialogueBox):
+    """Text box for information like obtaining new items"""
+    def __init__(self, x, dialogue):
+        super(InfoBox, self).__init__(x, dialogue)
+        self.image = setup.GFX['infobox']
 
 
 class DialogueHandler(object):
