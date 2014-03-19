@@ -271,8 +271,8 @@ class Person(pg.sprite.Sprite):
 class Player(Person):
     """User controlled character"""
 
-    def __init__(self, direction):
-        super(Player, self).__init__('player', 0, 0, direction)
+    def __init__(self, direction, x=0, y=0):
+        super(Player, self).__init__('player', x, y, direction)
         self.item_list = []
 
 

@@ -75,7 +75,7 @@ def get_tile(x, y, tileset, width=16, height=16, scale=1):
 
 def make_level_map(state, width, height):
     """Blits the different layers of the map onto one surface"""
-    map = create_background(state, width, height)
+    map = make_background(state, width, height)
     map = create_map_layer1(map, state)
     map = create_map_layer2(map, state)
     map = scale_map(map)
@@ -84,16 +84,17 @@ def make_level_map(state, width, height):
     return map
 
 
-def create_background(state_name, width, height):
+def make_background(state_name, width, height):
     """Creates the background surface that the rest of
     the town map will be blitted on"""
     size = (width*16, height*16)
     surface = pg.Surface(size)
-    if state_name == c.CASTLE:
+    if state_name == c.TOWN:
+        tile = get_image(0, 0, 16, 16, setup.GFX['tileset2'])
+    else:
         tile = pg.Surface((16, 16))
         tile.fill(c.NEAR_BLACK)
-    else:
-        tile = get_image(0, 0, 16, 16, setup.GFX['tileset2'])
+
     rect = tile.get_rect()
 
     for row in range(50):
@@ -384,7 +385,7 @@ def make_level_portals(state):
             if letter == 'A':
                 portal_group.add(portal.Portal(column, row, c.CASTLE))
             elif letter == 'B':
-                portal_group.add(portal.Portal(column, row, c.TOWN))
+                portal_group.add(portal.Portal(column, row, c.SHOP))
 
     return portal_group
 
