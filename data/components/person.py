@@ -355,6 +355,7 @@ class Well(pg.sprite.Sprite):
         self.state = 'resting'
         self.direction = 'down'
         self.default_direction = self.direction
+        self.item = None
 
     def get_location(self):
         """Get tile location"""

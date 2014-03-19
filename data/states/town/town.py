@@ -12,7 +12,7 @@ class Town(level_state.LevelState):
 
     def set_sprite_dialogue(self):
         """Sets unique dialogue for each sprite"""
-        for sprite in self.level_sprites:
+        for sprite in self.sprites:
             if sprite.location == [9, 46]:
                 sprite.dialogue = ['Welcome to our town, Mr. Traveller!',
                                    'The King is loved by all!',

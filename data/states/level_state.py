@@ -33,21 +33,18 @@ class LevelState(tools._State):
         self.level_surface = tm.make_level_surface(self.town_map)
         self.level_rect = self.level_surface.get_rect()
         self.player = person.Player(persist['last direction'])
-        self.level_sprites = pg.sprite.Group()
+        self.sprites = pg.sprite.Group()
         self.start_positions = tm.set_sprite_positions(self.player,
-                                                       self.level_sprites,
+                                                       self.sprites,
                                                        self.name,
                                                        self.persist)
         self.set_sprite_dialogue()
         self.collision_handler = collision.CollisionHandler(self.player,
                                                             self.blockers,
-                                                            self.level_sprites)
-        self.dialogue_handler = textbox.DialogueHandler(self.player,
-                                                        self.level_sprites,
-                                                        self)
+                                                            self.sprites)
+        self.dialogue_handler = textbox.TextHandler(self)
         self.state_dict = self.make_state_dict()
         self.portals = tm.make_level_portals(self.name)
-        self.parent_level = None
 
 
     def set_sprite_dialogue(self):
@@ -68,7 +65,7 @@ class LevelState(tools._State):
         self.check_for_dialogue()
         self.check_for_portals()
         self.player.update(keys, current_time)
-        self.level_sprites.update(current_time)
+        self.sprites.update(current_time)
         self.collision_handler.update(keys, current_time)
         self.dialogue_handler.update(keys, current_time)
         self.viewport_update()
@@ -142,7 +139,7 @@ class LevelState(tools._State):
         """Blits all images to screen"""
         self.level_surface.blit(self.town_map['surface'], self.viewport, self.viewport)
         self.level_surface.blit(self.player.image, self.player.rect)
-        self.level_sprites.draw(self.level_surface)
+        self.sprites.draw(self.level_surface)
 
         surface.blit(self.level_surface, (0, 0), self.viewport)
         self.dialogue_handler.draw(surface)

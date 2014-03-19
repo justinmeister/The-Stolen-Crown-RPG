@@ -14,7 +14,7 @@ class Castle(level_state.LevelState):
 
     def set_sprite_dialogue(self):
         """Sets unique dialogue for each sprite"""
-        for sprite in self.level_sprites:
+        for sprite in self.sprites:
             if sprite.location == [12, 6]:
                 sprite.dialogue = ["Please!  You must help me!",
                                    "An evil sorceror has stolen my magic crown!",

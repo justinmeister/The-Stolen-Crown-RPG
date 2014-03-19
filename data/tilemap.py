@@ -385,6 +385,8 @@ def make_level_portals(state):
             if letter == 'A':
                 portal_group.add(portal.Portal(column, row, c.CASTLE))
             elif letter == 'B':
+                portal_group.add(portal.Portal(column, row, c.TOWN))
+            elif letter == 'C':
                 portal_group.add(portal.Portal(column, row, c.SHOP))
 
     return portal_group

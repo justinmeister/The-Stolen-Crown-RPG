@@ -49,7 +49,7 @@ class DialogueBox(object):
 
 
 
-    def update(self, current_time, keys):
+    def update(self, keys, current_time):
         """Updates scrolling text"""
         self.current_time = current_time
         self.draw_box(current_time)
@@ -109,17 +109,17 @@ class ItemBox(DialogueBox):
 
 
 
-class DialogueHandler(object):
+class TextHandler(object):
     """Handles interaction between sprites to create dialogue boxes"""
 
-    def __init__(self, player, sprites, level_object):
-        self.player = player
-        self.sprites = sprites
+    def __init__(self, level):
+        self.player = level.player
+        self.sprites = level.sprites
         self.talking_sprite = None
         self.textbox = None
-        self.level = level_object
+        self.level = level
         self.last_textbox_timer = 0.0
-        self.game_data = level_object.persist
+        self.game_data = level.persist
 
 
     def update(self, keys, current_time):
@@ -130,7 +130,7 @@ class DialogueHandler(object):
                     self.check_for_dialogue(sprite)
 
         if self.textbox:
-            self.textbox.update(current_time, keys)
+            self.textbox.update(keys, current_time)
 
             if self.textbox.done:
 
@@ -202,6 +202,30 @@ class DialogueHandler(object):
         """Draws textbox to surface"""
         if self.textbox:
             surface.blit(self.textbox.image, self.textbox.rect)
+
+
+    def make_textbox(self, name, dialogue, item=None):
+        """Make textbox on demand"""
+        if name == 'itembox':
+            textbox = ItemBox(dialogue, item)
+        elif name == 'dialoguebox':
+            textbox = DialogueBox(dialogue)
+        else:
+            textbox = None
+
+        return textbox
+
+
+    def update_for_shops(self, keys, current_time):
+        """Update text handler when player is in a shop"""
+        self.textbox.update(keys, current_time)
+        last_index = len(self.textbox.dialogue_list) - 1
+
+        if self.textbox.done and (self.textbox.index < last_index):
+            index = self.textbox.index + 1
+            dialogue = self.textbox.dialogue_list
+            self.textbox = DialogueBox(dialogue, index)
+
 
 
 
