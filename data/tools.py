@@ -158,7 +158,9 @@ def create_game_data_dict():
                  'last direction': 'up',
                  'town start pos': [12, 49],
                  'castle start pos': [12, 26],
-                 'king item': ['500 gold']}
+                 'king item': {'total': 500,
+                               'type': 'gold'}
+    }
 
     return data_dict
 

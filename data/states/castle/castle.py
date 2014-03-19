@@ -18,8 +18,8 @@ class Castle(level_state.LevelState):
             if sprite.location == [12, 6]:
                 sprite.dialogue = ["Please!  You must help me!",
                                    "An evil sorceror has stolen my magic crown!",
-                                   "Without the crown's magic, our town will be overun by monsters!",
-                                   "Take this 500 gold for supplies.",
+                                   "Without it, our town will be overun by monsters!",
+                                   "Take this money for supplies.",
                                    "Our town's fate is in your hands!"]
                 sprite.item = self.persist['king item']
             else:

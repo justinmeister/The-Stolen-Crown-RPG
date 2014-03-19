@@ -17,7 +17,8 @@ class NextArrow(pg.sprite.Sprite):
 
 class DialogueBox(object):
     """Text box used for dialogue"""
-    def __init__(self, dialogue, index=0, image_key='dialoguebox'):
+    def __init__(self, dialogue, index=0, image_key='dialoguebox', item=None):
+        self.item = item
         self.bground = setup.GFX[image_key]
         self.rect = self.bground.get_rect(centerx=400)
         self.timer = 0.0
@@ -81,8 +82,8 @@ class DialogueBox(object):
 
 class ItemBox(DialogueBox):
     """Text box for information like obtaining new items"""
-    def __init__(self, dialogue, index=0, image_key='infobox'):
-        super(ItemBox, self).__init__(dialogue, index, image_key)
+    def __init__(self, dialogue, item=None):
+        super(ItemBox, self).__init__(None, 0, 'infobox', item)
 
 
     def make_dialogue_box_image(self):
@@ -91,9 +92,14 @@ class ItemBox(DialogueBox):
         image.set_colorkey(c.BLACK)
         image.blit(self.bground, (0, 0))
 
-        dialogue = 'You received ' + self.dialogue_list[self.index] + '.'
+        if self.item:
+            total = str(self.item['total'])
+            type = self.item['type']
+            dialogue = 'You received ' + total + ' ' + type + '.'
+            self.dialogue_list = [dialogue]
+            self.item = None
 
-        dialogue_image = self.font.render(dialogue,
+        dialogue_image = self.font.render(self.dialogue_list[self.index],
                                           False,
                                           c.NEAR_BLACK)
         dialogue_rect = dialogue_image.get_rect(left=50, top=50)
@@ -137,7 +143,7 @@ class DialogueHandler(object):
                         self.textbox = ItemBox(dialogue, index)
                 elif self.talking_sprite.item:
                     item = self.check_for_item()
-                    self.textbox = ItemBox(item, 0)
+                    self.textbox = ItemBox(None, item)
                 else:
                     self.level.state = 'normal'
                     self.textbox = None

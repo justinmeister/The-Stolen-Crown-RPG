@@ -73,7 +73,7 @@ def get_tile(x, y, tileset, width=16, height=16, scale=1):
     return tile_dict
 
 
-def create_town_map(state, width, height):
+def make_level_map(state, width, height):
     """Blits the different layers of the map onto one surface"""
     map = create_background(state, width, height)
     map = create_map_layer1(map, state)
@@ -328,7 +328,7 @@ def create_blockers(state):
     return blockers
 
 
-def create_level_surface(map):
+def make_level_surface(map):
     """Creates the surface all images are blitted to"""
     width = map['rect'].width
     height = map['rect'].height

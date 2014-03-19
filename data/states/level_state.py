@@ -25,12 +25,12 @@ class LevelState(tools._State):
         self.persist = persist
         self.current_time = current_time
         self.state = 'normal'
-        self.town_map = tm.create_town_map(self.name,
+        self.town_map = tm.make_level_map(self.name,
                                            self.map_width,
                                            self.map_height)
         self.viewport = tm.create_viewport(self.town_map)
         self.blockers = tm.create_blockers(self.name)
-        self.level_surface = tm.create_level_surface(self.town_map)
+        self.level_surface = tm.make_level_surface(self.town_map)
         self.level_rect = self.level_surface.get_rect()
         self.player = person.Player(persist['last direction'])
         self.level_sprites = pg.sprite.Group()
@@ -112,10 +112,6 @@ class LevelState(tools._State):
             location[0] -= 1
 
         self.persist[state + ' start pos'] = location
-
-
-
-
 
 
     def handling_dialogue(self, surface, keys, current_time):
