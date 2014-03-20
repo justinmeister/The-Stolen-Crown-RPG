@@ -40,7 +40,7 @@ class DialogueBox(object):
         image.blit(self.bground, (0, 0))
 
         dialogue_image = self.font.render(self.dialogue_list[self.index],
-                                          False,
+                                          True,
                                           c.NEAR_BLACK)
         dialogue_rect = dialogue_image.get_rect(left=50, top=50)
         image.blit(dialogue_image, dialogue_rect)
