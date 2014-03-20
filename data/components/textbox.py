@@ -93,8 +93,8 @@ class ItemBox(DialogueBox):
         image.blit(self.bground, (0, 0))
 
         if self.item:
-            total = str(self.item['total'])
-            type = self.item['type']
+            type = list(self.item.keys())[0]
+            total = str(self.item[type])
             dialogue = 'You received ' + total + ' ' + type + '.'
             self.dialogue_list = [dialogue]
             self.item = None
@@ -119,7 +119,7 @@ class TextHandler(object):
         self.textbox = None
         self.level = level
         self.last_textbox_timer = 0.0
-        self.game_data = level.persist
+        self.game_data = level.game_data
 
 
     def update(self, keys, current_time):
@@ -182,7 +182,8 @@ class TextHandler(object):
         """Checks if sprite has an item to give to the player"""
         item = self.talking_sprite.item
         if item:
-            self.player.item_list.append(item)
+            if 'gold' in item:
+                self.game_data['player items']['gold'] += item['gold']
             self.talking_sprite.item = None
             if self.talking_sprite.name == 'king':
                 self.game_data['king item'] = None
@@ -214,22 +215,4 @@ class TextHandler(object):
             textbox = None
 
         return textbox
-
-
-    def update_for_shops(self, keys, current_time):
-        """Update text handler when player is in a shop"""
-        self.textbox.update(keys, current_time)
-        last_index = len(self.textbox.dialogue_list) - 1
-
-        if self.textbox.done and (self.textbox.index < last_index):
-            index = self.textbox.index + 1
-            dialogue = self.textbox.dialogue_list
-            self.textbox = DialogueBox(dialogue, index)
-
-
-
-
-
-
-
 

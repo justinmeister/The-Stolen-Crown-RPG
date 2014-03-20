@@ -20,9 +20,9 @@ class LevelState(tools._State):
         self.map_height = height
 
 
-    def startup(self, current_time, persist):
+    def startup(self, current_time, game_data):
         """Called when the State object is created"""
-        self.persist = persist
+        self.game_data = game_data
         self.current_time = current_time
         self.state = 'normal'
         self.town_map = tm.make_level_map(self.name,
@@ -32,12 +32,12 @@ class LevelState(tools._State):
         self.blockers = tm.create_blockers(self.name)
         self.level_surface = tm.make_level_surface(self.town_map)
         self.level_rect = self.level_surface.get_rect()
-        self.player = person.Player(persist['last direction'])
+        self.player = person.Player(game_data['last direction'])
         self.sprites = pg.sprite.Group()
         self.start_positions = tm.set_sprite_positions(self.player,
                                                        self.sprites,
                                                        self.name,
-                                                       self.persist)
+                                                       self.game_data)
         self.set_sprite_dialogue()
         self.collision_handler = collision.CollisionHandler(self.player,
                                                             self.blockers,
@@ -86,18 +86,18 @@ class LevelState(tools._State):
 
     def update_game_data(self):
         """Update the persistant game data dictionary"""
-        self.persist['last location'] = self.player.location
-        self.persist['last direction'] = self.player.direction
-        self.persist['last state'] = self.name
+        self.game_data['last location'] = self.player.location
+        self.game_data['last direction'] = self.player.direction
+        self.game_data['last state'] = self.name
 
         self.set_new_start_pos()
 
 
     def set_new_start_pos(self):
         """Set new start position based on previous state"""
-        location = copy.deepcopy(self.persist['last location'])
-        direction = self.persist['last direction']
-        state = self.persist['last state']
+        location = copy.deepcopy(self.game_data['last location'])
+        direction = self.game_data['last direction']
+        state = self.game_data['last state']
 
         if direction == 'up':
             location[1] += 1
@@ -108,7 +108,7 @@ class LevelState(tools._State):
         elif direction == 'right':
             location[0] -= 1
 
-        self.persist[state + ' start pos'] = location
+        self.game_data[state + ' start pos'] = location
 
 
     def handling_dialogue(self, surface, keys, current_time):

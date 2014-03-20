@@ -8,12 +8,13 @@ import copy
 import pygame as pg
 from .. import tools, setup
 from .. import constants as c
-from .. components import textbox
+from .. components import textbox, person
 
 
 class Gui(object):
     """Class that controls the GUI of the shop state"""
     def __init__(self, name, dialogue, level):
+        self.level = level
         self.name = name
         self.state = 'dialogue'
         self.font = pg.font.Font(setup.FONTS['Fixedsys500c'], 22)
@@ -25,10 +26,9 @@ class Gui(object):
         self.arrow_pos2 = (50, 535)
         self.selection_arrow.rect.topleft = self.arrow_pos1
         self.dialogue_box = self.make_dialogue_box()
-        self.gold = self.make_gold_box()
+        self.gold_box = self.make_gold_box()
         self.selection_box = self.make_selection_box()
         self.state_dict = self.make_state_dict()
-        self.level = level
 
 
     def make_dialogue_box(self):
@@ -57,7 +57,7 @@ class Gui(object):
         rect = image.get_rect(bottom=608)
 
         surface = pg.Surface(rect.size)
-        #surface.set_colorkey(c.BLACK)
+        surface.set_colorkey(c.BLACK)
         surface.blit(image, (0, 0))
         choices = ['Rent a room. (30 Gold)',
                    'Leave.']
@@ -82,7 +82,25 @@ class Gui(object):
 
     def make_gold_box(self):
         """Make the box to display total gold"""
-        return None
+        image = setup.GFX['goldbox']
+        rect = image.get_rect(bottom=608, right=800)
+
+        surface = pg.Surface(rect.size)
+        surface.set_colorkey(c.BLACK)
+        surface.blit(image, (0, 0))
+        gold = self.level.game_data['player items']['gold']
+        text = 'Gold: ' + str(gold)
+        text_render = self.font.render(text, True, c.NEAR_BLACK)
+        text_rect = text_render.get_rect(x=80, y=60)
+
+        surface.blit(text_render, text_rect)
+
+        sprite = pg.sprite.Sprite()
+        sprite.image = surface
+        sprite.rect = rect
+
+        return sprite
+
 
 
     def make_state_dict(self):
@@ -108,6 +126,7 @@ class Gui(object):
     def make_selection(self, keys, current_time):
         """Control the selection"""
         self.selection_box = self.make_selection_box()
+        self.gold_box = self.make_gold_box()
 
         if keys[pg.K_DOWN]:
             self.selection_arrow.rect.topleft = self.arrow_pos2
@@ -116,6 +135,10 @@ class Gui(object):
         elif keys[pg.K_SPACE]:
             if self.selection_arrow.rect.topleft == self.arrow_pos2:
                 self.level.done = True
+                self.level.game_data['last direction'] = 'down'
+            elif self.selection_arrow.rect.topleft == self.arrow_pos1:
+                self.level.game_data['player items']['gold'] -= 30
+
 
 
 
@@ -130,10 +153,12 @@ class Gui(object):
         """Draw GUI to level surface"""
         if self.state == 'dialogue':
             surface.blit(self.dialogue_box.image, self.dialogue_box.rect)
+            surface.blit(self.gold_box.image, self.gold_box.rect)
         elif self.state == 'select':
             surface.blit(self.dialogue_box.image, self.dialogue_box.rect)
             surface.blit(self.selection_box.image, self.selection_box.rect)
             surface.blit(self.selection_arrow.image, self.selection_arrow.rect)
+            surface.blit(self.gold_box.image, self.gold_box.rect)
 
 
 
@@ -144,19 +169,15 @@ class Shop(tools._State):
         self.map_width = 13
         self.map_height = 10
 
-    def startup(self, current_time, persist):
+    def startup(self, current_time, game_data):
         """Startup state"""
-        self.persist = persist
+        self.game_data = game_data
         self.current_time = current_time
         self.state = 'normal'
         self.get_image = tools.get_image
         self.dialogue = self.make_dialogue()
         self.background = self.make_background()
-        self.player = None
-        self.sprites = None
         self.gui = Gui('Inn', self.dialogue, self)
-
-
 
 
     def make_dialogue(self):
@@ -214,6 +235,8 @@ class Shop(tools._State):
         sprite.rect = sprite.image.get_rect(left=550, top=225)
 
         return sprite
+
+
 
 
     def update(self, surface, keys, current_time):

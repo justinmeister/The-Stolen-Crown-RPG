@@ -84,19 +84,19 @@ class _State(object):
         self.quit = False
         self.next = None
         self.previous = None
-        self.persist = {}
+        self.game_data = {}
         self.name = name
 
     def get_event(self, event):
         pass
 
-    def startup(self, current_time, persistant):
-        self.persist = persistant
+    def startup(self, current_time, game_data):
+        self.game_data = game_data
         self.start_time = current_time
 
     def cleanup(self):
         self.done = False
-        return self.persist
+        return self.game_data
 
     def update(self, surface, keys, current_time):
         pass
@@ -153,13 +153,16 @@ def get_image(x, y, width, height, sprite_sheet):
 def create_game_data_dict():
     """Create a dictionary of persistant values the player
     carries between states"""
+    player_items = {'gold': 0}
+
+
     data_dict = {'last location': None,
                  'last state': None,
                  'last direction': 'up',
                  'town start pos': [12, 49],
                  'castle start pos': [12, 26],
-                 'king item': {'total': 500,
-                               'type': 'gold'}
+                 'king item': {'gold': 500},
+                 'player items': player_items
     }
 
     return data_dict

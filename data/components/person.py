@@ -273,7 +273,6 @@ class Player(Person):
 
     def __init__(self, direction, x=0, y=0):
         super(Player, self).__init__('player', x, y, direction)
-        self.item_list = []
 
 
     def create_vector_dict(self):
