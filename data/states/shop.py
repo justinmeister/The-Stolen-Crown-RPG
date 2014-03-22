@@ -262,7 +262,7 @@ class Shop(tools._State):
         background.rect = background.image.get_rect()
 
         player = self.make_sprite('player', 96, 32, 150)
-        shop_owner = self.make_sprite('man1', 32, 32, 600)
+        shop_owner = self.make_sprite(self.key, 32, 32, 600)
         counter = self.make_counter()
 
         background.image.blit(player.image, player.rect)
@@ -322,6 +322,7 @@ class Inn(Shop):
     def __init__(self):
         super(Inn, self).__init__()
         self.name = 'Inn'
+        self.key = 'innman'
 
 
 class WeaponShop(Shop):
@@ -329,6 +330,7 @@ class WeaponShop(Shop):
     def __init__(self):
         super(WeaponShop, self).__init__()
         self.name = 'Weapon Shop'
+        self.key = 'weaponman'
 
 
 class ArmorShop(Shop):
@@ -336,6 +338,7 @@ class ArmorShop(Shop):
     def __init__(self):
         super(ArmorShop, self).__init__()
         self.name = 'Armor Shop'
+        self.key = 'armorman'
 
 
 class MagicShop(Shop):
@@ -343,6 +346,7 @@ class MagicShop(Shop):
     def __init__(self):
         super(MagicShop, self).__init__()
         self.name = 'Magic Shop'
+        self.key = 'magiclady'
 
 
 class PotionShop(Shop):
@@ -350,3 +354,4 @@ class PotionShop(Shop):
     def __init__(self):
         super(PotionShop, self).__init__()
         self.name = 'Potion Shop'
+        self.key = 'potionlady'
