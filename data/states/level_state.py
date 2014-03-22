@@ -14,10 +14,9 @@ from .. components import person, textbox
 
 
 class LevelState(tools._State):
-    def __init__(self, name, width, height):
-        super(LevelState, self).__init__(name)
-        self.map_width = width
-        self.map_height = height
+    def __init__(self):
+        super(LevelState, self).__init__()
+
 
 
     def startup(self, current_time, game_data):

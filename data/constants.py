@@ -7,7 +7,11 @@ SCREEN_SIZE = (800, 608)
 TOWN = 'town'
 MAIN_MENU = 'main menu'
 CASTLE = 'castle'
-SHOP = 'shop'
+INN = 'Inn'
+POTION_SHOP = 'potion shop'
+ARMOR_SHOP = 'armor shop'
+WEAPON_SHOP = 'weapon shop'
+MAGIC_SHOP = 'magic shop'
 
 ##Colors
 

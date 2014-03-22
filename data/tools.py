@@ -77,7 +77,7 @@ class Control(object):
 
 class _State(object):
     """Base class for all game states"""
-    def __init__(self, name):
+    def __init__(self):
         self.start_time = 0.0
         self.current_time = 0.0
         self.done = False
@@ -85,7 +85,6 @@ class _State(object):
         self.next = None
         self.previous = None
         self.game_data = {}
-        self.name = name
 
     def get_event(self, event):
         pass

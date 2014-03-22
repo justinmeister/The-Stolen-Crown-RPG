@@ -228,8 +228,8 @@ class Gui(object):
 
 class Shop(tools._State):
     """Basic shop state"""
-    def __init__(self, name):
-        super(Shop, self).__init__(name)
+    def __init__(self):
+        super(Shop, self).__init__()
         self.map_width = 13
         self.map_height = 10
 
@@ -241,7 +241,7 @@ class Shop(tools._State):
         self.get_image = tools.get_image
         self.dialogue = self.make_dialogue()
         self.background = self.make_background()
-        self.gui = Gui('Inn', self.dialogue, self)
+        self.gui = Gui('shop states', self.dialogue, self)
 
 
     def make_dialogue(self):
@@ -315,3 +315,38 @@ class Shop(tools._State):
         """Blit graphics to game surface"""
         surface.blit(self.background.image, self.background.rect)
         self.gui.draw(surface)
+
+
+class Inn(Shop):
+    """Where our hero gets rest"""
+    def __init__(self):
+        super(Inn, self).__init__()
+        self.name = 'Inn'
+
+
+class WeaponShop(Shop):
+    """A place to buy weapons"""
+    def __init__(self):
+        super(WeaponShop, self).__init__()
+        self.name = 'Weapon Shop'
+
+
+class ArmorShop(Shop):
+    """A place to buy armor"""
+    def __init__(self):
+        super(ArmorShop, self).__init__()
+        self.name = 'Armor Shop'
+
+
+class MagicShop(Shop):
+    """A place to buy magic"""
+    def __init__(self):
+        super(MagicShop, self).__init__()
+        self.name = 'Magic Shop'
+
+
+class PotionShop(Shop):
+    """A place to buy potions"""
+    def __init__(self):
+        super(PotionShop, self).__init__()
+        self.name = 'Potion Shop'

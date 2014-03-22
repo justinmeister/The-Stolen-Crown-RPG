@@ -8,9 +8,11 @@ from .. import level_state
 from ... import constants as c
 
 class Castle(level_state.LevelState):
-    def __init__(self, name, width, height):
-        super(Castle, self).__init__(name, width, height)
-        self.parent_level = c.TOWN
+    def __init__(self):
+        super(Castle, self).__init__()
+        self.name = c.CASTLE
+        self.map_width = 25
+        self.map_height = 27
 
     def set_sprite_dialogue(self):
         """Sets unique dialogue for each sprite"""

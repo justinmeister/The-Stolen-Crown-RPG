@@ -387,7 +387,15 @@ def make_level_portals(state):
             elif letter == 'B':
                 portal_group.add(portal.Portal(column, row, c.TOWN))
             elif letter == 'C':
-                portal_group.add(portal.Portal(column, row, c.SHOP))
+                portal_group.add(portal.Portal(column, row, c.INN))
+            elif letter == 'D':
+                portal_group.add(portal.Portal(column, row, c.MAGIC_SHOP))
+            elif letter == 'E':
+                portal_group.add(portal.Portal(column, row, c.POTION_SHOP))
+            elif letter == 'F':
+                portal_group.add(portal.Portal(column, row, c.WEAPON_SHOP))
+            elif letter == 'G':
+                portal_group.add(portal.Portal(column, row, c.ARMOR_SHOP))
 
     return portal_group
 

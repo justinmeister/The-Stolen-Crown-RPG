@@ -6,8 +6,8 @@ from ... import constants as c
 
 
 class Menu(tools._State):
-    def __init__(self, name):
-        super(Menu, self).__init__(name)
+    def __init__(self):
+        super(Menu, self).__init__()
         self.next = c.TOWN
         self.surface = setup.SCREEN
         self.rect = self.surface.get_rect()
@@ -17,6 +17,7 @@ class Menu(tools._State):
         self.text_rect = self.rendered_text.get_rect()
         self.text_rect.center = self.rect.center
         self.game_data = tools.create_game_data_dict()
+        self.name = c.MAIN_MENU
 
 
     def update(self, surface, keys, current_time):
