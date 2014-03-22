@@ -153,7 +153,7 @@ def get_image(x, y, width, height, sprite_sheet):
 def create_game_data_dict():
     """Create a dictionary of persistant values the player
     carries between states"""
-    player_items = {'gold': 0}
+    player_items = {'gold': 100}
 
 
     data_dict = {'last location': None,
