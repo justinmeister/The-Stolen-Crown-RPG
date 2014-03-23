@@ -13,14 +13,15 @@ from .. components import textbox, person
 
 class Gui(object):
     """Class that controls the GUI of the shop state"""
-    def __init__(self, name, dialogue, level):
+    def __init__(self, level):
         self.level = level
-        self.name = name
+        self.name = level.name
         self.state = 'dialogue'
         self.font = pg.font.Font(setup.FONTS['Fixedsys500c'], 22)
         self.index = 0
         self.timer = 0.0
-        self.dialogue = dialogue
+        self.items = level.items
+        self.dialogue = level.dialogue
         self.arrow = textbox.NextArrow()
         self.selection_arrow = textbox.NextArrow()
         self.arrow_pos1 = (50, 485)
@@ -60,9 +61,9 @@ class Gui(object):
         surface = pg.Surface(rect.size)
         surface.set_colorkey(c.BLACK)
         surface.blit(image, (0, 0))
+
         if self.state == 'select':
-            choices = ['Rent a room. (30 Gold)',
-                       'Leave.']
+            choices = self.items
         elif self.state == 'confirm':
             choices = ['Yes',
                        'No']
@@ -80,6 +81,7 @@ class Gui(object):
         sprite.rect = rect
 
         return sprite
+
 
 
     def check_to_draw_arrow(self, sprite):
@@ -232,6 +234,7 @@ class Shop(tools._State):
         super(Shop, self).__init__()
         self.map_width = 13
         self.map_height = 10
+        self.key = None
 
     def startup(self, current_time, game_data):
         """Startup state"""
@@ -240,17 +243,19 @@ class Shop(tools._State):
         self.state = 'normal'
         self.get_image = tools.get_image
         self.dialogue = self.make_dialogue()
+        self.items = self.make_purchasable_items()
         self.background = self.make_background()
-        self.gui = Gui('shop states', self.dialogue, self)
+        self.gui = Gui(self)
 
 
     def make_dialogue(self):
         """Make the list of dialogue phrases"""
-        dialogue = ["Welcome to the " + self.name + "!",
-                    "Would you like to rent a room to restore your health?"]
+        raise NotImplementedError
 
-        return dialogue
 
+    def make_purchasable_items(self):
+        """Make the list of items to be bought at shop"""
+        raise NotImplementedError
 
 
     def make_background(self):
@@ -301,8 +306,6 @@ class Shop(tools._State):
         return sprite
 
 
-
-
     def update(self, surface, keys, current_time):
         """Update level state"""
         self.gui.update(keys, current_time)
@@ -324,6 +327,20 @@ class Inn(Shop):
         self.name = 'Inn'
         self.key = 'innman'
 
+    def make_dialogue(self):
+        """Make the list of dialogue phrases"""
+        dialogue = ["Welcome to the " + self.name + "!",
+                    "Would you like to rent a room to restore your health?"]
+
+        return dialogue
+
+    def make_purchasable_items(self):
+        """Make list of items to be chosen"""
+        choices = ['Rent a room. (30 gold)',
+                   'Leave.']
+
+        return choices
+
 
 class WeaponShop(Shop):
     """A place to buy weapons"""
@@ -331,6 +348,21 @@ class WeaponShop(Shop):
         super(WeaponShop, self).__init__()
         self.name = 'Weapon Shop'
         self.key = 'weaponman'
+
+
+    def make_dialogue(self):
+        """Make the list of dialogue phrases"""
+        dialogue = ["Welcome to the " + self.name + "!",
+                    "Would you like to buy a weapon?"]
+
+        return dialogue
+
+    def make_purchasable_items(self):
+        """Make list of items to be chosen"""
+        choices = ['Long Sword. (100 gold)',
+                   'Leave.']
+
+        return choices
 
 
 class ArmorShop(Shop):
@@ -341,6 +373,22 @@ class ArmorShop(Shop):
         self.key = 'armorman'
 
 
+    def make_dialogue(self):
+        """Make the list of dialogue phrases"""
+        dialogue = ["Welcome to the " + self.name + "!",
+                    "Would you like to buy a piece of armor?"]
+
+        return dialogue
+
+
+    def make_purchasable_items(self):
+        """Make list of items to be chosen"""
+        choices = ['Chain mail. (30 gold)',
+                   'Leave.']
+
+        return choices
+
+
 class MagicShop(Shop):
     """A place to buy magic"""
     def __init__(self):
@@ -349,9 +397,41 @@ class MagicShop(Shop):
         self.key = 'magiclady'
 
 
+    def make_dialogue(self):
+        """Make the list of dialogue phrases"""
+        dialogue = ["Welcome to the " + self.name + "!",
+                    "Would you like to buy a magic spell?"]
+
+        return dialogue
+
+
+    def make_purchasable_items(self):
+        """Make list of items to be chosen"""
+        choices = ['Fire spell. (30 gold)',
+                   'Leave']
+
+        return choices
+
+
 class PotionShop(Shop):
     """A place to buy potions"""
     def __init__(self):
         super(PotionShop, self).__init__()
         self.name = 'Potion Shop'
         self.key = 'potionlady'
+
+
+    def make_dialogue(self):
+        """Make the list of dialogue phrases"""
+        dialogue = ["Welcome to the " + self.name + "!",
+                    "Would you like to buy a potion?"]
+
+        return dialogue
+
+
+    def make_purchasable_items(self):
+        """Make list of items to be chosen"""
+        choices = ['Healing Potion. (30 gold)',
+                   'Leave']
+
+        return choices
