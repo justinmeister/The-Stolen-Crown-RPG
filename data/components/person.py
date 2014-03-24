@@ -1,4 +1,3 @@
-__author__ = 'justinarmstrong'
 import math, random
 import pygame as pg
 from .. import setup
@@ -22,7 +21,6 @@ class Person(pg.sprite.Sprite):
         self.image_list = self.animation_dict[self.direction]
         self.image = self.image_list[self.index]
         self.rect = self.image.get_rect(left=x, top=y)
-        #self.old_rect = self.rect
         self.state_dict = self.create_state_dict()
         self.vector_dict = self.create_vector_dict()
         self.x_vel = 0
@@ -327,6 +325,13 @@ class FemaleVillager(Person):
         self.index = 1
 
 
+class FemaleVillager2(Person):
+    """A second female person for town"""
+    def __init__(self, x, y):
+        super(FemaleVillager2, self).__init__('femvillager2', x, y)
+        self.index = 1
+
+
 class MaleVillager(Person):
     """Male Person for town"""
 
@@ -338,6 +343,12 @@ class King(Person):
     """King of the town"""
     def __init__(self, x, y, direction='down', state='resting'):
         super(King, self).__init__('king', x, y, direction, state)
+
+
+class Devil(Person):
+    """Devil-like villager"""
+    def __init__(self, x, y, direction='down', state='autoresting'):
+        super(Devil, self).__init__('devil', x, y, direction, state)
 
 
 class Well(pg.sprite.Sprite):

@@ -371,6 +371,12 @@ def set_sprite_positions(player, level_sprites, state, game_data):
             elif letter == 'D':
                 well = person.Well(column*32, row*32)
                 level_sprites.add(well)
+            elif letter == 'E':
+                fem_villager = person.FemaleVillager2(column*32, row*32)
+                level_sprites.add(fem_villager)
+            elif letter == 'G':
+                devil_villager = person.Devil(column*32, row*32)
+                level_sprites.add(devil_villager)
 
     tile_map.close()
 

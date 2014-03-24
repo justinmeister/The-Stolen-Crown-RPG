@@ -183,7 +183,7 @@ class TextHandler(object):
         item = self.talking_sprite.item
         if item:
             if 'gold' in item:
-                self.game_data['player items']['gold'] += item['gold']
+                self.game_data['player inventory']['gold'] += item['gold']
             self.talking_sprite.item = None
             if self.talking_sprite.name == 'king':
                 self.game_data['king item'] = None

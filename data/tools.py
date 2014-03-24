@@ -161,7 +161,7 @@ def create_game_data_dict():
                  'town start pos': [12, 49],
                  'castle start pos': [12, 26],
                  'king item': {'gold': 500},
-                 'player items': player_items
+                 'player inventory': player_items
     }
 
     return data_dict

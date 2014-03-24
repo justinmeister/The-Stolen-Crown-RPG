@@ -16,12 +16,16 @@ from .. components import person, textbox
 class LevelState(tools._State):
     def __init__(self):
         super(LevelState, self).__init__()
+        self.name = None
+        self.map_width = None
+        self.map_height = None
 
 
 
     def startup(self, current_time, game_data):
         """Called when the State object is created"""
         self.game_data = game_data
+        print(game_data['player inventory'])
         self.current_time = current_time
         self.state = 'normal'
         self.town_map = tm.make_level_map(self.name,

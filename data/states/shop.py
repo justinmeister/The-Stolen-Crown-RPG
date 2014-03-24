@@ -2,238 +2,20 @@
 This class is the parent class of all shop states.
 This includes weapon, armour, magic and potion shops.
 It also includes the inn.  These states are scaled
-twice as big as a level state.
+twice as big as a level state. The self.gui controls
+all the textboxes.
 """
+
 import copy
 import pygame as pg
-from .. import tools, setup
+from .. import tools, setup, shopgui
 from .. import constants as c
-from .. components import textbox, person
-
-
-class Gui(object):
-    """Class that controls the GUI of the shop state"""
-    def __init__(self, level):
-        self.level = level
-        self.name = level.name
-        self.state = 'dialogue'
-        self.font = pg.font.Font(setup.FONTS['Fixedsys500c'], 22)
-        self.index = 0
-        self.timer = 0.0
-        self.items = level.items
-        self.dialogue = level.dialogue
-        self.arrow = textbox.NextArrow()
-        self.selection_arrow = textbox.NextArrow()
-        self.arrow_pos1 = (50, 485)
-        self.arrow_pos2 = (50, 535)
-        self.selection_arrow.rect.topleft = self.arrow_pos1
-        self.dialogue_box = self.make_dialogue_box(self.dialogue, self.index)
-        self.gold_box = self.make_gold_box()
-        self.selection_box = self.make_selection_box()
-        self.state_dict = self.make_state_dict()
-
-
-    def make_dialogue_box(self, dialogue_list, index):
-        """Make the sprite that controls the dialogue"""
-        image = setup.GFX['dialoguebox']
-        rect = image.get_rect()
-        surface = pg.Surface(rect.size)
-        surface.set_colorkey(c.BLACK)
-        surface.blit(image, rect)
-        dialogue = self.font.render(dialogue_list[index],
-                                    True,
-                                    c.NEAR_BLACK)
-        dialogue_rect = dialogue.get_rect(left=50, top=50)
-        surface.blit(dialogue, dialogue_rect)
-        sprite = pg.sprite.Sprite()
-        sprite.image = surface
-        sprite.rect = rect
-        self.check_to_draw_arrow(sprite)
-
-        return sprite
-
-
-    def make_selection_box(self):
-        """Make the box for the player to select options"""
-        image = setup.GFX['shopbox']
-        rect = image.get_rect(bottom=608)
-
-        surface = pg.Surface(rect.size)
-        surface.set_colorkey(c.BLACK)
-        surface.blit(image, (0, 0))
-
-        if self.state == 'select':
-            choices = self.items
-        elif self.state == 'confirm':
-            choices = ['Yes',
-                       'No']
-        else:
-            choices = ['Not',
-                       'assigned']
-        choice1 = self.font.render(choices[0], True, c.NEAR_BLACK)
-        choice1_rect = choice1.get_rect(x=200, y=25)
-        choice2 = self.font.render(choices[1], True, c.NEAR_BLACK)
-        choice2_rect = choice2.get_rect(x=200, y=75)
-        surface.blit(choice1, choice1_rect)
-        surface.blit(choice2, choice2_rect)
-        sprite = pg.sprite.Sprite()
-        sprite.image = surface
-        sprite.rect = rect
-
-        return sprite
-
-
-
-    def check_to_draw_arrow(self, sprite):
-        """Blink arrow if more text needs to be read"""
-        if self.index < len(self.dialogue) - 1:
-            sprite.image.blit(self.arrow.image, self.arrow.rect)
-
-
-    def make_gold_box(self):
-        """Make the box to display total gold"""
-        image = setup.GFX['goldbox']
-        rect = image.get_rect(bottom=608, right=800)
-
-        surface = pg.Surface(rect.size)
-        surface.set_colorkey(c.BLACK)
-        surface.blit(image, (0, 0))
-        gold = self.level.game_data['player items']['gold']
-        text = 'Gold: ' + str(gold)
-        text_render = self.font.render(text, True, c.NEAR_BLACK)
-        text_rect = text_render.get_rect(x=80, y=60)
-
-        surface.blit(text_render, text_rect)
-
-        sprite = pg.sprite.Sprite()
-        sprite.image = surface
-        sprite.rect = rect
-
-        return sprite
-
-
-
-    def make_state_dict(self):
-        """Make the state dictionary for the GUI behavior"""
-        state_dict = {'dialogue': self.control_dialogue,
-                      'select': self.make_selection,
-                      'confirm': self.confirm_selection,
-                      'reject': self.reject_insufficient_gold,
-                      'accept': self.accept_purchase}
-
-        return state_dict
-
-
-    def control_dialogue(self, keys, current_time):
-        """Control the dialogue boxes"""
-        self.dialogue_box = self.make_dialogue_box(self.dialogue, self.index)
-
-        if self.index < (len(self.dialogue) - 1):
-            if keys[pg.K_SPACE]:
-                self.index += 1
-
-        elif self.index == (len(self.dialogue) - 1):
-            self.state = 'select'
-            self.timer = current_time
-
-
-    def make_selection(self, keys, current_time):
-        """Control the selection"""
-        self.dialogue_box = self.make_dialogue_box(self.dialogue, self.index)
-        self.selection_box = self.make_selection_box()
-        self.gold_box = self.make_gold_box()
-
-        if keys[pg.K_DOWN]:
-            self.selection_arrow.rect.topleft = self.arrow_pos2
-        elif keys[pg.K_UP]:
-            self.selection_arrow.rect.topleft = self.arrow_pos1
-        elif keys[pg.K_SPACE] and (current_time - self.timer) > 200:
-            if self.selection_arrow.rect.topleft == self.arrow_pos2:
-                self.level.done = True
-                self.level.game_data['last direction'] = 'down'
-            elif self.selection_arrow.rect.topleft == self.arrow_pos1:
-                self.state = 'confirm'
-                self.timer = current_time
-
-
-
-    def confirm_selection(self, keys, current_time):
-        """Confirm selection state for GUI"""
-        dialogue = ['Are you sure?']
-        self.selection_box = self.make_selection_box()
-        self.gold_box = self.make_gold_box()
-        self.dialogue_box = self.make_dialogue_box(dialogue, 0)
-
-        if keys[pg.K_DOWN]:
-            self.selection_arrow.rect.topleft = self.arrow_pos2
-        elif keys[pg.K_UP]:
-            self.selection_arrow.rect.topleft = self.arrow_pos1
-        elif keys[pg.K_SPACE] and (current_time - self.timer) > 200:
-            if self.selection_arrow.rect.topleft == self.arrow_pos1:
-                self.level.game_data['player items']['gold'] -= 30
-                if self.level.game_data['player items']['gold'] < 0:
-                    self.level.game_data['player items']['gold'] += 30
-                    self.state = 'reject'
-                else:
-                    self.state = 'accept'
-            else:
-                self.state = 'select'
-            self.timer = current_time
-            self.selection_arrow.rect.topleft = self.arrow_pos1
-
-
-    def reject_insufficient_gold(self, keys, current_time):
-        """Reject player selection if they do not have enough gold"""
-        dialogue = ["You don't have enough gold!"]
-        self.dialogue_box = self.make_dialogue_box(dialogue, 0)
-
-        if keys[pg.K_SPACE] and (current_time - self.timer) > 200:
-            self.state = 'select'
-            self.timer = current_time
-            self.selection_arrow.rect.topleft = self.arrow_pos1
-
-
-    def accept_purchase(self, keys, current_time):
-        """Accept purchase and confirm with message"""
-        dialogue = ["Your health has been restored!"]
-        self.dialogue_box = self.make_dialogue_box(dialogue, 0)
-        self.gold_box = self.make_gold_box()
-
-        if keys[pg.K_SPACE] and (current_time - self.timer) > 200:
-            self.state = 'select'
-            self.timer = current_time
-            self.selection_arrow.rect.topleft = self.arrow_pos1
-
-
-    def update(self, keys, current_time):
-        """Updates the shop GUI"""
-        state_function = self.state_dict[self.state]
-        state_function(keys, current_time)
-
-
-    def draw(self, surface):
-        """Draw GUI to level surface"""
-        state_list1 = ['dialogue', 'reject', 'accept']
-        state_list2 = ['select', 'confirm']
-
-        if self.state in state_list1:
-            surface.blit(self.dialogue_box.image, self.dialogue_box.rect)
-            surface.blit(self.gold_box.image, self.gold_box.rect)
-        elif self.state in state_list2:
-            surface.blit(self.dialogue_box.image, self.dialogue_box.rect)
-            surface.blit(self.selection_box.image, self.selection_box.rect)
-            surface.blit(self.selection_arrow.image, self.selection_arrow.rect)
-            surface.blit(self.gold_box.image, self.gold_box.rect)
-
-
 
 
 class Shop(tools._State):
     """Basic shop state"""
     def __init__(self):
         super(Shop, self).__init__()
-        self.map_width = 13
-        self.map_height = 10
         self.key = None
 
     def startup(self, current_time, game_data):
@@ -241,16 +23,23 @@ class Shop(tools._State):
         self.game_data = game_data
         self.current_time = current_time
         self.state = 'normal'
+        self.next = c.TOWN
         self.get_image = tools.get_image
         self.dialogue = self.make_dialogue()
-        self.items = self.make_purchasable_items()
+        self.accept_dialogue = self.make_accept_dialogue()
+        self.item = self.make_purchasable_items()
         self.background = self.make_background()
-        self.gui = Gui(self)
+        self.gui = shopgui.Gui(self)
 
 
     def make_dialogue(self):
         """Make the list of dialogue phrases"""
         raise NotImplementedError
+
+
+    def make_accept_dialogue(self):
+        """Make the dialogue for when the player buys an item"""
+        return ['Item purchased.']
 
 
     def make_purchasable_items(self):
@@ -310,14 +99,16 @@ class Shop(tools._State):
         """Update level state"""
         self.gui.update(keys, current_time)
         self.draw_level(surface)
-        if self.done:
-            self.next = c.TOWN
 
 
     def draw_level(self, surface):
         """Blit graphics to game surface"""
         surface.blit(self.background.image, self.background.rect)
         self.gui.draw(surface)
+
+
+
+
 
 
 class Inn(Shop):
@@ -329,17 +120,27 @@ class Inn(Shop):
 
     def make_dialogue(self):
         """Make the list of dialogue phrases"""
-        dialogue = ["Welcome to the " + self.name + "!",
-                    "Would you like to rent a room to restore your health?"]
+        return ["Welcome to the " + self.name + "!",
+                "Would you like to rent a room to restore your health?"]
 
-        return dialogue
+
+    def make_accept_dialogue(self):
+        """Make the dialogue for when the player buys an item"""
+        return ['Your health has been replenished!']
+
 
     def make_purchasable_items(self):
         """Make list of items to be chosen"""
-        choices = ['Rent a room. (30 gold)',
-                   'Leave.']
+        dialogue = ['Rent a room. (30 gold)',
+                    'Leave.']
 
-        return choices
+        item = {'type': 'room',
+                'price': 30,
+                'quantity': 0,
+                'dialogue': dialogue}
+
+        return item
+
 
 
 class WeaponShop(Shop):
@@ -352,17 +153,21 @@ class WeaponShop(Shop):
 
     def make_dialogue(self):
         """Make the list of dialogue phrases"""
-        dialogue = ["Welcome to the " + self.name + "!",
-                    "Would you like to buy a weapon?"]
+        return ["Welcome to the " + self.name + "!",
+                "Would you like to buy a weapon?"]
 
-        return dialogue
 
     def make_purchasable_items(self):
         """Make list of items to be chosen"""
-        choices = ['Long Sword. (100 gold)',
-                   'Leave.']
+        dialogue = ['Long Sword. (100 gold)',
+                    'Leave.']
 
-        return choices
+        item = {'type': 'Long Sword',
+                'price': 100,
+                'quantity': 1,
+                'dialogue': dialogue}
+
+        return item
 
 
 class ArmorShop(Shop):
@@ -375,18 +180,21 @@ class ArmorShop(Shop):
 
     def make_dialogue(self):
         """Make the list of dialogue phrases"""
-        dialogue = ["Welcome to the " + self.name + "!",
-                    "Would you like to buy a piece of armor?"]
-
-        return dialogue
+        return ["Welcome to the " + self.name + "!",
+                "Would you like to buy a piece of armor?"]
 
 
     def make_purchasable_items(self):
         """Make list of items to be chosen"""
-        choices = ['Chain mail. (30 gold)',
-                   'Leave.']
+        dialogue = ['Chain Mail. (50 gold)',
+                    'Leave.']
 
-        return choices
+        item = {'type': 'Chain Mail',
+                'price': 50,
+                'quantity': 1,
+                'dialogue': dialogue}
+
+        return item
 
 
 class MagicShop(Shop):
@@ -399,18 +207,21 @@ class MagicShop(Shop):
 
     def make_dialogue(self):
         """Make the list of dialogue phrases"""
-        dialogue = ["Welcome to the " + self.name + "!",
-                    "Would you like to buy a magic spell?"]
-
-        return dialogue
+        return ["Welcome to the " + self.name + "!",
+                "Would you like to buy a magic spell?"]
 
 
     def make_purchasable_items(self):
         """Make list of items to be chosen"""
-        choices = ['Fire spell. (30 gold)',
-                   'Leave']
+        dialogue = ['Fire Spell. (150 gold)',
+                    'Leave.']
 
-        return choices
+        item = {'type': 'Fire Spell',
+                'price': 150,
+                'quantity': 1,
+                'dialogue': dialogue}
+
+        return item
 
 
 class PotionShop(Shop):
@@ -423,15 +234,19 @@ class PotionShop(Shop):
 
     def make_dialogue(self):
         """Make the list of dialogue phrases"""
-        dialogue = ["Welcome to the " + self.name + "!",
-                    "Would you like to buy a potion?"]
-
-        return dialogue
+        return ["Welcome to the " + self.name + "!",
+                "Would you like to buy a potion?"]
 
 
     def make_purchasable_items(self):
         """Make list of items to be chosen"""
-        choices = ['Healing Potion. (30 gold)',
-                   'Leave']
+        dialogue = ['Healing Potion. (15 gold)',
+                    'Leave.']
 
-        return choices
+        item = {'type': 'Healing Potion',
+                'price': 15,
+                'quantity': 1,
+                'dialogue': dialogue}
+
+        return item
+

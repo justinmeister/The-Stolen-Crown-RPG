@@ -35,4 +35,8 @@ class Town(level_state.LevelState):
                 sprite.dialogue = ['Welcome to the castle, citizen.']
             elif sprite.location == [13, 7]:
                 sprite.dialogue = ['Move along.']
+            elif sprite.location == [18, 27]:
+                sprite.dialogue = ["Don't be frightened. I'm a friendly Demon.",
+                                   "My brothers and sisters, however, are not so nice.",
+                                   "Be careful not to run into them."]
 
