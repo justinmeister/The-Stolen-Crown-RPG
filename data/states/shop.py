@@ -154,7 +154,7 @@ class WeaponShop(Shop):
     def make_dialogue(self):
         """Make the list of dialogue phrases"""
         return ["Welcome to the " + self.name + "!",
-                "Would you like to buy a weapon?"]
+                "What weapon would you like to buy?"]
 
 
     def make_purchasable_items(self):
@@ -181,7 +181,7 @@ class ArmorShop(Shop):
     def make_dialogue(self):
         """Make the list of dialogue phrases"""
         return ["Welcome to the " + self.name + "!",
-                "Would you like to buy a piece of armor?"]
+                "Would piece of armor would you like to buy?"]
 
 
     def make_purchasable_items(self):
@@ -208,7 +208,7 @@ class MagicShop(Shop):
     def make_dialogue(self):
         """Make the list of dialogue phrases"""
         return ["Welcome to the " + self.name + "!",
-                "Would you like to buy a magic spell?"]
+                "Would magic spell would you like to buy?"]
 
 
     def make_purchasable_items(self):
@@ -235,7 +235,7 @@ class PotionShop(Shop):
     def make_dialogue(self):
         """Make the list of dialogue phrases"""
         return ["Welcome to the " + self.name + "!",
-                "Would you like to buy a potion?"]
+                "What potion would you like to buy?"]
 
 
     def make_purchasable_items(self):

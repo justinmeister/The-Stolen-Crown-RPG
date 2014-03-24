@@ -16,6 +16,7 @@ class Gui(object):
         self.player_inventory = level.game_data['player inventory']
         self.name = level.name
         self.state = 'dialogue'
+        self.no_selling = ['Inn', 'Magic Shop']
         self.font = pg.font.Font(setup.FONTS['Fixedsys500c'], 22)
         self.index = 0
         self.timer = 0.0
@@ -68,6 +69,9 @@ class Gui(object):
         elif self.state == 'confirm':
             choices = ['Yes',
                        'No']
+        elif self.state == 'buysell':
+            choices = ['Buy',
+                       'Sell']
         else:
             choices = ['Not',
                        'assigned']
@@ -121,7 +125,8 @@ class Gui(object):
                       'confirm': self.confirm_selection,
                       'reject': self.reject_insufficient_gold,
                       'accept': self.accept_purchase,
-                      'hasitem': self.has_item}
+                      'hasitem': self.has_item,
+                      'buysell': self.buy_sell}
 
         return state_dict
 
@@ -136,8 +141,8 @@ class Gui(object):
                 self.allow_input = False
 
                 if self.index == (len(self.dialogue) - 1):
-                    self.state = 'select'
-                    self.timer = current_time
+                    self.state = self.begin_new_transaction()
+
 
         if not keys[pg.K_SPACE]:
             self.allow_input = True
@@ -184,13 +189,24 @@ class Gui(object):
                 self.buy_item()
                 self.allow_input = False
             else:
-                self.state = 'select'
+                self.state = self.begin_new_transaction()
                 self.allow_input = False
             self.timer = current_time
             self.selection_arrow.rect.topleft = self.arrow_pos1
 
         if not keys[pg.K_SPACE]:
             self.allow_input = True
+
+
+    def begin_new_transaction(self):
+        """Set state to buysell or select, depending if the shop
+        is a Inn/Magic shop or not"""
+        if self.level.name in self.no_selling:
+            state = 'select'
+        else:
+            state = 'buysell'
+
+        return state
     
     
     def buy_item(self):
@@ -216,8 +232,7 @@ class Gui(object):
         self.dialogue_box = self.make_dialogue_box(dialogue, 0)
 
         if keys[pg.K_SPACE] and self.allow_input:
-            self.state = 'select'
-            self.timer = current_time
+            self.state = self.begin_new_transaction()
             self.selection_arrow.rect.topleft = self.arrow_pos1
             self.allow_input = False
 
@@ -231,8 +246,7 @@ class Gui(object):
         self.gold_box = self.make_gold_box()
 
         if keys[pg.K_SPACE] and self.allow_input:
-            self.state = 'select'
-            self.timer = current_time
+            self.state = self.begin_new_transaction()
             self.selection_arrow.rect.topleft = self.arrow_pos1
             self.allow_input = False
 
@@ -246,10 +260,32 @@ class Gui(object):
         self.dialogue_box = self.make_dialogue_box(dialogue, 0)
 
         if keys[pg.K_SPACE] and self.allow_input:
-            self.state = 'select'
-            self.timer = current_time
+            self.state = self.begin_new_transaction()
             self.selection_arrow.rect.topleft = self.arrow_pos1
             self.allow_input = False
+
+        if not keys[pg.K_SPACE]:
+            self.allow_input = True
+
+
+    def buy_sell(self, keys, current_time):
+        """Ask player if they want to buy or sell something"""
+        dialogue = ["Would you like to buy or sell an item?"]
+        self.dialogue_box = self.make_dialogue_box(dialogue, 0)
+        self.selection_box = self.make_selection_box()
+
+        if keys[pg.K_DOWN]:
+            self.selection_arrow.rect.topleft = self.arrow_pos2
+        elif keys[pg.K_UP]:
+            self.selection_arrow.rect.topleft = self.arrow_pos1
+        elif keys[pg.K_SPACE] and self.allow_input:
+            if self.selection_arrow.rect.topleft == self.arrow_pos1:
+                self.state = 'select'
+                self.allow_input = False
+            else:
+                self.state = 'select'
+                self.allow_input = False
+            self.selection_arrow.rect.topleft = self.arrow_pos1
 
         if not keys[pg.K_SPACE]:
             self.allow_input = True
@@ -277,7 +313,7 @@ class Gui(object):
     def draw(self, surface):
         """Draw GUI to level surface"""
         state_list1 = ['dialogue', 'reject', 'accept', 'hasitem']
-        state_list2 = ['select', 'confirm']
+        state_list2 = ['select', 'confirm', 'buysell']
 
         if self.state in state_list1:
             surface.blit(self.dialogue_box.image, self.dialogue_box.rect)

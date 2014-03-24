@@ -67,6 +67,9 @@ class CollisionHandler(object):
             if pg.sprite.spritecollideany(sprite, self.sprites):
                 sprite_collided_list.append(sprite)
             self.sprites.add(sprite)
+            for blocker in sprite.wander_box:
+                if sprite.rect.colliderect(blocker):
+                    sprite_collided_list.append(sprite)
 
 
         for sprite in sprite_collided_list:

@@ -34,6 +34,7 @@ class Person(pg.sprite.Sprite):
         self.dialogue = ['Location: ' + str(self.location)]
         self.default_direction = direction
         self.item = None
+        self.wander_box = self.make_wander_box()
 
 
     def create_spritesheet_dict(self, sheet_key):
@@ -155,6 +156,30 @@ class Person(pg.sprite.Sprite):
             tile_y = 0
 
         return [tile_x, tile_y]
+
+
+    def make_wander_box(self):
+        """Make a list of rects that surround the initial location
+        of a sprite to limit his/her wandering"""
+        x = self.location[0]
+        y = self.location[1]
+        box_list = []
+        box_rects = []
+
+        for i in range(x-3, x+4):
+            box_list.append([i, y-3])
+            box_list.append([i, y+3])
+
+        for i in range(y-2, y+3):
+            box_list.append([x-3, i])
+            box_list.append([x+3, i])
+
+        for box in box_list:
+            left = box[0]*32
+            top = box[1]*32
+            box_rects.append(pg.Rect(left, top, 32, 32))
+
+        return box_rects
 
 
     def resting(self):
@@ -366,6 +391,7 @@ class Well(pg.sprite.Sprite):
         self.direction = 'down'
         self.default_direction = self.direction
         self.item = None
+        self.wander_box = []
 
     def get_location(self):
         """Get tile location"""
