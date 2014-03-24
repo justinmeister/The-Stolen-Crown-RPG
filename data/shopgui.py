@@ -19,6 +19,7 @@ class Gui(object):
         self.font = pg.font.Font(setup.FONTS['Fixedsys500c'], 22)
         self.index = 0
         self.timer = 0.0
+        self.allow_input = False
         self.item = level.item
         self.dialogue = level.dialogue
         self.accept_dialogue = level.accept_dialogue
@@ -129,13 +130,17 @@ class Gui(object):
         """Control the dialogue boxes"""
         self.dialogue_box = self.make_dialogue_box(self.dialogue, self.index)
 
-        if self.index < (len(self.dialogue) - 1):
+        if self.index < (len(self.dialogue) - 1) and self.allow_input:
             if keys[pg.K_SPACE]:
                 self.index += 1
+                self.allow_input = False
 
-        elif self.index == (len(self.dialogue) - 1):
-            self.state = 'select'
-            self.timer = current_time
+                if self.index == (len(self.dialogue) - 1):
+                    self.state = 'select'
+                    self.timer = current_time
+
+        if not keys[pg.K_SPACE]:
+            self.allow_input = True
 
 
     def make_selection(self, keys, current_time):
@@ -149,12 +154,17 @@ class Gui(object):
         elif keys[pg.K_UP]:
             self.selection_arrow.rect.topleft = self.arrow_pos1
         elif keys[pg.K_SPACE] and (current_time - self.timer) > 200:
-            if self.selection_arrow.rect.topleft == self.arrow_pos2:
-                self.level.done = True
-                self.level.game_data['last direction'] = 'down'
-            elif self.selection_arrow.rect.topleft == self.arrow_pos1:
-                self.state = 'confirm'
-                self.timer = current_time
+            if self.allow_input:
+                if self.selection_arrow.rect.topleft == self.arrow_pos2:
+                    self.level.done = True
+                    self.level.game_data['last direction'] = 'down'
+                elif self.selection_arrow.rect.topleft == self.arrow_pos1:
+                    self.state = 'confirm'
+                    self.timer = current_time
+                    self.allow_input = False
+
+        if not keys[pg.K_SPACE]:
+            self.allow_input = True
 
 
 
@@ -169,13 +179,18 @@ class Gui(object):
             self.selection_arrow.rect.topleft = self.arrow_pos2
         elif keys[pg.K_UP]:
             self.selection_arrow.rect.topleft = self.arrow_pos1
-        elif keys[pg.K_SPACE] and (current_time - self.timer) > 200:
+        elif keys[pg.K_SPACE] and self.allow_input:
             if self.selection_arrow.rect.topleft == self.arrow_pos1:
                 self.buy_item()
+                self.allow_input = False
             else:
                 self.state = 'select'
+                self.allow_input = False
             self.timer = current_time
             self.selection_arrow.rect.topleft = self.arrow_pos1
+
+        if not keys[pg.K_SPACE]:
+            self.allow_input = True
     
     
     def buy_item(self):
@@ -200,10 +215,14 @@ class Gui(object):
         dialogue = ["You don't have enough gold!"]
         self.dialogue_box = self.make_dialogue_box(dialogue, 0)
 
-        if keys[pg.K_SPACE] and (current_time - self.timer) > 200:
+        if keys[pg.K_SPACE] and self.allow_input:
             self.state = 'select'
             self.timer = current_time
             self.selection_arrow.rect.topleft = self.arrow_pos1
+            self.allow_input = False
+
+        if not keys[pg.K_SPACE]:
+            self.allow_input = True
 
 
     def accept_purchase(self, keys, current_time):
@@ -211,10 +230,14 @@ class Gui(object):
         self.dialogue_box = self.make_dialogue_box(self.accept_dialogue, 0)
         self.gold_box = self.make_gold_box()
 
-        if keys[pg.K_SPACE] and (current_time - self.timer) > 200:
+        if keys[pg.K_SPACE] and self.allow_input:
             self.state = 'select'
             self.timer = current_time
             self.selection_arrow.rect.topleft = self.arrow_pos1
+            self.allow_input = False
+
+        if not keys[pg.K_SPACE]:
+            self.allow_input = True
 
 
     def has_item(self, keys, current_time):
@@ -222,10 +245,14 @@ class Gui(object):
         dialogue = ["You have that item already."]
         self.dialogue_box = self.make_dialogue_box(dialogue, 0)
 
-        if keys[pg.K_SPACE] and (current_time - self.timer) > 200:
+        if keys[pg.K_SPACE] and self.allow_input:
             self.state = 'select'
             self.timer = current_time
             self.selection_arrow.rect.topleft = self.arrow_pos1
+            self.allow_input = False
+
+        if not keys[pg.K_SPACE]:
+            self.allow_input = True
 
 
     def add_player_item(self, item):

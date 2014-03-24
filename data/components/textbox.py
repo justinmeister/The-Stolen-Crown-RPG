@@ -21,7 +21,6 @@ class DialogueBox(object):
         self.item = item
         self.bground = setup.GFX[image_key]
         self.rect = self.bground.get_rect(centerx=400)
-        self.timer = 0.0
         self.arrow_timer = 0.0
         self.font = pg.font.Font(setup.FONTS['Fixedsys500c'], 22)
         self.dialogue_list = dialogue
@@ -30,6 +29,7 @@ class DialogueBox(object):
         self.arrow = NextArrow()
         self.check_to_draw_arrow()
         self.done = False
+        self.allow_input = False
         self.name = image_key
 
 
@@ -64,12 +64,11 @@ class DialogueBox(object):
 
     def terminate_check(self, keys):
         """Remove textbox from sprite group after 2 seconds"""
+        if keys[pg.K_SPACE] and self.allow_input:
+            self.done = True
 
-        if self.timer == 0.0:
-            self.timer = self.current_time
-        elif (self.current_time - self.timer) > 300:
-            if keys[pg.K_SPACE]:
-                self.done = True
+        if not keys[pg.K_SPACE]:
+            self.allow_input = True
 
 
     def check_to_draw_arrow(self):
