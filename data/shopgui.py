@@ -315,11 +315,9 @@ class Gui(object):
         state_list1 = ['dialogue', 'reject', 'accept', 'hasitem']
         state_list2 = ['select', 'confirm', 'buysell']
 
-        if self.state in state_list1:
-            surface.blit(self.dialogue_box.image, self.dialogue_box.rect)
-            surface.blit(self.gold_box.image, self.gold_box.rect)
-        elif self.state in state_list2:
-            surface.blit(self.dialogue_box.image, self.dialogue_box.rect)
+        surface.blit(self.dialogue_box.image, self.dialogue_box.rect)
+        surface.blit(self.gold_box.image, self.gold_box.rect)
+        if self.state in state_list2:
             surface.blit(self.selection_box.image, self.selection_box.rect)
             surface.blit(self.selection_arrow.image, self.selection_arrow.rect)
-            surface.blit(self.gold_box.image, self.gold_box.rect)
+

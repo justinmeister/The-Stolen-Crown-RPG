@@ -57,6 +57,7 @@ def create_town_sprite_sheet_dict():
     tile_dict['banner1'] = get_tile(112, 38, tileset3, 16, 22)
     tile_dict['banner2'] = get_tile(128, 38, tileset3, 16, 22)
     tile_dict['banner3'] = get_tile(144, 38, tileset3, 16, 22)
+    tile_dict['black tile'] = make_black_surface_tile()
 
     return tile_dict
 
@@ -71,6 +72,17 @@ def get_tile(x, y, tileset, width=16, height=16, scale=1):
                  'rect': rect}
 
     return tile_dict
+
+
+def make_black_surface_tile():
+    """Make a black surface"""
+    surface = pg.Surface((32, 32))
+    surface.fill(c.BLACK_BLUE)
+    rect = surface.get_rect()
+    new_dict = {'surface': surface,
+                'rect': rect}
+
+    return new_dict
 
 
 def make_level_map(state, width, height):
@@ -93,12 +105,12 @@ def make_background(state_name, width, height):
         tile = get_image(0, 0, 16, 16, setup.GFX['tileset2'])
     else:
         tile = pg.Surface((16, 16))
-        tile.fill(c.NEAR_BLACK)
+        tile.fill(c.BLACK_BLUE)
 
     rect = tile.get_rect()
 
-    for row in range(50):
-        for column in range(25):
+    for row in range(height):
+        for column in range(width):
             rect.y = row * 16
             rect.x = column * 16
             surface.blit(tile, rect)
@@ -204,6 +216,9 @@ def create_map_layer1(map, state):
 
             elif letter == 'H':
                 tile = tile_dict['marble floor']
+                blit_tile_to_map(tile, row, column, map)
+            elif letter == 'K':
+                tile = tile_dict['black tile']
                 blit_tile_to_map(tile, row, column, map)
 
 
@@ -402,6 +417,8 @@ def make_level_portals(state):
                 portal_group.add(portal.Portal(column, row, c.WEAPON_SHOP))
             elif letter == 'G':
                 portal_group.add(portal.Portal(column, row, c.ARMOR_SHOP))
+            elif letter == 'H':
+                portal_group.add(portal.Portal(column, row, c.HOUSE))
 
     return portal_group
 

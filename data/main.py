@@ -2,6 +2,7 @@ from data.states.main_menu import main_menu
 from data.states.town import town
 from data.states.castle import castle
 from data.states import shop
+from data.states.house import house
 from . import setup, tools
 from . import constants as c
 
@@ -9,6 +10,7 @@ from . import constants as c
 TOWN = 'town'
 MAIN_MENU = 'main menu'
 CASTLE = 'castle'
+HOUSE = 'house'
 INN = 'Inn'
 ARMOR_SHOP = 'armor shop'
 WEAPON_SHOP = 'weapon shop'
@@ -22,6 +24,7 @@ def main():
     state_dict = {TOWN: town.Town(),
                   MAIN_MENU: main_menu.Menu(),
                   CASTLE: castle.Castle(),
+                  HOUSE: house.House(),
                   INN: shop.Inn(),
                   ARMOR_SHOP: shop.ArmorShop(),
                   WEAPON_SHOP: shop.WeaponShop(),

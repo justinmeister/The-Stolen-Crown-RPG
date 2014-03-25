@@ -160,6 +160,7 @@ def create_game_data_dict():
                  'last direction': 'up',
                  'town start pos': [12, 49],
                  'castle start pos': [12, 26],
+                 'house start pos': [12, 13],
                  'king item': {'gold': 500},
                  'player inventory': player_items
     }
