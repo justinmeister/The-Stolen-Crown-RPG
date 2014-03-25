@@ -19,4 +19,6 @@ class House(level_state.LevelState):
     def set_sprite_dialogue(self):
         """Sets unique dialogue for each sprite"""
         for sprite in self.sprites:
-            pass
+            if sprite.location == [14, 6]:
+                sprite.dialogue = ["There are evil forces encroaching on our town.",
+                                   "Trust no one and you may leave these lands alive."]

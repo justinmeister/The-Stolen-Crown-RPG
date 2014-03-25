@@ -126,7 +126,8 @@ class TextHandler(object):
         if keys[pg.K_SPACE] and not self.textbox:
             for sprite in self.sprites:
                 if (current_time - self.last_textbox_timer) > 300:
-                    self.check_for_dialogue(sprite)
+                    if self.player.state == 'resting':
+                        self.check_for_dialogue(sprite)
 
         if self.textbox:
             self.textbox.update(keys, current_time)

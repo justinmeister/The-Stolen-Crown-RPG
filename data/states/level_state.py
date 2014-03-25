@@ -28,12 +28,15 @@ class LevelState(tools._State):
         print(game_data['player inventory'])
         self.current_time = current_time
         self.state = 'normal'
-        self.town_map = tm.make_level_map(self.name,
-                                           self.map_width,
-                                           self.map_height)
-        self.viewport = tm.create_viewport(self.town_map)
+        self.background = tm.create_map_layer1(self.name,
+                                               self.map_width,
+                                               self.map_height)
+        self.foreground = tm.create_map_layer2(self.name,
+                                               self.map_width,
+                                               self.map_height)
+        self.viewport = tm.create_viewport(self.background)
         self.blockers = tm.create_blockers(self.name)
-        self.level_surface = tm.make_level_surface(self.town_map)
+        self.level_surface = tm.make_level_surface(self.background)
         self.level_rect = self.level_surface.get_rect()
         self.player = person.Player(game_data['last direction'])
         self.sprites = pg.sprite.Group()
@@ -140,9 +143,10 @@ class LevelState(tools._State):
 
     def draw_level(self, surface):
         """Blits all images to screen"""
-        self.level_surface.blit(self.town_map['surface'], self.viewport, self.viewport)
+        self.level_surface.blit(self.background, self.viewport, self.viewport)
         self.level_surface.blit(self.player.image, self.player.rect)
         self.sprites.draw(self.level_surface)
+        self.level_surface.blit(self.foreground, self.viewport, self.viewport)
 
         surface.blit(self.level_surface, (0, 0), self.viewport)
         self.dialogue_handler.draw(surface)

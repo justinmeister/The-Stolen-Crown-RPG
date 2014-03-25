@@ -16,6 +16,7 @@ def create_town_sprite_sheet_dict():
     shopsigns = setup.GFX['shopsigns']
     castle_door = setup.GFX['castledoor']
     medieval_signs = setup.GFX['medievalsigns']
+    house = setup.GFX['house']
 
     tile_dict['pavement'] = get_tile(32, 48, tileset2)
     tile_dict['house wall'] = get_tile(64, 48, tileset2)
@@ -58,6 +59,12 @@ def create_town_sprite_sheet_dict():
     tile_dict['banner2'] = get_tile(128, 38, tileset3, 16, 22)
     tile_dict['banner3'] = get_tile(144, 38, tileset3, 16, 22)
     tile_dict['black tile'] = make_black_surface_tile()
+    tile_dict['bed'] = get_tile(456, 206, house, 48, 82)
+    tile_dict['shelves'] = get_tile(352, 116, house, 160, 70)
+    tile_dict['chair'] = get_tile(323, 256, house, 32, 32)
+    tile_dict['table'] = get_tile(82, 161, tileset3, 46, 32)
+    tile_dict['fancy carpet'] = get_tile(112, 96, tileset3, 64, 64)
+    tile_dict['column'] = get_tile(64, 96, tileset3, 16, 48)
 
     return tile_dict
 
@@ -85,17 +92,6 @@ def make_black_surface_tile():
     return new_dict
 
 
-def make_level_map(state, width, height):
-    """Blits the different layers of the map onto one surface"""
-    map = make_background(state, width, height)
-    map = create_map_layer1(map, state)
-    map = create_map_layer2(map, state)
-    map = scale_map(map)
-    map = create_map_layer3(map, state)
-
-    return map
-
-
 def make_background(state_name, width, height):
     """Creates the background surface that the rest of
     the town map will be blitted on"""
@@ -115,17 +111,14 @@ def make_background(state_name, width, height):
             rect.x = column * 16
             surface.blit(tile, rect)
 
-    surface_rect = surface.get_rect()
-
-    background_dict = {'surface': surface,
-                       'rect': surface_rect}
-
-    return background_dict
+    return surface
 
 
-def create_map_layer1(map, state):
+def create_map_layer1(state, width, height):
     """Creates the town from a tile map and creates a
     surface on top of the background"""
+    map = make_background(state, width, height)
+
     tile_map = open(os.path.join('data', 'states', state, 'layer1.txt'), 'r')
 
     for row, line in enumerate(tile_map):
@@ -224,12 +217,20 @@ def create_map_layer1(map, state):
 
     tile_map.close()
 
+    layer1_extra = create_map_layer2(state, width, height, 'layer1extra.txt')
+    map.blit(layer1_extra, (0,0))
+
+    map = scale_map(map)
+
     return map
 
 
-def create_map_layer2(map, state):
+def create_map_layer2(state, width, height, file_name='layer2.txt'):
     """Creates doors and other items on top of the rest of the map"""
-    tile_map = open(os.path.join('data', 'states', state, 'layer2.txt'), 'r')
+    map = make_background(None, width, height)
+    map.set_colorkey(c.BLACK_BLUE)
+
+    tile_map = open(os.path.join('data', 'states', state, file_name), 'r')
 
     for row, line in enumerate(tile_map):
         for column, letter in enumerate(line):
@@ -278,16 +279,37 @@ def create_map_layer2(map, state):
             elif letter == 'C':
                 tile = tile_dict['banner3']
                 blit_tile_to_map(tile, row, column, map)
+            elif letter == 'E':
+                tile = tile_dict['bed']
+                blit_tile_to_map(tile, row, column, map)
+            elif letter == 'G':
+                tile = tile_dict['shelves']
+                blit_tile_to_map(tile, row, column, map)
+            elif letter == 'H':
+                tile = tile_dict['chair']
+                blit_tile_to_map(tile, row, column, map)
+            elif letter == 'I':
+                tile = tile_dict['table']
+                blit_tile_to_map(tile, row, column, map)
+            elif letter == 'J':
+                tile = tile_dict['fancy carpet']
+                blit_tile_to_map(tile, row, column, map)
+            elif letter == 'K':
+                tile = tile_dict['column']
+                blit_tile_to_map(tile, row, column, map)
 
     tile_map.close()
+
+    if file_name == 'layer2.txt':
+        map = pg.transform.scale2x(map)
+        map = create_map_layer3(map, state)
 
     return map
 
 
 def scale_map(map):
     """Double resolution of map to 32x32"""
-    map['surface'] = pg.transform.scale2x(map['surface'])
-    map['rect'] = map['surface'].get_rect()
+    map = pg.transform.scale2x(map)
 
     return map
 
@@ -313,6 +335,10 @@ def create_map_layer3(map, state):
             elif letter == 'I':
                 tile = tile_dict['inn sign']
                 blit_tile_to_map(tile, row, column, map, 32)
+            elif letter == 'B':
+                tile = tile_dict['chair']
+                blit_tile_to_map(tile, row, column, map, 32)
+
 
     tile_map.close()
 
@@ -325,7 +351,7 @@ def blit_tile_to_map(tile, row, column, map, side_length=16):
     tile['rect'].x = column * side_length
     tile['rect'].y = row * side_length
 
-    map['surface'].blit(tile['surface'], tile['rect'])
+    map.blit(tile['surface'], tile['rect'])
 
 
 def create_blockers(state):
@@ -346,15 +372,17 @@ def create_blockers(state):
 
 def make_level_surface(map):
     """Creates the surface all images are blitted to"""
-    width = map['rect'].width
-    height = map['rect'].height
+    map_rect = map.get_rect()
+    size = map_rect.size
 
-    return pg.Surface((width, height)).convert()
+
+    return pg.Surface(size).convert()
 
 
 def create_viewport(map):
     """Create the viewport to view the level through"""
-    return setup.SCREEN.get_rect(bottom=map['rect'].bottom)
+    map_rect = map.get_rect()
+    return setup.SCREEN.get_rect(bottom=map_rect.bottom)
 
 
 def set_sprite_positions(player, level_sprites, state, game_data):
@@ -392,6 +420,9 @@ def set_sprite_positions(player, level_sprites, state, game_data):
             elif letter == 'G':
                 devil_villager = person.Devil(column*32, row*32)
                 level_sprites.add(devil_villager)
+            elif letter == 'H':
+                old_villager = person.OldMan(column*32, row*32)
+                level_sprites.add(old_villager)
 
     tile_map.close()
 

@@ -376,6 +376,12 @@ class Devil(Person):
         super(Devil, self).__init__('devil', x, y, direction, state)
 
 
+class OldMan(Person):
+    """Old man villager"""
+    def __init__(self, x, y, direction='down', state='resting'):
+        super(OldMan, self).__init__('oldman', x, y, direction, state)
+
+
 class Well(pg.sprite.Sprite):
     """Talking well"""
     def __init__(self, x, y):
