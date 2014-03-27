@@ -148,6 +148,7 @@ class LevelState(tools._State):
         self.sprites.draw(self.level_surface)
         self.level_surface.blit(self.foreground, self.viewport, self.viewport)
 
+
         surface.blit(self.level_surface, (0, 0), self.viewport)
         self.dialogue_handler.draw(surface)
 

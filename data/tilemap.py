@@ -84,7 +84,7 @@ def get_tile(x, y, tileset, width=16, height=16, scale=1):
 def make_black_surface_tile():
     """Make a black surface"""
     surface = pg.Surface((32, 32))
-    surface.fill(c.BLACK_BLUE)
+    surface.fill(c.NEAR_BLACK_BLUE)
     rect = surface.get_rect()
     new_dict = {'surface': surface,
                 'rect': rect}
@@ -296,6 +296,9 @@ def create_map_layer2(state, width, height, file_name='layer2.txt'):
                 blit_tile_to_map(tile, row, column, map)
             elif letter == 'K':
                 tile = tile_dict['column']
+                blit_tile_to_map(tile, row, column, map)
+            elif letter == 'N':
+                tile = tile_dict['black tile']
                 blit_tile_to_map(tile, row, column, map)
 
     tile_map.close()
