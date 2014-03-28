@@ -13,6 +13,7 @@ class Gui(object):
     """Class that controls the GUI of the shop state"""
     def __init__(self, level):
         self.level = level
+        self.sellable_items = level.sell_items
         self.player_inventory = level.game_data['player inventory']
         self.name = level.name
         self.state = 'dialogue'
@@ -22,8 +23,10 @@ class Gui(object):
         self.timer = 0.0
         self.allow_input = False
         self.item = level.item
+        self.item_to_be_sold = None
         self.dialogue = level.dialogue
         self.accept_dialogue = level.accept_dialogue
+        self.accept_sale_dialogue = level.accept_sale_dialogue
         self.arrow = textbox.NextArrow()
         self.selection_arrow = textbox.NextArrow()
         self.arrow_pos1 = (50, 485)
@@ -66,12 +69,15 @@ class Gui(object):
 
         if self.state == 'select':
             choices = self.item['dialogue']
-        elif self.state == 'confirm':
+        elif self.state == 'confirmpurchase' or self.state == 'confirmsell':
             choices = ['Yes',
                        'No']
         elif self.state == 'buysell':
             choices = ['Buy',
                        'Sell']
+        elif self.state == 'sell':
+            choices = [self.item_to_be_sold,
+                       'Cancel']
         else:
             choices = ['Not',
                        'assigned']
@@ -122,11 +128,15 @@ class Gui(object):
         """Make the state dictionary for the GUI behavior"""
         state_dict = {'dialogue': self.control_dialogue,
                       'select': self.make_selection,
-                      'confirm': self.confirm_selection,
+                      'confirmpurchase': self.confirm_purchase,
+                      'confirmsell': self.confirm_sell,
                       'reject': self.reject_insufficient_gold,
                       'accept': self.accept_purchase,
+                      'acceptsell': self.accept_sale,
                       'hasitem': self.has_item,
-                      'buysell': self.buy_sell}
+                      'buysell': self.buy_sell,
+                      'sell': self.sell_items,
+                      'cantsell': self.cant_sell}
 
         return state_dict
 
@@ -164,7 +174,7 @@ class Gui(object):
                     self.level.done = True
                     self.level.game_data['last direction'] = 'down'
                 elif self.selection_arrow.rect.topleft == self.arrow_pos1:
-                    self.state = 'confirm'
+                    self.state = 'confirmpurchase'
                     self.timer = current_time
                     self.allow_input = False
 
@@ -173,7 +183,7 @@ class Gui(object):
 
 
 
-    def confirm_selection(self, keys, current_time):
+    def confirm_purchase(self, keys, current_time):
         """Confirm selection state for GUI"""
         dialogue = ['Are you sure?']
         self.selection_box = self.make_selection_box()
@@ -191,7 +201,29 @@ class Gui(object):
             else:
                 self.state = self.begin_new_transaction()
                 self.allow_input = False
-            self.timer = current_time
+            self.selection_arrow.rect.topleft = self.arrow_pos1
+
+        if not keys[pg.K_SPACE]:
+            self.allow_input = True
+
+
+    def confirm_sell(self, keys, current_time):
+        """Confirm player wants to sell item"""
+        dialogue = ['Are you sure?']
+        self.dialogue_box = self.make_dialogue_box(dialogue, 0)
+        self.selection_box = self.make_selection_box()
+
+        if keys[pg.K_DOWN]:
+            self.selection_arrow.rect.topleft = self.arrow_pos2
+        elif keys[pg.K_UP]:
+            self.selection_arrow.rect.topleft = self.arrow_pos1
+        elif keys[pg.K_SPACE] and self.allow_input:
+            if self.selection_arrow.rect.topleft == self.arrow_pos1:
+                self.sell_item()
+                self.allow_input = False
+            else:
+                self.state = self.begin_new_transaction()
+                self.allow_input = False
             self.selection_arrow.rect.topleft = self.arrow_pos1
 
         if not keys[pg.K_SPACE]:
@@ -224,6 +256,34 @@ class Gui(object):
             else:
                 self.state = 'accept'
                 self.add_player_item(self.item)
+
+
+    def sell_item(self):
+        """Allow player to sell item to shop"""
+        self.player_inventory['gold'] += (self.item['price'] / 2)
+        self.state = 'acceptsell'
+        del self.player_inventory[self.item['type']]
+
+
+
+    def accept_sale(self, keys, current_time):
+        """Confirm to player that item was sold"""
+        self.dialogue_box = self.make_dialogue_box(self.accept_sale_dialogue, 0)
+        self.gold_box = self.make_gold_box()
+
+        if keys[pg.K_SPACE] and self.allow_input:
+            self.state = self.begin_new_transaction()
+            self.selection_arrow.rect.topleft = self.arrow_pos1
+            self.allow_input = False
+
+        if not keys[pg.K_SPACE]:
+            self.allow_input = True
+
+
+
+
+
+
 
 
     def reject_insufficient_gold(self, keys, current_time):
@@ -283,24 +343,87 @@ class Gui(object):
                 self.state = 'select'
                 self.allow_input = False
             else:
-                self.state = 'select'
-                self.allow_input = False
+                if self.check_for_sellable_items():
+                    self.state = 'sell'
+                    self.allow_input = False
+                else:
+                    self.state = 'cantsell'
+                    self.allow_input = False
             self.selection_arrow.rect.topleft = self.arrow_pos1
 
         if not keys[pg.K_SPACE]:
             self.allow_input = True
 
 
+    def sell_items(self, keys, current_time):
+        """Have player select items to sell"""
+        dialogue = ["What would you like to sell?"]
+        self.dialogue_box = self.make_dialogue_box(dialogue, 0)
+        self.selection_box = self.make_selection_box()
+
+        if keys[pg.K_DOWN]:
+            self.selection_arrow.rect.topleft = self.arrow_pos2
+        elif keys[pg.K_UP]:
+            self.selection_arrow.rect.topleft = self.arrow_pos1
+        elif keys[pg.K_SPACE] and self.allow_input:
+            if self.selection_arrow.rect.topleft == self.arrow_pos1:
+                self.state = 'confirmsell'
+                self.allow_input = False
+            else:
+
+                self.state = 'buysell'
+                self.allow_input = False
+
+            self.selection_arrow.rect.topleft = self.arrow_pos1
+
+
+        if not keys[pg.K_SPACE]:
+            self.allow_input = True
+
+
+    def check_for_sellable_items(self):
+        """Check for sellable items"""
+
+        for item in self.player_inventory:
+            if item in self.sellable_items:
+                sell_price = self.player_inventory[item]['value'] / 2
+                self.item_to_be_sold = item + " (" + str(sell_price) + " gold)"
+                return True
+        else:
+            return False
+
+
+    def cant_sell(self, keys, current_time):
+        """Do not allow player to sell anything"""
+        dialogue = ["You don't have anything to sell!"]
+        self.dialogue_box = self.make_dialogue_box(dialogue, 0)
+
+        if keys[pg.K_SPACE] and self.allow_input:
+            self.state = 'buysell'
+            self.allow_input = False
+
+
+        if not keys[pg.K_SPACE]:
+            self.allow_input = True
+
+
+
+
     def add_player_item(self, item):
         """Add item to player's inventory"""
         item_type = item['type']
         quantity = item['quantity']
-        player_item = self.level.game_data['player inventory']
+        value = item['price']
+        player_items = self.level.game_data['player inventory']
 
-        if item_type in player_item:
-            player_item[item_type] += quantity
+        item_to_add = {'quantity': quantity,
+                       'value': value}
+
+        if item_type in player_items:
+            player_items[item_type]['quantity'] += quantity
         elif quantity > 0:
-            player_item[item_type] = quantity
+            player_items[item_type] = item_to_add
+
 
 
 
@@ -313,7 +436,7 @@ class Gui(object):
     def draw(self, surface):
         """Draw GUI to level surface"""
         state_list1 = ['dialogue', 'reject', 'accept', 'hasitem']
-        state_list2 = ['select', 'confirm', 'buysell']
+        state_list2 = ['select', 'confirmpurchase', 'buysell', 'sell', 'confirmsell']
 
         surface.blit(self.dialogue_box.image, self.dialogue_box.rect)
         surface.blit(self.gold_box.image, self.gold_box.rect)

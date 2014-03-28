@@ -17,6 +17,7 @@ class Shop(tools._State):
     def __init__(self):
         super(Shop, self).__init__()
         self.key = None
+        self.sell_items = None
 
     def startup(self, current_time, game_data):
         """Startup state"""
@@ -27,6 +28,7 @@ class Shop(tools._State):
         self.get_image = tools.get_image
         self.dialogue = self.make_dialogue()
         self.accept_dialogue = self.make_accept_dialogue()
+        self.accept_sale_dialogue = self.make_accept_sale_dialogue()
         self.item = self.make_purchasable_items()
         self.background = self.make_background()
         self.gui = shopgui.Gui(self)
@@ -40,6 +42,11 @@ class Shop(tools._State):
     def make_accept_dialogue(self):
         """Make the dialogue for when the player buys an item"""
         return ['Item purchased.']
+
+
+    def make_accept_sale_dialogue(self):
+        """Make the dialogue for when the player sells an item"""
+        return ['Item sold.']
 
 
     def make_purchasable_items(self):
@@ -149,6 +156,7 @@ class WeaponShop(Shop):
         super(WeaponShop, self).__init__()
         self.name = 'Weapon Shop'
         self.key = 'weaponman'
+        self.sell_items = ['Long Sword']
 
 
     def make_dialogue(self):
@@ -176,6 +184,7 @@ class ArmorShop(Shop):
         super(ArmorShop, self).__init__()
         self.name = 'Armor Shop'
         self.key = 'armorman'
+        self.sell_items = ['Chain Mail']
 
 
     def make_dialogue(self):
@@ -230,6 +239,7 @@ class PotionShop(Shop):
         super(PotionShop, self).__init__()
         self.name = 'Potion Shop'
         self.key = 'potionlady'
+        self.sell_items = 'Healing Potion'
 
 
     def make_dialogue(self):
