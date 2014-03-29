@@ -32,12 +32,19 @@ class Gui(object):
         self.arrow_pos1 = (50, 475)
         self.arrow_pos2 = (50, 515)
         self.arrow_pos3 = (50, 555)
+        self.arrow_pos4 = (50, 495)
+        self.arrow_pos5 = (50, 535)
         self.arrow_pos_list = [self.arrow_pos1, self.arrow_pos2, self.arrow_pos3]
+        self.two_arrow_pos_list = [self.arrow_pos4, self.arrow_pos5]
         self.arrow_index = 0
         self.selection_arrow.rect.topleft = self.arrow_pos1
         self.dialogue_box = self.make_dialogue_box(self.dialogue, self.index)
         self.gold_box = self.make_gold_box()
-        self.selection_box = self.make_selection_box()
+        if self.name in self.no_selling:
+            choices = self.item['dialogue']
+        else:
+            choices = ['Buy', 'Sell', 'Leave']
+        self.selection_box = self.make_selection_box(choices)
         self.state_dict = self.make_state_dict()
 
 
@@ -61,7 +68,7 @@ class Gui(object):
         return sprite
 
 
-    def make_selection_box(self):
+    def make_selection_box(self, choices):
         """Make the box for the player to select options"""
         image = setup.GFX['shopbox']
         rect = image.get_rect(bottom=608)
@@ -70,31 +77,27 @@ class Gui(object):
         surface.set_colorkey(c.BLACK)
         surface.blit(image, (0, 0))
 
-        if self.state == 'select':
-            choices = self.item['dialogue']
-        elif self.state == 'confirmpurchase' or self.state == 'confirmsell':
-            choices = ['Yes',
-                       'No']
-        elif self.state == 'buysell':
-            choices = ['Buy',
-                       'Sell',
-                       'Leave']
-        elif self.state == 'sell':
-            choices = [self.item_to_be_sold,
-                       'Cancel']
-        else:
-            choices = ['Not',
-                       'assigned']
-        choice1 = self.font.render(choices[0], True, c.NEAR_BLACK)
-        choice1_rect = choice1.get_rect(x=200, y=15)
-        choice2 = self.font.render(choices[1], True, c.NEAR_BLACK)
-        choice2_rect = choice2.get_rect(x=200, y=55)
-        surface.blit(choice1, choice1_rect)
-        surface.blit(choice2, choice2_rect)
-        if len(choices) >= 3:
+        if len(choices) == 2:
+            choice1 = self.font.render(choices[0], True, c.NEAR_BLACK)
+            choice1_rect = choice1.get_rect(x=200, y=35)
+            choice2 = self.font.render(choices[1], True, c.NEAR_BLACK)
+            choice2_rect = choice2.get_rect(x=200, y=75)
+
+            surface.blit(choice1, choice1_rect)
+            surface.blit(choice2, choice2_rect)
+
+        elif len(choices) == 3:
+            choice1 = self.font.render(choices[0], True, c.NEAR_BLACK)
+            choice1_rect = choice1.get_rect(x=200, y=15)
+            choice2 = self.font.render(choices[1], True, c.NEAR_BLACK)
+            choice2_rect = choice2.get_rect(x=200, y=55)
             choice3 = self.font.render(choices[2], True, c.NEAR_BLACK)
             choice3_rect = choice3.get_rect(x=200, y=95)
+
+            surface.blit(choice1, choice1_rect)
+            surface.blit(choice2, choice2_rect)
             surface.blit(choice3, choice3_rect)
+
         sprite = pg.sprite.Sprite()
         sprite.image = surface
         sprite.rect = rect
@@ -168,27 +171,37 @@ class Gui(object):
 
     def make_selection(self, keys, current_time):
         """Control the selection"""
+        choices = self.item['dialogue']
         self.dialogue_box = self.make_dialogue_box(self.dialogue, self.index)
-        self.selection_box = self.make_selection_box()
+        self.selection_box = self.make_selection_box(choices)
         self.gold_box = self.make_gold_box()
 
+        self.selection_arrow.rect.topleft = self.two_arrow_pos_list[self.arrow_index]
 
 
-        if keys[pg.K_DOWN]:
-            self.selection_arrow.rect.topleft = self.arrow_pos2
-        elif keys[pg.K_UP]:
-            self.selection_arrow.rect.topleft = self.arrow_pos1
-        elif keys[pg.K_SPACE] and (current_time - self.timer) > 200:
-            if self.allow_input:
-                if self.selection_arrow.rect.topleft == self.arrow_pos2:
+        if keys[pg.K_DOWN] and self.allow_input:
+            if self.arrow_index < (len(self.two_arrow_pos_list) - 1):
+                self.arrow_index += 1
+                self.allow_input = False
+        elif keys[pg.K_UP] and self.allow_input:
+            if self.arrow_index > 0:
+                self.arrow_index -= 1
+                self.allow_input = False
+        elif keys[pg.K_SPACE] and self.allow_input:
+            if self.arrow_index == 0:
+                self.state = 'confirmpurchase'
+
+            elif self.arrow_index == 1:
+                if self.level.name in self.no_selling:
+                    self.level.done = True
+                    self.level.game_data['last direction'] = 'down'
+                else:
                     self.state = 'buysell'
-                    self.arrow_index = 0
-                    self.allow_input = False
-                elif self.selection_arrow.rect.topleft == self.arrow_pos1:
-                    self.state = 'confirmpurchase'
-                    self.allow_input = False
 
-        if not keys[pg.K_SPACE]:
+            self.arrow_index = 0
+            self.allow_input = False
+
+        if not keys[pg.K_SPACE] and not keys[pg.K_UP] and not keys[pg.K_DOWN]:
             self.allow_input = True
 
 
@@ -196,47 +209,57 @@ class Gui(object):
     def confirm_purchase(self, keys, current_time):
         """Confirm selection state for GUI"""
         dialogue = ['Are you sure?']
-        self.selection_box = self.make_selection_box()
+        choices = ['Yes', 'No']
+        self.selection_box = self.make_selection_box(choices)
         self.gold_box = self.make_gold_box()
         self.dialogue_box = self.make_dialogue_box(dialogue, 0)
+        self.selection_arrow.rect.topleft = self.two_arrow_pos_list[self.arrow_index]
 
-        if keys[pg.K_DOWN]:
-            self.selection_arrow.rect.topleft = self.arrow_pos2
-        elif keys[pg.K_UP]:
-            self.selection_arrow.rect.topleft = self.arrow_pos1
+        if keys[pg.K_DOWN] and self.allow_input:
+            if self.arrow_index < (len(choices) - 1):
+                self.arrow_index += 1
+                self.allow_input = False
+        elif keys[pg.K_UP] and self.allow_input:
+            if self.arrow_index > 0:
+                self.arrow_index -= 1
+                self.allow_input = False
         elif keys[pg.K_SPACE] and self.allow_input:
-            if self.selection_arrow.rect.topleft == self.arrow_pos1:
+            if self.arrow_index == 0:
                 self.buy_item()
-                self.allow_input = False
-            else:
+            elif self.arrow_index == 1:
                 self.state = self.begin_new_transaction()
-                self.allow_input = False
-            self.selection_arrow.rect.topleft = self.arrow_pos1
+            self.arrow_index = 0
+            self.allow_input = False
 
-        if not keys[pg.K_SPACE]:
+        if not keys[pg.K_SPACE] and not keys[pg.K_DOWN] and not keys[pg.K_UP]:
             self.allow_input = True
 
 
     def confirm_sell(self, keys, current_time):
         """Confirm player wants to sell item"""
         dialogue = ['Are you sure?']
+        choices = ['Yes', 'No']
         self.dialogue_box = self.make_dialogue_box(dialogue, 0)
-        self.selection_box = self.make_selection_box()
+        self.selection_box = self.make_selection_box(choices)
+        self.selection_arrow.rect.topleft = self.two_arrow_pos_list[self.arrow_index]
 
-        if keys[pg.K_DOWN]:
-            self.selection_arrow.rect.topleft = self.arrow_pos2
+        if keys[pg.K_DOWN] and self.allow_input:
+            if self.arrow_index < (len(choices) - 1):
+                self.arrow_index += 1
+                self.allow_input = False
         elif keys[pg.K_UP]:
-            self.selection_arrow.rect.topleft = self.arrow_pos1
+            if self.arrow_index > 0:
+                self.arrow_index -= 1
+                self.allow_input = False
         elif keys[pg.K_SPACE] and self.allow_input:
-            if self.selection_arrow.rect.topleft == self.arrow_pos1:
+            if self.arrow_index == 0:
                 self.sell_item()
-                self.allow_input = False
-            else:
+            elif self.arrow_index == 1:
                 self.state = self.begin_new_transaction()
-                self.allow_input = False
-            self.selection_arrow.rect.topleft = self.arrow_pos1
+            self.allow_input = False
+            self.arrow_index = 0
 
-        if not keys[pg.K_SPACE]:
+        if not keys[pg.K_SPACE] and not keys[pg.K_UP] and not keys[pg.K_DOWN]:
             self.allow_input = True
 
 
@@ -341,9 +364,9 @@ class Gui(object):
     def buy_sell(self, keys, current_time):
         """Ask player if they want to buy or sell something"""
         dialogue = ["Would you like to buy or sell an item?"]
+        choices = ['Buy', 'Sell', 'Leave']
         self.dialogue_box = self.make_dialogue_box(dialogue, 0)
-        self.selection_box = self.make_selection_box()
-
+        self.selection_box = self.make_selection_box(choices)
         self.selection_arrow.rect.topleft = self.arrow_pos_list[self.arrow_index]
 
         if keys[pg.K_DOWN] and self.allow_input:
@@ -359,6 +382,7 @@ class Gui(object):
             if self.arrow_index == 0:
                 self.state = 'select'
                 self.allow_input = False
+                self.arrow_index = 0
             elif self.arrow_index == 1:
                 if self.check_for_sellable_items():
                     self.state = 'sell'
@@ -367,6 +391,7 @@ class Gui(object):
                 else:
                     self.state = 'cantsell'
                     self.allow_input = False
+                    self.arrow_index = 0
 
             else:
                 self.level.done = True
@@ -381,9 +406,10 @@ class Gui(object):
     def sell_items(self, keys, current_time):
         """Have player select items to sell"""
         dialogue = ["What would you like to sell?"]
+        choices = [self.item_to_be_sold, 'Cancel']
         self.dialogue_box = self.make_dialogue_box(dialogue, 0)
-        self.selection_box = self.make_selection_box()
-        self.selection_arrow.rect.topleft = self.arrow_pos_list[self.arrow_index]
+        self.selection_box = self.make_selection_box(choices)
+        self.selection_arrow.rect.topleft = self.two_arrow_pos_list[self.arrow_index]
 
         if keys[pg.K_DOWN] and self.allow_input:
             if self.arrow_index < (len(self.arrow_pos_list) - 1):
