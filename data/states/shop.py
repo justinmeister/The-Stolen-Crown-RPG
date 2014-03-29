@@ -139,7 +139,7 @@ class Inn(Shop):
     def make_purchasable_items(self):
         """Make list of items to be chosen"""
         dialogue = ['Rent a room. (30 gold)',
-                    'Leave.']
+                    'Back.']
 
         item = {'type': 'room',
                 'price': 30,
@@ -168,7 +168,7 @@ class WeaponShop(Shop):
     def make_purchasable_items(self):
         """Make list of items to be chosen"""
         dialogue = ['Long Sword. (100 gold)',
-                    'Leave.']
+                    'Back.']
 
         item = {'type': 'Long Sword',
                 'price': 100,
@@ -196,7 +196,7 @@ class ArmorShop(Shop):
     def make_purchasable_items(self):
         """Make list of items to be chosen"""
         dialogue = ['Chain Mail. (50 gold)',
-                    'Leave.']
+                    'Back.']
 
         item = {'type': 'Chain Mail',
                 'price': 50,
@@ -223,7 +223,7 @@ class MagicShop(Shop):
     def make_purchasable_items(self):
         """Make list of items to be chosen"""
         dialogue = ['Fire Spell. (150 gold)',
-                    'Leave.']
+                    'Back.']
 
         item = {'type': 'Fire Spell',
                 'price': 150,
@@ -251,7 +251,7 @@ class PotionShop(Shop):
     def make_purchasable_items(self):
         """Make list of items to be chosen"""
         dialogue = ['Healing Potion. (15 gold)',
-                    'Leave.']
+                    'Back.']
 
         item = {'type': 'Healing Potion',
                 'price': 15,

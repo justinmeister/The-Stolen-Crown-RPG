@@ -352,8 +352,8 @@ class FemaleVillager(Person):
 
 class FemaleVillager2(Person):
     """A second female person for town"""
-    def __init__(self, x, y):
-        super(FemaleVillager2, self).__init__('femvillager2', x, y)
+    def __init__(self, x, y, direction='down'):
+        super(FemaleVillager2, self).__init__('femvillager2', x, y, direction)
         self.index = 1
 
 
