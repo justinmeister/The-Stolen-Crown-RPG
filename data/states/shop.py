@@ -29,7 +29,7 @@ class Shop(tools._State):
         self.dialogue = self.make_dialogue()
         self.accept_dialogue = self.make_accept_dialogue()
         self.accept_sale_dialogue = self.make_accept_sale_dialogue()
-        self.item = self.make_purchasable_items()
+        self.items = self.make_purchasable_items()
         self.background = self.make_background()
         self.gui = shopgui.Gui(self)
 
@@ -156,7 +156,7 @@ class WeaponShop(Shop):
         super(WeaponShop, self).__init__()
         self.name = 'Weapon Shop'
         self.key = 'weaponman'
-        self.sell_items = ['Long Sword']
+        self.sell_items = ['Long Sword', 'Rapier']
 
 
     def make_dialogue(self):
@@ -167,15 +167,20 @@ class WeaponShop(Shop):
 
     def make_purchasable_items(self):
         """Make list of items to be chosen"""
-        dialogue = ['Long Sword (100 gold)',
-                    'Cancel']
+        longsword_dialogue = 'Long Sword (100 gold)'
+        rapier_dialogue = 'Rapier (50 gold)'
 
         item = {'type': 'Long Sword',
                 'price': 100,
                 'quantity': 1,
-                'dialogue': dialogue}
+                'dialogue': longsword_dialogue}
 
-        return item
+        item2 = {'type': 'Rapier',
+                 'price': 50,
+                 'quantity': 1,
+                 'dialogue': rapier_dialogue}
+
+        return [item, item2]
 
 
 class ArmorShop(Shop):
@@ -184,7 +189,7 @@ class ArmorShop(Shop):
         super(ArmorShop, self).__init__()
         self.name = 'Armor Shop'
         self.key = 'armorman'
-        self.sell_items = ['Chain Mail']
+        self.sell_items = ['Chain Mail', 'Wooden Shield']
 
 
     def make_dialogue(self):
@@ -195,15 +200,20 @@ class ArmorShop(Shop):
 
     def make_purchasable_items(self):
         """Make list of items to be chosen"""
-        dialogue = ['Chain Mail (50 gold)',
-                    'Cancel']
+        chainmail_dialogue = 'Chain Mail (50 gold)'
+        shield_dialogue = 'Wooden Shield (75 gold)'
 
         item = {'type': 'Chain Mail',
                 'price': 50,
                 'quantity': 1,
-                'dialogue': dialogue}
+                'dialogue': chainmail_dialogue}
 
-        return item
+        item2 = {'type': 'Wooden Shield',
+                 'price': 75,
+                 'quantity': 1,
+                 'dialogue': shield_dialogue}
+
+        return [item, item2]
 
 
 class MagicShop(Shop):

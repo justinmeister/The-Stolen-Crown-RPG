@@ -14,6 +14,7 @@ class Gui(object):
     def __init__(self, level):
         self.level = level
         self.sellable_items = level.sell_items
+        print level.sell_items
         self.player_inventory = level.game_data['player inventory']
         self.name = level.name
         self.state = 'dialogue'
@@ -22,8 +23,9 @@ class Gui(object):
         self.index = 0
         self.timer = 0.0
         self.allow_input = False
-        self.item = level.item
+        self.items = level.items
         self.item_to_be_sold = None
+        self.item_to_be_purchased = None
         self.dialogue = level.dialogue
         self.accept_dialogue = level.accept_dialogue
         self.accept_sale_dialogue = level.accept_sale_dialogue
@@ -41,7 +43,7 @@ class Gui(object):
         self.dialogue_box = self.make_dialogue_box(self.dialogue, self.index)
         self.gold_box = self.make_gold_box()
         if self.name in self.no_selling:
-            choices = self.item['dialogue']
+            choices = self.items[0]['dialogue']
         else:
             choices = ['Buy', 'Sell', 'Leave']
         self.selection_box = self.make_selection_box(choices)
@@ -171,16 +173,16 @@ class Gui(object):
 
     def make_selection(self, keys, current_time):
         """Control the selection"""
-        choices = self.item['dialogue']
+        choices = [self.items[0]['dialogue'], self.items[1]['dialogue'], 'Cancel']
         self.dialogue_box = self.make_dialogue_box(self.dialogue, self.index)
         self.selection_box = self.make_selection_box(choices)
         self.gold_box = self.make_gold_box()
 
-        self.selection_arrow.rect.topleft = self.two_arrow_pos_list[self.arrow_index]
+        self.selection_arrow.rect.topleft = self.arrow_pos_list[self.arrow_index]
 
 
         if keys[pg.K_DOWN] and self.allow_input:
-            if self.arrow_index < (len(self.two_arrow_pos_list) - 1):
+            if self.arrow_index < (len(choices) - 1):
                 self.arrow_index += 1
                 self.allow_input = False
         elif keys[pg.K_UP] and self.allow_input:
@@ -190,8 +192,13 @@ class Gui(object):
         elif keys[pg.K_SPACE] and self.allow_input:
             if self.arrow_index == 0:
                 self.state = 'confirmpurchase'
+                self.item_to_be_purchased = self.items[0]
 
             elif self.arrow_index == 1:
+                self.state = 'confirmpurchase'
+                self.item_to_be_purchased = self.items[1]
+
+            else:
                 if self.level.name in self.no_selling:
                     self.level.done = True
                     self.level.game_data['last direction'] = 'down'
@@ -276,26 +283,31 @@ class Gui(object):
     
     def buy_item(self):
         """Attempt to allow player to purchase item"""
-        self.player_inventory['gold'] -= self.item['price']
+        self.player_inventory['gold'] -= self.item_to_be_purchased['price']
         
         if self.player_inventory['gold'] < 0:
-            self.player_inventory['gold'] += self.item['price']
+            self.player_inventory['gold'] += self.item_to_be_purchased['price']
             self.state = 'reject'
         else:
-            if (self.item['type'] == 'Fire Spell' and
+            if (self.item_to_be_purchased['type'] == 'Fire Spell' and
                         'Fire Spell' in self.player_inventory):
                     self.state = 'hasitem'
-                    self.player_inventory['gold'] += self.item['price']
+                    self.player_inventory['gold'] += self.item_to_be_purchased['price']
             else:
                 self.state = 'accept'
-                self.add_player_item(self.item)
+                self.add_player_item(self.item_to_be_purchased)
 
 
     def sell_item(self):
         """Allow player to sell item to shop"""
-        self.player_inventory['gold'] += (self.item['price'] / 2)
+        item_price = self.item_to_be_sold['price']
+        item_name = self.item_to_be_sold['type']
+        self.player_inventory['gold'] += (item_price / 2)
         self.state = 'acceptsell'
-        del self.player_inventory[self.item['type']]
+        if self.player_inventory[item_name]['quantity'] > 1:
+            self.player_inventory[item_name]['quantity'] -= 1
+        else:
+            del self.player_inventory[self.item_to_be_sold['type']]
 
 
 
@@ -311,11 +323,6 @@ class Gui(object):
 
         if not keys[pg.K_SPACE]:
             self.allow_input = True
-
-
-
-
-
 
 
 
@@ -406,16 +413,28 @@ class Gui(object):
     def sell_items(self, keys, current_time):
         """Have player select items to sell"""
         dialogue = ["What would you like to sell?"]
-        choices = [self.item_to_be_sold, 'Cancel']
+        choices = []
+        item_list = []
+        for item in self.items:
+            if item['type'] in self.player_inventory:
+                name = item['type']
+                price = " (" + str(item['price'] / 2) + " gold)"
+                choices.append(name + price)
+                item_list.append(name)
+        choices.append('Cancel')
         self.dialogue_box = self.make_dialogue_box(dialogue, 0)
         self.selection_box = self.make_selection_box(choices)
-        self.selection_arrow.rect.topleft = self.two_arrow_pos_list[self.arrow_index]
+
+        if len(choices) == 2:
+            self.selection_arrow.rect.topleft = self.two_arrow_pos_list[self.arrow_index]
+        elif len(choices) == 3:
+            self.selection_arrow.rect.topleft = self.arrow_pos_list[self.arrow_index]
 
         if keys[pg.K_DOWN] and self.allow_input:
             if self.arrow_index < (len(self.arrow_pos_list) - 1):
                 self.arrow_index += 1
                 self.allow_input = False
-        elif keys[pg.K_UP]:
+        elif keys[pg.K_UP] and self.allow_input:
             if self.arrow_index > 0:
                 self.arrow_index -= 1
                 self.allow_input = False
@@ -423,6 +442,16 @@ class Gui(object):
             if self.arrow_index == 0:
                 self.state = 'confirmsell'
                 self.allow_input = False
+                for item in self.items:
+                    if item['type'] == item_list[0]:
+                        self.item_to_be_sold = item
+
+            elif self.arrow_index == 1 and len(choices) == 3:
+                self.state = 'confirmsell'
+                self.allow_input = False
+                for item in self.items:
+                    if item['type'] == choices[1]:
+                        self.item_to_be_sold = item
             else:
                 self.state = 'buysell'
                 self.allow_input = False
@@ -434,11 +463,8 @@ class Gui(object):
 
     def check_for_sellable_items(self):
         """Check for sellable items"""
-
         for item in self.player_inventory:
             if item in self.sellable_items:
-                sell_price = self.player_inventory[item]['value'] / 2
-                self.item_to_be_sold = item + " (" + str(sell_price) + " gold)"
                 return True
         else:
             return False
