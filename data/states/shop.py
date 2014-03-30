@@ -115,9 +115,6 @@ class Shop(tools._State):
 
 
 
-
-
-
 class Inn(Shop):
     """Where our hero gets rest"""
     def __init__(self):
@@ -128,7 +125,7 @@ class Inn(Shop):
     def make_dialogue(self):
         """Make the list of dialogue phrases"""
         return ["Welcome to the " + self.name + "!",
-                "Would you like to rent a room to restore your health?"]
+                "Would you like a room to restore your health?"]
 
 
     def make_accept_dialogue(self):
@@ -138,15 +135,14 @@ class Inn(Shop):
 
     def make_purchasable_items(self):
         """Make list of items to be chosen"""
-        dialogue = ['Rent a room (30 gold)',
-                    'Leave']
+        dialogue = 'Rent a room (30 gold)'
 
         item = {'type': 'room',
                 'price': 30,
                 'quantity': 0,
                 'dialogue': dialogue}
 
-        return item
+        return [item]
 
 
 
@@ -232,15 +228,20 @@ class MagicShop(Shop):
 
     def make_purchasable_items(self):
         """Make list of items to be chosen"""
-        dialogue = ['Fire Spell (150 gold)',
-                    'Leave']
+        fire_dialogue = 'Fire Blast (150 gold)'
+        cure_dialogue = 'Cure (150 gold)'
 
         item = {'type': 'Fire Spell',
                 'price': 150,
                 'quantity': 1,
-                'dialogue': dialogue}
+                'dialogue': fire_dialogue}
 
-        return item
+        item2 = {'type': 'Cure Spell',
+                 'price': 150,
+                 'quantity': 1,
+                 'dialogue': cure_dialogue}
+
+        return [item, item2]
 
 
 class PotionShop(Shop):
@@ -260,13 +261,13 @@ class PotionShop(Shop):
 
     def make_purchasable_items(self):
         """Make list of items to be chosen"""
-        dialogue = ['Healing Potion (15 gold)',
-                    'Cancel']
+        healing_dialogue = 'Healing Potion (15 gold)'
+
 
         item = {'type': 'Healing Potion',
                 'price': 15,
                 'quantity': 1,
-                'dialogue': dialogue}
+                'dialogue': healing_dialogue}
 
-        return item
+        return [item]
 

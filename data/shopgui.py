@@ -13,8 +13,8 @@ class Gui(object):
     """Class that controls the GUI of the shop state"""
     def __init__(self, level):
         self.level = level
+        self.level.game_data['last direction'] = 'down'
         self.sellable_items = level.sell_items
-        print level.sell_items
         self.player_inventory = level.game_data['player inventory']
         self.name = level.name
         self.state = 'dialogue'
@@ -70,6 +70,34 @@ class Gui(object):
         return sprite
 
 
+    def check_to_draw_arrow(self, sprite):
+        """Blink arrow if more text needs to be read"""
+        if self.index < len(self.dialogue) - 1:
+            sprite.image.blit(self.arrow.image, self.arrow.rect)
+
+
+    def make_gold_box(self):
+        """Make the box to display total gold"""
+        image = setup.GFX['goldbox']
+        rect = image.get_rect(bottom=608, right=800)
+
+        surface = pg.Surface(rect.size)
+        surface.set_colorkey(c.BLACK)
+        surface.blit(image, (0, 0))
+        gold = self.player_inventory['gold']
+        text = 'Gold: ' + str(gold)
+        text_render = self.font.render(text, True, c.NEAR_BLACK)
+        text_rect = text_render.get_rect(x=80, y=60)
+
+        surface.blit(text_render, text_rect)
+
+        sprite = pg.sprite.Sprite()
+        sprite.image = surface
+        sprite.rect = rect
+
+        return sprite
+
+
     def make_selection_box(self, choices):
         """Make the box for the player to select options"""
         image = setup.GFX['shopbox']
@@ -107,36 +135,6 @@ class Gui(object):
         return sprite
 
 
-
-    def check_to_draw_arrow(self, sprite):
-        """Blink arrow if more text needs to be read"""
-        if self.index < len(self.dialogue) - 1:
-            sprite.image.blit(self.arrow.image, self.arrow.rect)
-
-
-    def make_gold_box(self):
-        """Make the box to display total gold"""
-        image = setup.GFX['goldbox']
-        rect = image.get_rect(bottom=608, right=800)
-
-        surface = pg.Surface(rect.size)
-        surface.set_colorkey(c.BLACK)
-        surface.blit(image, (0, 0))
-        gold = self.player_inventory['gold']
-        text = 'Gold: ' + str(gold)
-        text_render = self.font.render(text, True, c.NEAR_BLACK)
-        text_rect = text_render.get_rect(x=80, y=60)
-
-        surface.blit(text_render, text_rect)
-
-        sprite = pg.sprite.Sprite()
-        sprite.image = surface
-        sprite.rect = rect
-
-        return sprite
-
-
-
     def make_state_dict(self):
         """Make the state dictionary for the GUI behavior"""
         state_dict = {'dialogue': self.control_dialogue,
@@ -166,19 +164,43 @@ class Gui(object):
                 if self.index == (len(self.dialogue) - 1):
                     self.state = self.begin_new_transaction()
 
-
         if not keys[pg.K_SPACE]:
             self.allow_input = True
 
 
+    def begin_new_transaction(self):
+        """Set state to buysell or select, depending if the shop
+        is a Inn/Magic shop or not"""
+        if self.level.name in self.no_selling:
+            state = 'select'
+        else:
+            state = 'buysell'
+
+        return state
+
+
     def make_selection(self, keys, current_time):
         """Control the selection"""
-        choices = [self.items[0]['dialogue'], self.items[1]['dialogue'], 'Cancel']
+        choices = []
+        for item in self.items:
+            choices.append(item['dialogue'])
+        if self.name in self.no_selling:
+            choices.append('Leave')
+        else:
+            choices.append('Cancel')
         self.dialogue_box = self.make_dialogue_box(self.dialogue, self.index)
         self.selection_box = self.make_selection_box(choices)
         self.gold_box = self.make_gold_box()
 
-        self.selection_arrow.rect.topleft = self.arrow_pos_list[self.arrow_index]
+        if len(choices) == 2:
+            arrow_list = self.two_arrow_pos_list
+        elif len(choices) == 3:
+            arrow_list = self.arrow_pos_list
+        else:
+            arrow_list = None
+            AssertionError('Only two items supported')
+
+        self.selection_arrow.rect.topleft = arrow_list[self.arrow_index]
 
 
         if keys[pg.K_DOWN] and self.allow_input:
@@ -194,14 +216,13 @@ class Gui(object):
                 self.state = 'confirmpurchase'
                 self.item_to_be_purchased = self.items[0]
 
-            elif self.arrow_index == 1:
+            elif self.arrow_index == 1 and len(choices) == 3:
                 self.state = 'confirmpurchase'
                 self.item_to_be_purchased = self.items[1]
 
             else:
                 if self.level.name in self.no_selling:
                     self.level.done = True
-                    self.level.game_data['last direction'] = 'down'
                 else:
                     self.state = 'buysell'
 
@@ -242,6 +263,41 @@ class Gui(object):
             self.allow_input = True
 
 
+    def buy_item(self):
+        """Attempt to allow player to purchase item"""
+        item = self.item_to_be_purchased
+
+        self.player_inventory['gold'] -= item['price']
+
+        if self.player_inventory['gold'] < 0:
+            self.player_inventory['gold'] += item['price']
+            self.state = 'reject'
+        else:
+            if (item['type'] in self.player_inventory
+                and self.name == 'Magic Shop'):
+                    self.state = 'hasitem'
+                    self.player_inventory['gold'] += item['price']
+            else:
+                self.state = 'accept'
+                self.add_player_item(item)
+
+
+    def add_player_item(self, item):
+        """Add item to player's inventory"""
+        item_type = item['type']
+        quantity = item['quantity']
+        value = item['price']
+        player_items = self.level.game_data['player inventory']
+
+        item_to_add = {'quantity': quantity,
+                       'value': value}
+
+        if item_type in player_items:
+            player_items[item_type]['quantity'] += quantity
+        elif quantity > 0:
+            player_items[item_type] = item_to_add
+
+
     def confirm_sell(self, keys, current_time):
         """Confirm player wants to sell item"""
         dialogue = ['Are you sure?']
@@ -260,7 +316,7 @@ class Gui(object):
                 self.allow_input = False
         elif keys[pg.K_SPACE] and self.allow_input:
             if self.arrow_index == 0:
-                self.sell_item()
+                self.sell_item_from_inventory()
             elif self.arrow_index == 1:
                 self.state = self.begin_new_transaction()
             self.allow_input = False
@@ -270,35 +326,7 @@ class Gui(object):
             self.allow_input = True
 
 
-    def begin_new_transaction(self):
-        """Set state to buysell or select, depending if the shop
-        is a Inn/Magic shop or not"""
-        if self.level.name in self.no_selling:
-            state = 'select'
-        else:
-            state = 'buysell'
-
-        return state
-    
-    
-    def buy_item(self):
-        """Attempt to allow player to purchase item"""
-        self.player_inventory['gold'] -= self.item_to_be_purchased['price']
-        
-        if self.player_inventory['gold'] < 0:
-            self.player_inventory['gold'] += self.item_to_be_purchased['price']
-            self.state = 'reject'
-        else:
-            if (self.item_to_be_purchased['type'] == 'Fire Spell' and
-                        'Fire Spell' in self.player_inventory):
-                    self.state = 'hasitem'
-                    self.player_inventory['gold'] += self.item_to_be_purchased['price']
-            else:
-                self.state = 'accept'
-                self.add_player_item(self.item_to_be_purchased)
-
-
-    def sell_item(self):
+    def sell_item_from_inventory(self):
         """Allow player to sell item to shop"""
         item_price = self.item_to_be_sold['price']
         item_name = self.item_to_be_sold['type']
@@ -308,22 +336,6 @@ class Gui(object):
             self.player_inventory[item_name]['quantity'] -= 1
         else:
             del self.player_inventory[self.item_to_be_sold['type']]
-
-
-
-    def accept_sale(self, keys, current_time):
-        """Confirm to player that item was sold"""
-        self.dialogue_box = self.make_dialogue_box(self.accept_sale_dialogue, 0)
-        self.gold_box = self.make_gold_box()
-
-        if keys[pg.K_SPACE] and self.allow_input:
-            self.state = self.begin_new_transaction()
-            self.selection_arrow.rect.topleft = self.arrow_pos1
-            self.allow_input = False
-
-        if not keys[pg.K_SPACE]:
-            self.allow_input = True
-
 
 
     def reject_insufficient_gold(self, keys, current_time):
@@ -343,6 +355,20 @@ class Gui(object):
     def accept_purchase(self, keys, current_time):
         """Accept purchase and confirm with message"""
         self.dialogue_box = self.make_dialogue_box(self.accept_dialogue, 0)
+        self.gold_box = self.make_gold_box()
+
+        if keys[pg.K_SPACE] and self.allow_input:
+            self.state = self.begin_new_transaction()
+            self.selection_arrow.rect.topleft = self.arrow_pos1
+            self.allow_input = False
+
+        if not keys[pg.K_SPACE]:
+            self.allow_input = True
+
+
+    def accept_sale(self, keys, current_time):
+        """Confirm to player that item was sold"""
+        self.dialogue_box = self.make_dialogue_box(self.accept_sale_dialogue, 0)
         self.gold_box = self.make_gold_box()
 
         if keys[pg.K_SPACE] and self.allow_input:
@@ -402,12 +428,20 @@ class Gui(object):
 
             else:
                 self.level.done = True
-                self.level.game_data['last direction'] = 'down'
 
             self.arrow_index = 0
 
         if not keys[pg.K_SPACE] and not keys[pg.K_DOWN] and not keys[pg.K_UP]:
             self.allow_input = True
+
+
+    def check_for_sellable_items(self):
+        """Check for sellable items"""
+        for item in self.player_inventory:
+            if item in self.sellable_items:
+                return True
+        else:
+            return False
 
 
     def sell_items(self, keys, current_time):
@@ -461,15 +495,6 @@ class Gui(object):
             self.allow_input = True
 
 
-    def check_for_sellable_items(self):
-        """Check for sellable items"""
-        for item in self.player_inventory:
-            if item in self.sellable_items:
-                return True
-        else:
-            return False
-
-
     def cant_sell(self, keys, current_time):
         """Do not allow player to sell anything"""
         dialogue = ["You don't have anything to sell!"]
@@ -482,26 +507,6 @@ class Gui(object):
 
         if not keys[pg.K_SPACE]:
             self.allow_input = True
-
-
-
-
-    def add_player_item(self, item):
-        """Add item to player's inventory"""
-        item_type = item['type']
-        quantity = item['quantity']
-        value = item['price']
-        player_items = self.level.game_data['player inventory']
-
-        item_to_add = {'quantity': quantity,
-                       'value': value}
-
-        if item_type in player_items:
-            player_items[item_type]['quantity'] += quantity
-        elif quantity > 0:
-            player_items[item_type] = item_to_add
-
-
 
 
     def update(self, keys, current_time):
