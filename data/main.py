@@ -3,6 +3,7 @@ from data.states.town import town
 from data.states.castle import castle
 from data.states import shop
 from data.states.house import house
+from data.states import player_menu
 from . import setup, tools
 from . import constants as c
 
@@ -16,6 +17,7 @@ ARMOR_SHOP = 'armor shop'
 WEAPON_SHOP = 'weapon shop'
 MAGIC_SHOP = 'magic shop'
 POTION_SHOP = 'potion shop'
+PLAYER_MENU = 'player menu'
 
 
 def main():
@@ -29,7 +31,8 @@ def main():
                   ARMOR_SHOP: shop.ArmorShop(),
                   WEAPON_SHOP: shop.WeaponShop(),
                   MAGIC_SHOP: shop.MagicShop(),
-                  POTION_SHOP: shop.PotionShop()
+                  POTION_SHOP: shop.PotionShop(),
+                  PLAYER_MENU: player_menu.Player_Menu()
                   }
 
     run_it.setup_states(state_dict, c.MAIN_MENU)

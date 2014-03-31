@@ -28,6 +28,7 @@ class LevelState(tools._State):
         print(game_data['player inventory'])
         self.current_time = current_time
         self.state = 'normal'
+        self.allow_input = False
         self.background = tm.create_map_layer1(self.name,
                                                self.map_width,
                                                self.map_height)
@@ -74,6 +75,7 @@ class LevelState(tools._State):
         self.sprites.update(current_time)
         self.collision_handler.update(keys, current_time)
         self.dialogue_handler.update(keys, current_time)
+        self.check_for_menu(keys)
         self.viewport_update()
 
         self.draw_level(surface)
@@ -88,6 +90,20 @@ class LevelState(tools._State):
             self.next = portal.name
             self.update_game_data()
             self.done = True
+
+
+    def check_for_menu(self, keys):
+        """Check if player hits enter to go to menu"""
+        if keys[pg.K_RETURN] and self.allow_input:
+            if self.player.state == 'resting':
+                self.player.location = self.player.get_tile_location()
+                self.next = 'player menu'
+                self.update_game_data()
+                self.done = True
+
+
+        if not keys[pg.K_RETURN]:
+            self.allow_input = True
 
 
     def update_game_data(self):
@@ -105,7 +121,9 @@ class LevelState(tools._State):
         direction = self.game_data['last direction']
         state = self.game_data['last state']
 
-        if direction == 'up':
+        if self.next == 'player menu':
+            pass
+        elif direction == 'up':
             location[1] += 1
         elif direction == 'down':
             location[1] -= 1
