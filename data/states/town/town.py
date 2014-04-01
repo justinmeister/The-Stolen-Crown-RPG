@@ -18,11 +18,12 @@ class Town(level_state.LevelState):
         """Sets unique dialogue for each sprite"""
         for sprite in self.sprites:
             if sprite.location == [9, 46]:
-                sprite.dialogue = ['Welcome to our town, Mr. Traveller!',
-                                   'The King is loved by all!',
-                                   'You should go visit him in his castle.']
+                sprite.dialogue = ['Welcome to our town, traveller!',
+                                   'Our King protects us against the evil forces of the outside world.',
+                                   'As long as we never leave, we have nothing to fear!']
             elif sprite.location == [15, 41]:
-                sprite.dialogue = ['You seem tired, why not rest at our Inn?']
+                sprite.dialogue = ['You seem tired from your travels.',
+                                   'Why not rest at our Inn and stay awhile?']
                 sprite.begin_auto_resting()
             elif sprite.location == [13, 13]:
                 sprite.dialogue = ['Be careful. There are monsters surrounding our town.',
@@ -34,7 +35,8 @@ class Town(level_state.LevelState):
             elif sprite.location == [10, 7]:
                 sprite.dialogue = ['Welcome to the castle, citizen.']
             elif sprite.location == [13, 7]:
-                sprite.dialogue = ['Move along.']
+                sprite.dialogue = ['Only those given special permission by the King can leave this town.',
+                                   'It is for our own good, as few could survive in the outside world.']
             elif sprite.location == [18, 27]:
                 sprite.dialogue = ["Don't be frightened. I'm a friendly Demon.",
                                    "My brothers and sisters, however, are not so nice.",

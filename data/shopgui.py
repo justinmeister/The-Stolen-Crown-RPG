@@ -289,6 +289,8 @@ class Gui(object):
         quantity = item['quantity']
         value = item['price']
         player_items = self.level.game_data['player inventory']
+        player_health = self.level.game_data['player stats']['Health']
+        player_magic = self.level.game_data['player stats']['Magic Points']
 
         item_to_add = {'quantity': quantity,
                        'value': value}
@@ -297,6 +299,9 @@ class Gui(object):
             player_items[item_type]['quantity'] += quantity
         elif quantity > 0:
             player_items[item_type] = item_to_add
+        elif item_type == 'room':
+            player_health['current'] = player_health['maximum']
+            player_magic['current'] = player_magic['maximum']
 
 
     def confirm_sell(self, keys, current_time):

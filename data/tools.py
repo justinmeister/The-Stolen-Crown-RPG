@@ -154,6 +154,19 @@ def create_game_data_dict():
     carries between states"""
     player_items = {'gold': 100}
 
+    player_health = {'current': 100,
+                     'maximum': 100}
+
+    player_magic = {'current': 100,
+                    'maximum': 100}
+
+    player_stats = {'Health': player_health,
+                    'Level': 1,
+                    'Experience to next level': 100,
+                    'Magic Points': player_magic,
+                    'Attack Points': 10,
+                    'Defense Points': 10}
+
 
     data_dict = {'last location': None,
                  'last state': None,
@@ -162,7 +175,8 @@ def create_game_data_dict():
                  'castle start pos': [12, 26],
                  'house start pos': [12, 13],
                  'king item': {'gold': 500},
-                 'player inventory': player_items
+                 'player inventory': player_items,
+                 'player stats': player_stats
     }
 
     return data_dict

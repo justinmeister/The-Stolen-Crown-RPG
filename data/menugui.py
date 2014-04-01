@@ -16,10 +16,13 @@ class SmallArrow(pg.sprite.Sprite):
 
 
 class MenuGui(object):
-    def __init__(self, level, inventory):
+    def __init__(self, level, inventory, stats):
         self.level = level
         self.font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
+        self.title_font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 24)
+        self.title_font.set_underline(True)
         self.inventory = inventory
+        self.stats = stats
         self.allow_input = False
         self.state = 'topmenu'
         self.gold_box = None
@@ -64,14 +67,29 @@ class MenuGui(object):
         return sprite
 
 
-    def make_stat_box(self):
+    def make_stat_box(self, title, stat_list):
         """Make the box for displaying stats and items"""
         image = setup.GFX['playerstatsbox']
         rect = image.get_rect(left=285, top=35)
+        centerx = rect.width / 2
 
         surface = pg.Surface(rect.size)
         surface.set_colorkey(c.BLACK)
         surface.blit(image, (0,0))
+
+        title_image = self.title_font.render(title, True, c.NEAR_BLACK)
+        title_rect = title_image.get_rect(centerx=centerx, y=30)
+        surface.blit(title_image, title_rect)
+
+        for i, stat in enumerate(stat_list):
+            if stat == 'Health' or stat == 'Magic Points':
+                text = (stat + ": " + str(self.stats[stat]['current']) +
+                        " / " + str(self.stats[stat]['maximum']))
+            else:
+                text = stat + ": " + str(self.stats[stat])
+            text_image = self.font.render(text, True, c.NEAR_BLACK)
+            text_rect = text_image.get_rect(x=50, y=80+(i*70))
+            surface.blit(text_image, text_rect)
 
         sprite = pg.sprite.Sprite()
         sprite.image = surface
@@ -119,9 +137,12 @@ class MenuGui(object):
     def select_main_options(self, keys):
         """Allow player to select items, magic, weapons and armor"""
         choices = ['Equip', 'Items', 'Magic', 'Exit']
+        title = 'PLAYER STATS'
+        stats = ['Level', 'Health', 'Experience to next level',
+                 'Magic Points', 'Attack Points', 'Defense Points' ]
         self.selection_box = self.make_selection_box(choices)
         self.gold_box = self.make_gold_box()
-        self.stat_box = self.make_stat_box()
+        self.stat_box = self.make_stat_box(title, stats)
         self.arrow.rect.topleft = self.arrow_pos[self.arrow_index]
 
         if self.allow_input:
@@ -136,8 +157,12 @@ class MenuGui(object):
             elif keys[pg.K_SPACE]:
                 if self.arrow_index == len(choices) - 1:
                     self.level.done = True
+            elif keys[pg.K_RETURN]:
+                self.level.done = True
 
-        if not keys[pg.K_DOWN] and not keys[pg.K_UP]:
+        if (not keys[pg.K_DOWN]
+                and not keys[pg.K_UP]
+                and not keys[pg.K_RETURN]):
             self.allow_input = True
 
 

@@ -25,7 +25,7 @@ LIGHT_BLUE = (0, 153, 204)
 DARK_RED = (118, 27, 12)
 
 
-MAIN_FONT = 'DroidSerif'
+MAIN_FONT = 'DroidSans'
 
 
 

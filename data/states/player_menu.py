@@ -17,12 +17,13 @@ class Player_Menu(tools._State):
     def startup(self, current_time, game_data):
         """Call when state is switched to"""
         inventory = game_data['player inventory']
+        stats = game_data['player stats']
         self.next = game_data['last state']
         self.allow_input = False
         self.game_data = game_data
         self.current_time = current_time
         self.background = self.make_background()
-        self.gui = menugui.MenuGui(self, inventory)
+        self.gui = menugui.MenuGui(self, inventory, stats)
 
 
     def make_background(self):

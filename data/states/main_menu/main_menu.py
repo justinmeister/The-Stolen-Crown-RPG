@@ -9,7 +9,7 @@ class Menu(tools._State):
         self.surface = setup.SCREEN
         self.rect = self.surface.get_rect()
         text = 'Arrows for navigation, space for input, Enter/Return for menu'
-        self.font = pg.font.Font(setup.FONTS['Fixedsys500c'], 15)
+        self.font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
         self.rendered_text = self.font.render(text, 1, c.BLACK)
         self.text_rect = self.rendered_text.get_rect()
         self.text_rect.center = self.rect.center
