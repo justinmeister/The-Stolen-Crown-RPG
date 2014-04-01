@@ -17,11 +17,12 @@ class Player_Menu(tools._State):
     def startup(self, current_time, game_data):
         """Call when state is switched to"""
         inventory = game_data['player inventory']
+        self.next = game_data['last state']
         self.allow_input = False
         self.game_data = game_data
         self.current_time = current_time
         self.background = self.make_background()
-        self.gui = menugui.MenuGui(inventory)
+        self.gui = menugui.MenuGui(self, inventory)
 
 
     def make_background(self):
@@ -58,18 +59,8 @@ class Player_Menu(tools._State):
 
 
     def update(self, surface, keys, current_time):
-        self.check_for_quit(keys)
         self.gui.update(keys)
         self.draw(surface)
-
-
-    def check_for_quit(self, keys):
-        if keys[pg.K_RETURN] and self.allow_input:
-            self.done = True
-            self.next = 'town'
-
-        if not keys[pg.K_RETURN]:
-            self.allow_input = True
 
 
     def draw(self, surface):

@@ -50,6 +50,7 @@ class Gui(object):
         self.state_dict = self.make_state_dict()
 
 
+
     def make_dialogue_box(self, dialogue_list, index):
         """Make the sprite that controls the dialogue"""
         image = setup.GFX['dialoguebox']
