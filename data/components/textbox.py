@@ -22,7 +22,7 @@ class DialogueBox(object):
         self.bground = setup.GFX[image_key]
         self.rect = self.bground.get_rect(centerx=400)
         self.arrow_timer = 0.0
-        self.font = pg.font.Font(setup.FONTS['Fixedsys500c'], 22)
+        self.font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
         self.dialogue_list = dialogue
         self.index = index
         self.image = self.make_dialogue_box_image()

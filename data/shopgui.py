@@ -19,7 +19,7 @@ class Gui(object):
         self.name = level.name
         self.state = 'dialogue'
         self.no_selling = ['Inn', 'Magic Shop']
-        self.font = pg.font.Font(setup.FONTS['Fixedsys500c'], 22)
+        self.font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
         self.index = 0
         self.timer = 0.0
         self.allow_input = False

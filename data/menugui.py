@@ -18,7 +18,7 @@ class SmallArrow(pg.sprite.Sprite):
 class MenuGui(object):
     def __init__(self, level, inventory):
         self.level = level
-        self.font = pg.font.Font(setup.FONTS['Fixedsys500c'], 22)
+        self.font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
         self.inventory = inventory
         self.allow_input = False
         self.state = 'topmenu'
