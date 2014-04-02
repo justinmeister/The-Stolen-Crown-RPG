@@ -116,6 +116,7 @@ class TextHandler(object):
         self.sprites = level.sprites
         self.talking_sprite = None
         self.textbox = None
+        self.allow_input = False
         self.level = level
         self.last_textbox_timer = 0.0
         self.game_data = level.game_data
@@ -123,10 +124,11 @@ class TextHandler(object):
 
     def update(self, keys, current_time):
         """Checks for the creation of Dialogue boxes"""
-        if keys[pg.K_SPACE] and not self.textbox:
+        if keys[pg.K_SPACE] and not self.textbox and self.allow_input:
             for sprite in self.sprites:
                 if (current_time - self.last_textbox_timer) > 300:
                     if self.player.state == 'resting':
+                        self.allow_input = False
                         self.check_for_dialogue(sprite)
 
         if self.textbox:
@@ -149,6 +151,9 @@ class TextHandler(object):
                     self.textbox = None
                     self.last_textbox_timer = current_time
                     self.reset_sprite_direction()
+
+        if not keys[pg.K_SPACE]:
+            self.allow_input = True
 
 
     def check_for_dialogue(self, sprite):

@@ -31,8 +31,7 @@ def main():
                   ARMOR_SHOP: shop.ArmorShop(),
                   WEAPON_SHOP: shop.WeaponShop(),
                   MAGIC_SHOP: shop.MagicShop(),
-                  POTION_SHOP: shop.PotionShop(),
-                  PLAYER_MENU: player_menu.Player_Menu()
+                  POTION_SHOP: shop.PotionShop()
                   }
 
     run_it.setup_states(state_dict, c.MAIN_MENU)

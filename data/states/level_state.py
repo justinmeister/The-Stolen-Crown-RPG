@@ -11,6 +11,7 @@ import pygame as pg
 from .. import tools, collision
 from .. import tilemap as tm
 from .. components import person, textbox
+from . import player_menu
 
 
 class LevelState(tools._State):
@@ -51,6 +52,7 @@ class LevelState(tools._State):
         self.dialogue_handler = textbox.TextHandler(self)
         self.state_dict = self.make_state_dict()
         self.portals = tm.make_level_portals(self.name)
+        self.menu_screen = player_menu.Player_Menu(game_data, self)
 
 
     def set_sprite_dialogue(self):
@@ -61,7 +63,8 @@ class LevelState(tools._State):
     def make_state_dict(self):
         """Make a dictionary of states the level can be in"""
         state_dict = {'normal': self.running_normally,
-                      'dialogue': self.handling_dialogue}
+                      'dialogue': self.handling_dialogue,
+                      'menu': self.goto_menu}
 
         return state_dict
 
@@ -95,10 +98,8 @@ class LevelState(tools._State):
         """Check if player hits enter to go to menu"""
         if keys[pg.K_RETURN] and self.allow_input:
             if self.player.state == 'resting':
-                self.player.location = self.player.get_tile_location()
-                self.next = 'player menu'
-                self.update_game_data()
-                self.done = True
+                self.state = 'menu'
+                self.allow_input = False
 
 
         if not keys[pg.K_RETURN]:
@@ -138,6 +139,12 @@ class LevelState(tools._State):
         """Update only dialogue boxes"""
         self.dialogue_handler.update(keys, current_time)
         self.draw_level(surface)
+
+
+    def goto_menu(self, surface, keys, *args):
+        """Go to menu screen"""
+        self.menu_screen.update(surface, keys)
+        self.menu_screen.draw(surface)
 
 
     def check_for_dialogue(self):

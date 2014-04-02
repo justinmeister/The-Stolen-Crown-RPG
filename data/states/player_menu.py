@@ -7,23 +7,14 @@ from .. import tools, setup, menugui
 from .. import constants as c
 
 
-class Player_Menu(tools._State):
-    def __init__(self):
-        super(Player_Menu, self).__init__()
-        self.get_image = tools.get_image
-
-
-
-    def startup(self, current_time, game_data):
-        """Call when state is switched to"""
+class Player_Menu(object):
+    def __init__(self, game_data, level):
         inventory = game_data['player inventory']
         stats = game_data['player stats']
-        self.next = game_data['last state']
+        self.get_image = tools.get_image
         self.allow_input = False
-        self.game_data = game_data
-        self.current_time = current_time
         self.background = self.make_background()
-        self.gui = menugui.MenuGui(self, inventory, stats)
+        self.gui = menugui.MenuGui(level, inventory, stats)
 
 
     def make_background(self):
@@ -59,7 +50,7 @@ class Player_Menu(tools._State):
         return sprite
 
 
-    def update(self, surface, keys, current_time):
+    def update(self, surface, keys):
         self.gui.update(keys)
         self.draw(surface)
 

@@ -357,13 +357,6 @@ class FemaleVillager2(Person):
         self.index = 1
 
 
-class MaleVillager(Person):
-    """Male Person for town"""
-
-    def __init__(self):
-        super(MaleVillager, self).__init__('male villager', x, y)
-
-
 class King(Person):
     """King of the town"""
     def __init__(self, x, y, direction='down', state='resting'):

@@ -281,15 +281,22 @@ class MenuGui(object):
                     self.state = 'magic'
 
                 elif self.arrow_index == 3:
-                    self.level.done = True
+                    self.level.state = 'normal'
+                    self.arrow_index = 0
+                    self.state = 'stats'
+
 
                 self.allow_input = False
             elif keys[pg.K_RETURN]:
-                self.level.done = True
+                self.level.state = 'normal'
+                self.state = 'stats'
+                self.allow_input = False
+                self.arrow_index = 0
 
         if (not keys[pg.K_DOWN]
                 and not keys[pg.K_UP]
-                and not keys[pg.K_RETURN]):
+                and not keys[pg.K_RETURN]
+                and not keys[pg.K_SPACE]):
             self.allow_input = True
 
 
