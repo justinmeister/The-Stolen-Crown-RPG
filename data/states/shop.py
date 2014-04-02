@@ -231,17 +231,17 @@ class MagicShop(Shop):
         fire_dialogue = 'Fire Blast (150 gold)'
         cure_dialogue = 'Cure (150 gold)'
 
-        item = {'type': 'Fire Spell',
-                'price': 150,
-                'quantity': 1,
-                'dialogue': fire_dialogue}
-
-        item2 = {'type': 'Cure Spell',
+        item1 = {'type': 'Cure',
                  'price': 150,
                  'quantity': 1,
                  'dialogue': cure_dialogue}
 
-        return [item, item2]
+        item2 = {'type': 'Fire Blast',
+                'price': 150,
+                'quantity': 1,
+                'dialogue': fire_dialogue}
+
+        return [item1, item2]
 
 
 class PotionShop(Shop):

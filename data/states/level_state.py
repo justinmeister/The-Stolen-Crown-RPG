@@ -25,7 +25,6 @@ class LevelState(tools._State):
     def startup(self, current_time, game_data):
         """Called when the State object is created"""
         self.game_data = game_data
-        print(game_data['player inventory'])
         self.current_time = current_time
         self.state = 'normal'
         self.allow_input = False

@@ -13,28 +13,10 @@ class SmallArrow(pg.sprite.Sprite):
         super(SmallArrow, self).__init__()
         self.image = setup.GFX['smallarrow']
         self.rect = self.image.get_rect()
+        self.pos_list = self.make_pos_list()
 
 
-class MenuGui(object):
-    def __init__(self, level, inventory, stats):
-        self.level = level
-        self.font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
-        self.title_font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 24)
-        self.title_font.set_underline(True)
-        self.inventory = inventory
-        self.stats = stats
-        self.allow_input = False
-        self.state = 'topmenu'
-        self.gold_box = None
-        self.stat_box = None
-        self.selection_box = None
-        self.arrow = SmallArrow()
-        self.arrow_index = 0
-        self.arrow_pos = self.make_arrow_pos_list()
-        self.state_dict = self.make_state_dict()
-
-
-    def make_arrow_pos_list(self):
+    def make_pos_list(self):
         """Make the list of possible arrow positions"""
         pos_list = []
 
@@ -45,8 +27,25 @@ class MenuGui(object):
         return pos_list
 
 
-    def make_gold_box(self):
-        """Makes the box that displays gold"""
+    def update(self, pos_index):
+        """Update arrow position"""
+        self.rect.topleft = self.pos_list[pos_index]
+
+
+    def draw(self, surface):
+        """Draw to surface"""
+        surface.blit(self.image, self.rect)
+
+
+
+class GoldBox(pg.sprite.Sprite):
+    def __init__(self, inventory):
+        self.inventory = inventory
+        self.font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
+        self.image, self.rect = self.make_image()
+
+    def make_image(self):
+        """Make the surface for the gold box"""
         image = setup.GFX['goldbox2']
         rect = image.get_rect(left=10, top=234)
 
@@ -60,15 +59,106 @@ class MenuGui(object):
                                          centery=35)
         surface.blit(text_render, text_rect)
 
-        sprite = pg.sprite.Sprite()
-        sprite.image = surface
-        sprite.rect = rect
-
-        return sprite
+        return surface, rect
 
 
-    def make_stat_box(self, title, stat_list):
-        """Make the box for displaying stats and items"""
+    def draw(self, surface):
+        """Draw to surface"""
+        surface.blit(self.image, self.rect)
+
+
+
+class InfoBox(pg.sprite.Sprite):
+    def __init__(self, inventory, player_stats):
+        super(InfoBox, self).__init__()
+        self.inventory = inventory
+        self.player_stats = player_stats
+        self.font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
+        self.title_font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 24)
+        self.title_font.set_underline(True)
+        self.possible_items = ['Healing Potion', 'Chain Mail',
+                               'Wooden Shield', 'Long Sword',
+                               'Rapier']
+        self.possible_magic = ['Fire Blast', 'Cure']
+        self.quantity_items = ['Healing Potion']
+        self.state_dict = self.make_state_dict()
+
+
+    def make_state_dict(self):
+        """Make the dictionary of state methods"""
+        state_dict = {'stats': self.show_player_stats,
+                      'items': self.show_items,
+                      'magic': self.show_magic}
+
+        return state_dict
+
+
+    def show_player_stats(self):
+        """Show the player's main stats"""
+        title = 'STATS'
+        stat_list = ['Level', 'Health',
+                     'Magic Points', 'Experience to next level']
+        surface, rect = self.make_blank_info_box(title)
+
+        for i, stat in enumerate(stat_list):
+            if stat == 'Health' or stat == 'Magic Points':
+                text = (stat + ": " + str(self.player_stats[stat]['current']) +
+                        " / " + str(self.player_stats[stat]['maximum']))
+            else:
+                text = stat + ": " + str(self.player_stats[stat])
+            text_image = self.font.render(text, True, c.NEAR_BLACK)
+            text_rect = text_image.get_rect(x=50, y=80+(i*50))
+            surface.blit(text_image, text_rect)
+
+        self.image = surface
+        self.rect = rect
+
+
+    def show_items(self):
+        """Show list of items the player has"""
+        title = 'ITEMS'
+        item_list = []
+        for item in self.inventory:
+            if item in self.possible_items:
+                item_list.append(item)
+
+        surface, rect = self.make_blank_info_box(title)
+
+        for i, item in enumerate(item_list):
+            if item in self.quantity_items:
+                text = item + ": " + str(self.inventory[item]['quantity'])
+            else:
+                text = item
+            text_image = self.font.render(text, True, c.NEAR_BLACK)
+            text_rect = text_image.get_rect(x=50, y=80+(i*50))
+            surface.blit(text_image, text_rect)
+
+        self.image = surface
+        self.rect = rect
+
+
+    def show_magic(self):
+        """Show list of magic spells the player knows"""
+        title = 'MAGIC'
+        item_list = []
+        for item in self.inventory:
+            if item in self.possible_magic:
+                item_list.append(item)
+                item_list = sorted(item_list)
+
+        surface, rect = self.make_blank_info_box(title)
+
+        for i, item in enumerate(item_list):
+            text_image = self.font.render(item, True, c.NEAR_BLACK)
+            text_rect = text_image.get_rect(x=50, y=80+(i*50))
+            surface.blit(text_image, text_rect)
+
+        self.image = surface
+        self.rect = rect
+
+
+    def make_blank_info_box(self, title):
+        """Make an info box with title, otherwise blank"""
         image = setup.GFX['playerstatsbox']
         rect = image.get_rect(left=285, top=35)
         centerx = rect.width / 2
@@ -81,25 +171,29 @@ class MenuGui(object):
         title_rect = title_image.get_rect(centerx=centerx, y=30)
         surface.blit(title_image, title_rect)
 
-        for i, stat in enumerate(stat_list):
-            if stat == 'Health' or stat == 'Magic Points':
-                text = (stat + ": " + str(self.stats[stat]['current']) +
-                        " / " + str(self.stats[stat]['maximum']))
-            else:
-                text = stat + ": " + str(self.stats[stat])
-            text_image = self.font.render(text, True, c.NEAR_BLACK)
-            text_rect = text_image.get_rect(x=50, y=80+(i*70))
-            surface.blit(text_image, text_rect)
-
-        sprite = pg.sprite.Sprite()
-        sprite.image = surface
-        sprite.rect = rect
-
-        return sprite
+        return surface, rect
 
 
-    def make_selection_box(self, choices):
-        """Make the menu with selection options"""
+    def update(self, state):
+        state_function = self.state_dict[state]
+        state_function()
+
+
+    def draw(self, surface):
+        """Draw to surface"""
+        surface.blit(self.image, self.rect)
+
+
+
+
+class SelectionBox(pg.sprite.Sprite):
+    def __init__(self):
+        self.font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
+        self.image, self.rect = self.make_image()
+
+
+    def make_image(self):
+        choices = ['Stats', 'Items', 'Magic', 'Exit']
         image = setup.GFX['selectionbox']
         rect = image.get_rect(left=10, top=330)
 
@@ -109,45 +203,67 @@ class MenuGui(object):
 
         for i, choice in enumerate(choices):
             choice_image = self.font.render(choice, True, c.NEAR_BLACK)
-            y_position = 25 + (i * 50)
-            choice_rect = choice_image.get_rect(x=100, y=y_position)
+            choice_rect = choice_image.get_rect(x=100, y=(25 + (i * 50)))
             surface.blit(choice_image, choice_rect)
 
-        sprite = pg.sprite.Sprite()
-        sprite.image = surface
-        sprite.rect = rect
-
-        return sprite
+        return surface, rect
 
 
-    def make_box_group(self):
-        """Make the sprite group for each GUI box"""
-        return pg.sprite.Group(self.gold_box,
-                               self.stat_box,
-                               self.selection_box)
+    def draw(self, surface):
+        """Draw to surface"""
+        surface.blit(self.image, self.rect)
+
+
+
+
+class MenuGui(object):
+    def __init__(self, level, inventory, stats):
+        self.level = level
+        self.inventory = inventory
+        self.stats = stats
+        self.info_box = InfoBox(inventory, stats)
+        self.gold_box = GoldBox(inventory)
+        self.selection_box = SelectionBox()
+        self.arrow = SmallArrow()
+        self.state_dict = self.make_state_dict()
+        self.arrow_index = 0
+        self.allow_input = False
+        self.state = 'stats'
+
+
+    def make_arrow_pos_list(self):
+        """Make the list of possible arrow positions"""
+        pos_list = []
+
+        for i in range(4):
+            pos = (35, 356 + (i * 50))
+            pos_list.append(pos)
+
+        return pos_list
+
 
 
     def make_state_dict(self):
         """Make the dictionary of all menu states"""
-        state_dict = {'topmenu': self.select_main_options}
+        state_dict = {'stats': self.select_main_options,
+                      'items': self.select_item,
+                      'magic': self.select_item}
 
         return state_dict
 
 
     def select_main_options(self, keys):
         """Allow player to select items, magic, weapons and armor"""
-        choices = ['Equip', 'Items', 'Magic', 'Exit']
-        title = 'PLAYER STATS'
-        stats = ['Level', 'Health', 'Experience to next level',
-                 'Magic Points', 'Attack Points', 'Defense Points' ]
-        self.selection_box = self.make_selection_box(choices)
-        self.gold_box = self.make_gold_box()
-        self.stat_box = self.make_stat_box(title, stats)
-        self.arrow.rect.topleft = self.arrow_pos[self.arrow_index]
+        self.info_box.update(self.state)
+        self.arrow.update(self.arrow_index)
+        self.check_for_input(keys)
 
+
+    def check_for_input(self, keys):
+        """Check for input"""
         if self.allow_input:
             if keys[pg.K_DOWN]:
-                if self.arrow_index < len(choices) - 1:
+                if self.arrow_index < 3:
                     self.arrow_index += 1
                     self.allow_input = False
             elif keys[pg.K_UP]:
@@ -155,8 +271,19 @@ class MenuGui(object):
                     self.arrow_index -= 1
                     self.allow_input = False
             elif keys[pg.K_SPACE]:
-                if self.arrow_index == len(choices) - 1:
+                if self.arrow_index == 0:
+                    self.state = 'stats'
+
+                elif self.arrow_index == 1:
+                    self.state = 'items'
+
+                elif self.arrow_index == 2:
+                    self.state = 'magic'
+
+                elif self.arrow_index == 3:
                     self.level.done = True
+
+                self.allow_input = False
             elif keys[pg.K_RETURN]:
                 self.level.done = True
 
@@ -166,6 +293,12 @@ class MenuGui(object):
             self.allow_input = True
 
 
+    def select_item(self, keys):
+        """Select item from list"""
+        self.info_box.update(self.state)
+        self.arrow.update(self.arrow_index)
+        self.check_for_input(keys)
+
 
     def update(self, keys):
         state_function = self.state_dict[self.state]
@@ -173,8 +306,7 @@ class MenuGui(object):
 
 
     def draw(self, surface):
-        if self.gold_box and self.stat_box and self.selection_box:
-            surface.blit(self.gold_box.image, self.gold_box.rect)
-            surface.blit(self.stat_box.image, self.stat_box.rect)
-            surface.blit(self.selection_box.image, self.selection_box.rect)
-            surface.blit(self.arrow.image, self.arrow.rect)
+        self.gold_box.draw(surface)
+        self.info_box.draw(surface)
+        self.selection_box.draw(surface)
+        self.arrow.draw(surface)
