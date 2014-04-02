@@ -166,17 +166,17 @@ class WeaponShop(Shop):
         longsword_dialogue = 'Long Sword (100 gold)'
         rapier_dialogue = 'Rapier (50 gold)'
 
-        item = {'type': 'Long Sword',
+        item2 = {'type': 'Long Sword',
                 'price': 100,
                 'quantity': 1,
                 'dialogue': longsword_dialogue}
 
-        item2 = {'type': 'Rapier',
+        item1 = {'type': 'Rapier',
                  'price': 50,
                  'quantity': 1,
                  'dialogue': rapier_dialogue}
 
-        return [item, item2]
+        return [item1, item2]
 
 
 class ArmorShop(Shop):
