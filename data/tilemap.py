@@ -2,7 +2,7 @@ __author__ = 'justinarmstrong'
 
 import os
 import pygame as pg
-import tools, setup
+from . import tools, setup
 from . components import person, portal
 from . import constants as c
 
