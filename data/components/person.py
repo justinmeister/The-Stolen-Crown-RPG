@@ -161,8 +161,8 @@ class Person(pg.sprite.Sprite):
     def make_wander_box(self):
         """Make a list of rects that surround the initial location
         of a sprite to limit his/her wandering"""
-        x = self.location[0]
-        y = self.location[1]
+        x = int(self.location[0])
+        y = int(self.location[1])
         box_list = []
         box_rects = []
 
