@@ -2,7 +2,7 @@ __author__ = 'justinarmstrong'
 
 import os
 import pygame as pg
-import constants as c
+from . import constants as c
 
 class Control(object):
     """

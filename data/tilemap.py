@@ -3,8 +3,8 @@ __author__ = 'justinarmstrong'
 import os
 import pygame as pg
 import tools, setup
-from components import person, portal
-import constants as c
+from . components import person, portal
+from . import constants as c
 
 
 def create_town_sprite_sheet_dict():
