@@ -15,10 +15,32 @@ class SmallArrow(pg.sprite.Sprite):
         super(SmallArrow, self).__init__()
         self.image = setup.GFX['smallarrow']
         self.rect = self.image.get_rect()
-        self.pos_list = self.make_pos_list()
+        self.state = 'selectmenu'
+        self.state_dict = self.make_state_dict()
+        self.pos_list = []
 
 
-    def make_pos_list(self):
+    def make_state_dict(self):
+        """Make state dictionary"""
+        state_dict = {'selectmenu': self.navigate_select_menu,
+                      'itemsubmenu': self.navigate_item_submenu}
+
+        return state_dict
+
+
+    def navigate_select_menu(self, pos_index):
+        """Nav the select menu"""
+        self.pos_list = self.make_select_menu_pos_list()
+        self.rect.topleft = self.pos_list[pos_index]
+
+
+    def navigate_item_submenu(self, pos_index):
+        """Nav the item submenu"""
+        self.pos_list = self.make_item_menu_pos_list()
+        self.rect.topleft = self.pos_list[pos_index]
+
+
+    def make_select_menu_pos_list(self):
         """Make the list of possible arrow positions"""
         pos_list = []
 
@@ -29,9 +51,21 @@ class SmallArrow(pg.sprite.Sprite):
         return pos_list
 
 
+    def make_item_menu_pos_list(self):
+        """Make the list of arrow positions in the item submenu"""
+        pos_list = [(310, 173),
+                    (310, 223),
+                    (310, 323),
+                    (310, 373),
+                    (310, 478)]
+
+        return pos_list
+
+
     def update(self, pos_index):
         """Update arrow position"""
-        self.rect.topleft = self.pos_list[pos_index]
+        state_function = self.state_dict[self.state]
+        state_function(pos_index)
 
 
     def draw(self, surface):
@@ -64,6 +98,11 @@ class GoldBox(pg.sprite.Sprite):
         return surface, rect
 
 
+    def update(self):
+        """Update gold"""
+        self.image, self.rect = self.make_image()
+
+
     def draw(self, surface):
         """Draw to surface"""
         surface.blit(self.image, self.rect)
@@ -88,7 +127,10 @@ class InfoBox(pg.sprite.Sprite):
         self.possible_weapons = ['Long Sword', 'Rapier']
         self.possible_magic = ['Fire Blast', 'Cure']
         self.quantity_items = ['Healing Potion']
+        self.slots = [None for i in range(5)]
+        self.state = 'stats'
         self.state_dict = self.make_state_dict()
+        self.print_slots = True
 
 
     def make_state_dict(self):
@@ -127,13 +169,15 @@ class InfoBox(pg.sprite.Sprite):
         potions = ['POTIONS']
         weapons = ['WEAPONS']
         armor = ['ARMOR']
-        for item in self.inventory:
-            if item in self.possible_potions:
-                potions.append(item)
-            elif item in self.possible_weapons:
+        for i, item in enumerate(self.inventory):
+            if item in self.possible_weapons:
                 weapons.append(item)
             elif item in self.possible_armor:
                 armor.append(item)
+            elif item in self.possible_potions:
+                potions.append(item)
+
+        self.assign_slots(weapons, armor, potions)
 
         surface, rect = self.make_blank_info_box(title)
 
@@ -151,6 +195,26 @@ class InfoBox(pg.sprite.Sprite):
 
         self.image = surface
         self.rect = rect
+
+
+    def assign_slots(self, weapons, armor, potions):
+        """Assign each item to a slot in the menu"""
+        if len(weapons) == 2:
+            self.slots[0] = weapons[1]
+        elif len(weapons) == 3:
+            self.slots[0] = weapons[1]
+            self.slots[1] = weapons[2]
+
+        if len(armor) == 2:
+            self.slots[2] = armor[1]
+        elif len(armor) == 3:
+            self.slots[2] = armor[1]
+            self.slots[3] = armor[2]
+
+        if len(potions) == 2:
+            self.slots[4] = potions[1]
+
+
 
 
     def blit_item_list(self, surface, item_list, starty):
@@ -212,16 +276,14 @@ class InfoBox(pg.sprite.Sprite):
         return surface, rect
 
 
-    def update(self, state):
-        state_function = self.state_dict[state]
+    def update(self):
+        state_function = self.state_dict[self.state]
         state_function()
 
 
     def draw(self, surface):
         """Draw to surface"""
         surface.blit(self.image, self.rect)
-
-
 
 
 class SelectionBox(pg.sprite.Sprite):
@@ -263,65 +325,46 @@ class MenuGui(object):
         self.gold_box = GoldBox(inventory)
         self.selection_box = SelectionBox()
         self.arrow = SmallArrow()
-        self.state_dict = self.make_state_dict()
         self.arrow_index = 0
         self.allow_input = False
         self.state = 'stats'
-
-
-    def make_arrow_pos_list(self):
-        """Make the list of possible arrow positions"""
-        pos_list = []
-
-        for i in range(4):
-            pos = (35, 356 + (i * 50))
-            pos_list.append(pos)
-
-        return pos_list
-
-
-
-    def make_state_dict(self):
-        """Make the dictionary of all menu states"""
-        state_dict = {'stats': self.select_main_options,
-                      'items': self.select_item,
-                      'magic': self.select_item}
-
-        return state_dict
-
-
-    def select_main_options(self, keys):
-        """Allow player to select items, magic, weapons and armor"""
-        self.info_box.update(self.state)
-        self.arrow.update(self.arrow_index)
-        self.check_for_input(keys)
 
 
     def check_for_input(self, keys):
         """Check for input"""
         if self.allow_input:
             if keys[pg.K_DOWN]:
-                if self.arrow_index < 3:
+                if self.arrow_index < len(self.arrow.pos_list) - 1:
                     self.arrow_index += 1
                     self.allow_input = False
             elif keys[pg.K_UP]:
                 if self.arrow_index > 0:
                     self.arrow_index -= 1
                     self.allow_input = False
+            elif keys[pg.K_RIGHT]:
+                if self.info_box.state == 'items':
+                    if not self.arrow.state == 'itemsubmenu':
+                        self.arrow_index = 0
+                    self.arrow.state = 'itemsubmenu'
+
+            elif keys[pg.K_LEFT]:
+                self.arrow.state = 'selectmenu'
+                self.arrow_index = 0
             elif keys[pg.K_SPACE]:
-                if self.arrow_index == 0:
-                    self.state = 'stats'
+                if self.arrow.state == 'selectmenu':
+                    if self.arrow_index == 0:
+                        self.info_box.state = 'stats'
 
-                elif self.arrow_index == 1:
-                    self.state = 'items'
+                    elif self.arrow_index == 1:
+                        self.info_box.state = 'items'
 
-                elif self.arrow_index == 2:
-                    self.state = 'magic'
+                    elif self.arrow_index == 2:
+                        self.info_box.state = 'magic'
 
-                elif self.arrow_index == 3:
-                    self.level.state = 'normal'
-                    self.arrow_index = 0
-                    self.state = 'stats'
+                    elif self.arrow_index == 3:
+                        self.level.state = 'normal'
+                        self.arrow_index = 0
+                        self.info_box.state = 'stats'
 
 
                 self.allow_input = False
@@ -338,16 +381,11 @@ class MenuGui(object):
             self.allow_input = True
 
 
-    def select_item(self, keys):
-        """Select item from list"""
-        self.info_box.update(self.state)
+    def update(self, keys):
+        self.info_box.update()
+        self.gold_box.update()
         self.arrow.update(self.arrow_index)
         self.check_for_input(keys)
-
-
-    def update(self, keys):
-        state_function = self.state_dict[self.state]
-        state_function(keys)
 
 
     def draw(self, surface):
