@@ -47,20 +47,16 @@ class DialogueBox(object):
 
         return image
 
-
-
     def update(self, keys, current_time):
         """Updates scrolling text"""
         self.current_time = current_time
         self.draw_box(current_time)
         self.terminate_check(keys)
 
-
     def draw_box(self, current_time, x=400):
         """Reveal dialogue on textbox"""
         self.image = self.make_dialogue_box_image()
         self.check_to_draw_arrow()
-
 
     def terminate_check(self, keys):
         """Remove textbox from sprite group after 2 seconds"""
@@ -69,7 +65,6 @@ class DialogueBox(object):
 
         if not keys[pg.K_SPACE]:
             self.allow_input = True
-
 
     def check_to_draw_arrow(self):
         """Blink arrow if more text needs to be read"""
@@ -83,7 +78,6 @@ class ItemBox(DialogueBox):
     """Text box for information like obtaining new items"""
     def __init__(self, dialogue, item=None):
         super(ItemBox, self).__init__(None, 0, 'infobox', item)
-
 
     def make_dialogue_box_image(self):
         """Make the image of the dialogue box"""

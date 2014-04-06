@@ -174,6 +174,7 @@ def create_game_data_dict():
                  'town start pos': [12, 49],
                  'castle start pos': [12, 26],
                  'house start pos': [12, 13],
+                 'overworld start pos': [12, 21],
                  'king item': {'gold': 500},
                  'player inventory': player_items,
                  'player stats': player_stats

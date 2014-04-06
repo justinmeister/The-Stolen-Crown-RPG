@@ -17,6 +17,7 @@ def create_town_sprite_sheet_dict():
     castle_door = setup.GFX['castledoor']
     medieval_signs = setup.GFX['medievalsigns']
     house = setup.GFX['house']
+    houseoverworld = setup.GFX['houseoverworld']
 
     tile_dict['pavement'] = get_tile(32, 48, tileset2)
     tile_dict['house wall'] = get_tile(64, 48, tileset2)
@@ -65,6 +66,60 @@ def create_town_sprite_sheet_dict():
     tile_dict['table'] = get_tile(82, 161, tileset3, 46, 32)
     tile_dict['fancy carpet'] = get_tile(112, 96, tileset3, 64, 64)
     tile_dict['column'] = get_tile(64, 96, tileset3, 16, 48)
+    tile_dict['bottomwater1'] = get_tile(16, 32, tileset2)
+    tile_dict['bottomwater2'] = get_tile(32, 32, tileset2)
+    tile_dict['bottomwater3'] = get_tile(48, 32, tileset2)
+    tile_dict['topwater1'] = get_tile(16, 0, tileset2)
+    tile_dict['topwater2'] = get_tile(32, 0, tileset2)
+    tile_dict['topwater3'] = get_tile(48, 0, tileset2)
+    tile_dict['leftwater1'] = get_tile(80, 0, tileset2)
+    tile_dict['leftwater2'] = get_tile(80, 16, tileset2)
+    tile_dict['leftwater3'] = get_tile(0, 16, tileset2)
+    tile_dict['rightwater1'] = get_tile(144, 0, tileset2)
+    tile_dict['rightwater2'] = get_tile(144, 16, tileset2)
+    tile_dict['rightwater3'] = get_tile(64, 16, tileset2)
+    tile_dict['houseoverworld'] = get_tile(0, 0, houseoverworld, 128, 128)
+
+    return tile_dict
+
+def create_layer1_tile_code_dict():
+    """Creates a dictionary of codes to tiles for layer 1"""
+    tile_dict = {'1': 'pavement',
+                 '2': 'house wall',
+                 '3': 'house roof',
+                 'T': 'tree',
+                 'W': 'well',
+                 'M': 'moat',
+                 'G': 'grass',
+                 'B': 'castle bridge',
+                 'V': 'left vert castle wall',
+                 'C': 'horiz castle wall',
+                 'X': 'right vert castle wall',
+                 'S': 'castle side',
+                 'Q': 'carpet topleft',
+                 'E': 'carpet topright',
+                 'J': 'carpet top',
+                 'R': 'carpet bottomleft',
+                 'U': 'carpet bottomright',
+                 'D': 'carpet bottom',
+                 'P': 'carpet left',
+                 'A': 'carpet right',
+                 'F': 'carpet center',
+                 'H': 'marble floor',
+                 'K': 'black tile',
+                 'L': 'topwater1',
+                 'N': 'topwater2',
+                 'Y': 'topwater3',
+                 'Z': 'leftwater1',
+                 '4': 'leftwater2',
+                 '5': 'leftwater3',
+                 '6': 'rightwater1',
+                 '7': 'rightwater2',
+                 '8': 'rightwater3',
+                 '9': 'bottomwater1',
+                 'a': 'bottomwater2',
+                 'b': 'bottomwater3'
+                }
 
     return tile_dict
 
@@ -97,7 +152,7 @@ def make_background(state_name, width, height):
     the town map will be blitted on"""
     size = (width*16, height*16)
     surface = pg.Surface(size)
-    if state_name == c.TOWN:
+    if state_name == c.TOWN or state_name == c.OVERWORLD:
         tile = get_image(0, 0, 16, 16, setup.GFX['tileset2'])
     else:
         tile = pg.Surface((16, 16))
@@ -123,97 +178,11 @@ def create_map_layer1(state, width, height):
 
     for row, line in enumerate(tile_map):
         for column, letter in enumerate(line):
-            if letter == '1':
-                tile = tile_dict['pavement']
+            if letter not in layer1_tile_code_dict:
+                pass
+            else:
+                tile = tile_dict[layer1_tile_code_dict[letter]]
                 blit_tile_to_map(tile, row, column, map)
-
-            elif letter == '2':
-                tile = tile_dict['house wall']
-                blit_tile_to_map(tile, row, column, map)
-
-            elif letter == '3':
-                tile = tile_dict['house roof']
-                blit_tile_to_map(tile, row, column, map)
-
-            elif letter == 'T':
-                tile = tile_dict['tree']
-                blit_tile_to_map(tile, row, column, map)
-
-            elif letter == 'W':
-                tile = tile_dict['well']
-                blit_tile_to_map(tile, row, column, map)
-
-            elif letter == 'M':
-                tile = tile_dict['moat']
-                blit_tile_to_map(tile, row, column, map)
-
-            elif letter == 'G':
-                tile = tile_dict['grass']
-                blit_tile_to_map(tile, row, column, map)
-
-            elif letter == 'B':
-                tile = tile_dict['castle bridge']
-                blit_tile_to_map(tile, row, column, map)
-
-            elif letter == 'C':
-                tile = tile_dict['horiz castle wall']
-                blit_tile_to_map(tile, row, column, map)
-
-            elif letter == 'V':
-                tile = tile_dict['left vert castle wall']
-                blit_tile_to_map(tile, row, column, map)
-
-            elif letter == 'X':
-                tile = tile_dict['right vert castle wall']
-                blit_tile_to_map(tile, row, column, map)
-
-            elif letter == 'S':
-                tile = tile_dict['castle side']
-                blit_tile_to_map(tile, row, column, map)
-
-            elif letter == 'Q':
-                tile = tile_dict['carpet topleft']
-                blit_tile_to_map(tile, row, column, map)
-
-            elif letter == 'E':
-                tile = tile_dict['carpet topright']
-                blit_tile_to_map(tile, row, column, map)
-
-            elif letter == 'J':
-                tile = tile_dict['carpet top']
-                blit_tile_to_map(tile, row, column, map)
-
-            elif letter == 'R':
-                tile = tile_dict['carpet bottomleft']
-                blit_tile_to_map(tile, row, column, map)
-
-            elif letter == 'U':
-                tile = tile_dict['carpet bottomright']
-                blit_tile_to_map(tile, row, column, map)
-
-            elif letter == 'D':
-                tile = tile_dict['carpet bottom']
-                blit_tile_to_map(tile, row, column, map)
-
-            elif letter == 'P':
-                tile = tile_dict['carpet left']
-                blit_tile_to_map(tile, row, column, map)
-
-            elif letter == 'A':
-                tile = tile_dict['carpet right']
-                blit_tile_to_map(tile, row, column, map)
-
-            elif letter == 'F':
-                tile = tile_dict['carpet center']
-                blit_tile_to_map(tile, row, column, map)
-
-            elif letter == 'H':
-                tile = tile_dict['marble floor']
-                blit_tile_to_map(tile, row, column, map)
-            elif letter == 'K':
-                tile = tile_dict['black tile']
-                blit_tile_to_map(tile, row, column, map)
-
 
     tile_map.close()
 
@@ -299,6 +268,9 @@ def create_map_layer2(state, width, height, file_name='layer2.txt'):
                 blit_tile_to_map(tile, row, column, map)
             elif letter == 'N':
                 tile = tile_dict['black tile']
+                blit_tile_to_map(tile, row, column, map)
+            elif letter == 'P':
+                tile = tile_dict['houseoverworld']
                 blit_tile_to_map(tile, row, column, map)
 
     tile_map.close()
@@ -453,6 +425,8 @@ def make_level_portals(state):
                 portal_group.add(portal.Portal(column, row, c.ARMOR_SHOP))
             elif letter == 'H':
                 portal_group.add(portal.Portal(column, row, c.HOUSE))
+            elif letter == 'J':
+                portal_group.add(portal.Portal(column, row, c.OVERWORLD))
 
     return portal_group
 
@@ -460,4 +434,5 @@ def make_level_portals(state):
 
 get_image = tools.get_image
 tile_dict = create_town_sprite_sheet_dict()
+layer1_tile_code_dict = create_layer1_tile_code_dict()
 

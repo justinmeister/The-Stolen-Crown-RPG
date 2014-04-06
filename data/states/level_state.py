@@ -21,8 +21,6 @@ class LevelState(tools._State):
         self.map_width = None
         self.map_height = None
 
-
-
     def startup(self, current_time, game_data):
         """Called when the State object is created"""
         self.game_data = game_data
@@ -57,7 +55,7 @@ class LevelState(tools._State):
 
     def set_sprite_dialogue(self):
         """Sets unique dialogue for each sprite"""
-        raise NotImplementedError
+        pass
 
 
     def make_state_dict(self):
@@ -152,18 +150,15 @@ class LevelState(tools._State):
         if self.dialogue_handler.textbox:
             self.state = 'dialogue'
 
-
     def update(self, surface, keys, current_time):
         """Updates state"""
         state_function = self.state_dict[self.state]
         state_function(surface, keys, current_time)
 
-
     def viewport_update(self):
         """Viewport stays centered on character, unless at edge of map"""
         self.viewport.center = self.player.rect.center
         self.viewport.clamp_ip(self.level_rect)
-
 
     def draw_level(self, surface):
         """Blits all images to screen"""

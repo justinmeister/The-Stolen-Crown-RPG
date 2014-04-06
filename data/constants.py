@@ -13,6 +13,7 @@ ARMOR_SHOP = 'armor shop'
 WEAPON_SHOP = 'weapon shop'
 MAGIC_SHOP = 'magic shop'
 HOUSE = 'house'
+OVERWORLD = 'overworld'
 
 ##Colors
 
