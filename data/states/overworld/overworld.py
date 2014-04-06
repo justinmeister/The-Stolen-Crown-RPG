@@ -10,8 +10,8 @@ class Overworld(level_state.LevelState):
     def __init__(self):
         super(Overworld, self).__init__()
         self.name = c.OVERWORLD
-        self.map_width = 25
-        self.map_height = 29
+        self.map_width = 30
+        self.map_height = 37
 
 
 
