@@ -19,6 +19,7 @@ class SheetSelectorBox(object):
         self.editor = editor
         self.rect_dict = self.make_rect_dict()
         self.rect_to_draw = self.rect_dict['tileset1']
+        self.tileset_selected = 'tileset1'
         self.draw_sheet_names()
 
     def make_rect_dict(self):
@@ -61,21 +62,48 @@ class SheetSelectorBox(object):
 
 class SpriteSheetDisplay(pg.sprite.Sprite):
     def __init__(self, selector):
-        self.image = setup.GFX['tileset1']
+        self.selector = selector
+        self.image = self.set_image()
         self.rect = self.image.get_rect(x=200)
 
+
+    def set_image(self):
+        key = self.selector.tileset_selected
+        sheet = setup.GFX[key]
+        rect = sheet.get_rect()
+        surface = pg.Surface(rect.size)
+        surface.blit(sheet, rect)
+
+        return surface
+
     def update(self):
-        pass
+        self.image = self.set_image()
 
     def draw(self, surface):
         surface.blit(self.image, self.rect)
+
+
+class NewMapGrid(object):
+    def __init__(self):
+        self.rect = pg.Rect(0, 200, 1200, 550)
+
+    def draw(self, surface):
+        pg.draw.rect(surface, c.NEAR_BLACK, self.rect)
+        self.draw_grid_lines(surface)
+
+    def draw_grid_lines(self, surface):
+        for column in range(self.rect.width/16):
+            pg.draw.line(surface, c.LIGHT_BLUE, (column*16, 200), (column*16, 750))
+            for row in range(self.rect.height/16):
+                pg.draw.line(surface, c.LIGHT_BLUE, (0, 200+(row*16)), (1200, 200+(row*16)))
+
 
 
 
 class MapCreator(object):
     """A simple map tile editor"""
     def __init__(self):
-        self.dimensions = sys.argv[-1]
+        self.dimensions = self.set_dimensions()
         self.screen = self.setup_pygame()
         self.screen_rect = self.screen.get_rect()
         self.clock = pg.time.Clock()
@@ -86,13 +114,25 @@ class MapCreator(object):
         self.click_point = None
         self.sheet_selector_box = SheetSelectorBox(self)
         self.spritesheet_display = SpriteSheetDisplay(self.sheet_selector_box)
+        self.new_map_grid = NewMapGrid()
+
+
+    def set_dimensions(self):
+        if sys.argv[-1] == 'map_editor.py':
+            dimensions = 10, 10
+        else:
+            dimensions = sys.argv[-1]
+
+        print dimensions
+
+        return dimensions
 
 
     def setup_pygame(self):
         """Set up pygame and return the main surface"""
         os.environ['SDL_VIDEO_CENTERED'] = '1'
         pg.init()
-        pg.display.set_mode((1100, 750))
+        pg.display.set_mode((1200, 750))
         surface = pg.display.get_surface()
         surface.fill(c.BLACK_BLUE)
 
@@ -116,8 +156,12 @@ class MapCreator(object):
 
     def update(self):
         self.sheet_selector_box.update()
+        self.spritesheet_display.update()
+
+        self.screen.fill(c.BLACK_BLUE)
         self.sheet_selector_box.draw(self.screen)
         self.spritesheet_display.draw(self.screen)
+        self.new_map_grid.draw(self.screen)
 
 
 if __name__ == "__main__":
