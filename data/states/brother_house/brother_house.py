@@ -12,7 +12,7 @@ from ... import constants as c
 class House(level_state.LevelState):
     def __init__(self):
         super(House, self).__init__()
-        self.name = c.HOUSE
+        self.name = c.BROTHER_HOUSE
         self.map_width = 25
         self.map_height = 19
 

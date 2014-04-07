@@ -50,11 +50,14 @@ class Control(object):
             if event.type == pg.QUIT:
                 self.done = True
             elif event.type == pg.KEYDOWN:
+                if event.key == pg.K_ESCAPE:
+                    self.done = True
                 self.keys = pg.key.get_pressed()
                 self.toggle_show_fps(event.key)
+                self.state.get_event(event)
             elif event.type == pg.KEYUP:
                 self.keys = pg.key.get_pressed()
-            self.state.get_event(event)
+                self.state.get_event(event)
 
     def toggle_show_fps(self, key):
         if key == pg.K_F5:
@@ -174,6 +177,7 @@ def create_game_data_dict():
                  'town start pos': [12, 49],
                  'castle start pos': [12, 26],
                  'house start pos': [12, 13],
+                 'brother_house start pos': [12, 13],
                  'overworld start pos': [17, 30],
                  'king item': {'gold': 500},
                  'player inventory': player_items,

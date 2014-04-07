@@ -4,6 +4,7 @@ from data.states.castle import castle
 from data.states import shop
 from data.states.house import house
 from data.states.overworld import overworld
+from data.states.brother_house import brother_house
 from . import setup, tools
 from . import constants as c
 
@@ -19,6 +20,7 @@ MAGIC_SHOP = 'magic shop'
 POTION_SHOP = 'potion shop'
 PLAYER_MENU = 'player menu'
 OVERWORLD = 'overworld'
+BROTHER_HOUSE = 'brother_house'
 
 
 def main():
@@ -33,7 +35,8 @@ def main():
                   WEAPON_SHOP: shop.WeaponShop(),
                   MAGIC_SHOP: shop.MagicShop(),
                   POTION_SHOP: shop.PotionShop(),
-                  OVERWORLD: overworld.Overworld()
+                  OVERWORLD: overworld.Overworld(),
+                  BROTHER_HOUSE: brother_house.House()
                   }
 
     run_it.setup_states(state_dict, c.MAIN_MENU)

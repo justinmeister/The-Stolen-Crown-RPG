@@ -127,6 +127,63 @@ def create_layer1_tile_code_dict():
 
     return tile_dict
 
+def create_layer2_tile_code_dict():
+    """Creates a dictionary of tile codes for layer 2"""
+    tile_dict = {'D': 'house door',
+                 'F': 'fence',
+                 '$': 'flower1',
+                 '*': 'flower2',
+                 'T': 'castle tower',
+                 'W': 'left vert castle wall',
+                 'M': 'main castle roof',
+                 'L': 'left castle roof piece',
+                 'R': 'right castle roof piece',
+                 '#': 'tree',
+                 'O': 'castle door',
+                 'Q': 'castle window',
+                 'A': 'banner1',
+                 'B': 'banner2',
+                 'C': 'banner3',
+                 'E': 'bed',
+                 'G': 'shelves',
+                 'H': 'chair',
+                 'I': 'table',
+                 'J': 'fancy carpet',
+                 'K': 'column',
+                 'N': 'black tile',
+                 'P': 'houseoverworld',
+                 '4': 'oldmanhouse',
+                 '5': 'evilcastle'
+    }
+
+    return tile_dict
+
+def create_layer3_tile_code_dict():
+    """Creates a dictionary of tile codes for layer 3"""
+    tile_dict = {'W': 'sword',
+                 'A': 'shield',
+                 'P': 'potion',
+                 'M': 'gem',
+                 'I': 'inn sign',
+                 'B': 'chair'}
+
+    return tile_dict
+
+def make_level_portals_code_dict():
+    """Make the dictionary for codes for level portals"""
+    portal_dict = {'A': c.CASTLE,
+                   'B': c.TOWN,
+                   'C': c.INN,
+                   'D': c.MAGIC_SHOP,
+                   'E': c.POTION_SHOP,
+                   'F': c.WEAPON_SHOP,
+                   'G': c.ARMOR_SHOP,
+                   'H': c.HOUSE,
+                   'J': c.OVERWORLD,
+                   'K': c.BROTHER_HOUSE
+    }
+
+    return portal_dict
 
 def get_tile(x, y, tileset, width=16, height=16, scale=1):
     """Gets the surface and rect for a tile"""
@@ -202,85 +259,16 @@ def create_map_layer2(state, width, height, file_name='layer2.txt'):
     """Creates doors and other items on top of the rest of the map"""
     map = make_background(None, width, height)
     map.set_colorkey(c.BLACK_BLUE)
+    layer2_tile_dict = create_layer2_tile_code_dict()
 
     tile_map = open(os.path.join('data', 'states', state, file_name), 'r')
 
     for row, line in enumerate(tile_map):
         for column, letter in enumerate(line):
-            if letter == 'D':
-                tile = tile_dict['house door']
-                blit_tile_to_map(tile, row, column, map)
-            elif letter == 'F':
-                tile = tile_dict['fence']
-                blit_tile_to_map(tile, row, column, map)
-            elif letter == '$':
-                tile = tile_dict['flower1']
-                blit_tile_to_map(tile, row, column, map)
-            elif letter == '*':
-                tile = tile_dict['flower2']
-                blit_tile_to_map(tile, row, column, map)
-            elif letter == 'T':
-                tile = tile_dict['castle tower']
-                blit_tile_to_map(tile, row, column, map)
-            elif letter == 'W':
-                tile = tile_dict['left vert castle wall']
-                blit_tile_to_map(tile, row, column, map)
-            elif letter == 'M':
-                tile = tile_dict['main castle roof']
-                blit_tile_to_map(tile, row, column, map)
-            elif letter == 'L':
-                tile = tile_dict['left castle roof piece']
-                blit_tile_to_map(tile, row, column, map)
-            elif letter == 'R':
-                tile = tile_dict['right castle roof piece']
-                blit_tile_to_map(tile, row, column, map)
-            elif letter == '#':
-                tile = tile_dict['tree']
-                blit_tile_to_map(tile, row, column, map)
-            elif letter == 'O':
-                tile = tile_dict['castle door']
-                blit_tile_to_map(tile, row, column, map)
-            elif letter == 'Q':
-                tile = tile_dict['castle window']
-                blit_tile_to_map(tile, row, column, map)
-            elif letter == 'A':
-                tile = tile_dict['banner1']
-                blit_tile_to_map(tile, row, column, map)
-            elif letter == 'B':
-                tile = tile_dict['banner2']
-                blit_tile_to_map(tile, row, column, map)
-            elif letter == 'C':
-                tile = tile_dict['banner3']
-                blit_tile_to_map(tile, row, column, map)
-            elif letter == 'E':
-                tile = tile_dict['bed']
-                blit_tile_to_map(tile, row, column, map)
-            elif letter == 'G':
-                tile = tile_dict['shelves']
-                blit_tile_to_map(tile, row, column, map)
-            elif letter == 'H':
-                tile = tile_dict['chair']
-                blit_tile_to_map(tile, row, column, map)
-            elif letter == 'I':
-                tile = tile_dict['table']
-                blit_tile_to_map(tile, row, column, map)
-            elif letter == 'J':
-                tile = tile_dict['fancy carpet']
-                blit_tile_to_map(tile, row, column, map)
-            elif letter == 'K':
-                tile = tile_dict['column']
-                blit_tile_to_map(tile, row, column, map)
-            elif letter == 'N':
-                tile = tile_dict['black tile']
-                blit_tile_to_map(tile, row, column, map)
-            elif letter == 'P':
-                tile = tile_dict['houseoverworld']
-                blit_tile_to_map(tile, row, column, map)
-            elif letter == '4':
-                tile = tile_dict['oldmanhouse']
-                blit_tile_to_map(tile, row, column, map)
-            elif letter == '5':
-                tile = tile_dict['evilcastle']
+            if letter not in layer2_tile_dict:
+                pass
+            else:
+                tile = tile_dict[layer2_tile_dict[letter]]
                 blit_tile_to_map(tile, row, column, map)
 
     tile_map.close()
@@ -302,33 +290,19 @@ def scale_map(map):
 def create_map_layer3(map, state):
     """Layers for images that are already 32x32"""
     tile_map = open(os.path.join('data', 'states', state, 'layer3.txt'), 'r')
+    layer3_tile_dict = create_layer3_tile_code_dict()
 
     for row, line in enumerate(tile_map):
         for column, letter in enumerate(line):
-            if letter == 'W':
-                tile = tile_dict['sword']
+            if letter not in layer3_tile_dict:
+                pass
+            else:
+                tile = tile_dict[layer3_tile_dict[letter]]
                 blit_tile_to_map(tile, row, column, map, 32)
-            elif letter == 'A':
-                tile = tile_dict['shield']
-                blit_tile_to_map(tile, row, column, map, 32)
-            elif letter == 'P':
-                tile = tile_dict['potion']
-                blit_tile_to_map(tile, row, column, map, 32)
-            elif letter == 'M':
-                tile = tile_dict['gem']
-                blit_tile_to_map(tile, row, column, map, 32)
-            elif letter == 'I':
-                tile = tile_dict['inn sign']
-                blit_tile_to_map(tile, row, column, map, 32)
-            elif letter == 'B':
-                tile = tile_dict['chair']
-                blit_tile_to_map(tile, row, column, map, 32)
-
 
     tile_map.close()
 
     return map
-
 
 
 def blit_tile_to_map(tile, row, column, map, side_length=16):
@@ -415,31 +389,18 @@ def set_sprite_positions(player, level_sprites, state, game_data):
 def make_level_portals(state):
     """Create portals to different levels on doors"""
     tile_map = open(os.path.join('data', 'states', state, 'portals.txt'), 'r')
+    portal_code_dict = make_level_portals_code_dict()
     portal_group = pg.sprite.Group()
 
     for row, line in enumerate(tile_map):
         for column, letter in enumerate(line):
-            if letter == 'A':
-                portal_group.add(portal.Portal(column, row, c.CASTLE))
-            elif letter == 'B':
-                portal_group.add(portal.Portal(column, row, c.TOWN))
-            elif letter == 'C':
-                portal_group.add(portal.Portal(column, row, c.INN))
-            elif letter == 'D':
-                portal_group.add(portal.Portal(column, row, c.MAGIC_SHOP))
-            elif letter == 'E':
-                portal_group.add(portal.Portal(column, row, c.POTION_SHOP))
-            elif letter == 'F':
-                portal_group.add(portal.Portal(column, row, c.WEAPON_SHOP))
-            elif letter == 'G':
-                portal_group.add(portal.Portal(column, row, c.ARMOR_SHOP))
-            elif letter == 'H':
-                portal_group.add(portal.Portal(column, row, c.HOUSE))
-            elif letter == 'J':
-                portal_group.add(portal.Portal(column, row, c.OVERWORLD))
+            if letter not in portal_code_dict:
+                pass
+            else:
+                portal_group.add(portal.Portal(
+                    column, row, portal_code_dict[letter]))
 
     return portal_group
-
 
 
 get_image = tools.get_image
