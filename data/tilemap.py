@@ -18,6 +18,8 @@ def create_town_sprite_sheet_dict():
     medieval_signs = setup.GFX['medievalsigns']
     house = setup.GFX['house']
     houseoverworld = setup.GFX['houseoverworld']
+    oldmanhouse = setup.GFX['house1']
+    evilcastle = setup.GFX['evilcastle']
 
     tile_dict['pavement'] = get_tile(32, 48, tileset2)
     tile_dict['house wall'] = get_tile(64, 48, tileset2)
@@ -79,6 +81,8 @@ def create_town_sprite_sheet_dict():
     tile_dict['rightwater2'] = get_tile(144, 16, tileset2)
     tile_dict['rightwater3'] = get_tile(64, 16, tileset2)
     tile_dict['houseoverworld'] = get_tile(0, 0, houseoverworld, 128, 128)
+    tile_dict['oldmanhouse'] = get_tile(0, 0, oldmanhouse, 32, 32)
+    tile_dict['evilcastle'] = get_tile(0, 0, evilcastle, 128, 128)
 
     return tile_dict
 
@@ -271,6 +275,12 @@ def create_map_layer2(state, width, height, file_name='layer2.txt'):
                 blit_tile_to_map(tile, row, column, map)
             elif letter == 'P':
                 tile = tile_dict['houseoverworld']
+                blit_tile_to_map(tile, row, column, map)
+            elif letter == '4':
+                tile = tile_dict['oldmanhouse']
+                blit_tile_to_map(tile, row, column, map)
+            elif letter == '5':
+                tile = tile_dict['evilcastle']
                 blit_tile_to_map(tile, row, column, map)
 
     tile_map.close()
