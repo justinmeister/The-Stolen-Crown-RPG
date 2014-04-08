@@ -85,7 +85,7 @@ class Gui(object):
         surface = pg.Surface(rect.size)
         surface.set_colorkey(c.BLACK)
         surface.blit(image, (0, 0))
-        gold = self.player_inventory['gold']
+        gold = self.player_inventory['GOLD']['quantity']
         text = 'Gold: ' + str(gold)
         text_render = self.font.render(text, True, c.NEAR_BLACK)
         text_rect = text_render.get_rect(x=80, y=60)
@@ -268,16 +268,16 @@ class Gui(object):
         """Attempt to allow player to purchase item"""
         item = self.item_to_be_purchased
 
-        self.player_inventory['gold'] -= item['price']
+        self.player_inventory['GOLD']['quantity'] -= item['price']
 
-        if self.player_inventory['gold'] < 0:
-            self.player_inventory['gold'] += item['price']
+        if self.player_inventory['GOLD']['quantity'] < 0:
+            self.player_inventory['GOLD']['quantity'] += item['price']
             self.state = 'reject'
         else:
             if (item['type'] in self.player_inventory
                 and self.name == 'Magic Shop'):
                     self.state = 'hasitem'
-                    self.player_inventory['gold'] += item['price']
+                    self.player_inventory['gold']['quantity'] += item['price']
             else:
                 self.state = 'accept'
                 self.add_player_item(item)

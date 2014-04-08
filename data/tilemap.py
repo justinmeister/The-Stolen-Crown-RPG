@@ -382,6 +382,9 @@ def set_sprite_positions(player, level_sprites, state, game_data):
             elif letter == 'H':
                 old_villager = person.OldMan(column*32, row*32)
                 level_sprites.add(old_villager)
+            elif letter == 'J':
+                old_brother = person.OldManBrother(column*32, row*32)
+                level_sprites.add(old_brother)
 
     tile_map.close()
 

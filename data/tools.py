@@ -155,7 +155,9 @@ def get_image(x, y, width, height, sprite_sheet):
 def create_game_data_dict():
     """Create a dictionary of persistant values the player
     carries between states"""
-    player_items = {'gold': 600}
+
+    player_items = {'GOLD': dict([('quantity',600),
+                                  ('value',0)])}
 
     player_health = {'current': 100,
                      'maximum': 100}
@@ -179,7 +181,10 @@ def create_game_data_dict():
                  'house start pos': [12, 13],
                  'brother_house start pos': [12, 13],
                  'overworld start pos': [17, 30],
-                 'king item': {'gold': 500},
+                 'king item': {'GOLD': dict([('quantity', 500),
+                                             ('value',0)])},
+                 'old man item': {'ELIXIR': dict([('value',1000),
+                                                  ('quantity',1)])},
                  'player inventory': player_items,
                  'player stats': player_stats
     }

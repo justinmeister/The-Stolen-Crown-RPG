@@ -36,7 +36,6 @@ class Person(pg.sprite.Sprite):
         self.item = None
         self.wander_box = self.make_wander_box()
 
-
     def create_spritesheet_dict(self, sheet_key):
         """Implemented by inheriting classes"""
         image_list = []
@@ -58,7 +57,6 @@ class Person(pg.sprite.Sprite):
 
         return image_dict
 
-
     def create_animation_dict(self):
         """Return a dictionary of image lists for animation"""
         image_dict = self.spritesheet_dict
@@ -75,7 +73,6 @@ class Person(pg.sprite.Sprite):
 
         return direction_dict
 
-
     def create_state_dict(self):
         """Return a dictionary of all state methods"""
         state_dict = {'resting': self.resting,
@@ -86,7 +83,6 @@ class Person(pg.sprite.Sprite):
 
         return state_dict
 
-
     def create_vector_dict(self):
         """Return a dictionary of x and y velocities set to
         direction keys."""
@@ -96,7 +92,6 @@ class Person(pg.sprite.Sprite):
                        'right': (1, 0)}
 
         return vector_dict
-
 
     def update(self, current_time, *args):
         """Implemented by inheriting classes"""
@@ -290,7 +285,6 @@ class Person(pg.sprite.Sprite):
             'Not centered on tile'
 
 
-
 class Player(Person):
     """User controlled character"""
 
@@ -371,8 +365,13 @@ class Devil(Person):
 
 class OldMan(Person):
     """Old man villager"""
-    def __init__(self, x, y, direction='down', state='resting'):
-        super(OldMan, self).__init__('oldman', x, y, direction, state)
+    def __init__(self, x, y, filename='oldman', direction='down', state='resting'):
+        super(OldMan, self).__init__(filename, x, y, direction, state)
+
+class OldManBrother(OldMan):
+    """Brother of Old Man"""
+    def __init__(self, x, y):
+        super(OldManBrother, self).__init__(x, y, 'oldmanbrother')
 
 
 class Well(pg.sprite.Sprite):

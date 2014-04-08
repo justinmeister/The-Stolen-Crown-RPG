@@ -19,9 +19,8 @@ class House(level_state.LevelState):
     def set_sprite_dialogue(self):
         """Sets unique dialogue for each sprite"""
         for sprite in self.sprites:
-            if sprite.location == [14, 6]:
-                sprite.dialogue = ["I am very sick.   cough... cough...",
-                                   "Only an ELIXIR can help me.",
-                                   "Please go to my brother and obtain one for me.",
-                                   "He lives in a house on the NorthEast shores.",
-                                   "I will be forever in your debt."]
+            if sprite.location == [9, 6]:
+                sprite.dialogue = ["My brother is sick?!?",
+                                   "I haven't seen him in years.  I had no idea he was not well.",
+                                   "Quick, take this ELIXIR to him immediately."]
+                sprite.item = self.game_data['old man item']

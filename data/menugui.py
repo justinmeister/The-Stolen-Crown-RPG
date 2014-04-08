@@ -57,7 +57,8 @@ class SmallArrow(pg.sprite.Sprite):
                     (310, 223),
                     (310, 323),
                     (310, 373),
-                    (310, 478)]
+                    (310, 478),
+                    (310, 528)]
 
         return pos_list
 
@@ -89,7 +90,7 @@ class GoldBox(pg.sprite.Sprite):
         surface.set_colorkey(c.BLACK)
         surface.blit(image, (0, 0))
 
-        text = "Gold: " + str(self.inventory['gold'])
+        text = "Gold: " + str(self.inventory['GOLD']['quantity'])
         text_render = self.font.render(text, True, c.NEAR_BLACK)
         text_rect = text_render.get_rect(centerx=130,
                                          centery=35)
@@ -122,12 +123,12 @@ class InfoBox(pg.sprite.Sprite):
         self.sword = self.get_tile(96, 0, setup.GFX['shopsigns'], 32, 32)
         self.shield = self.get_tile(64, 0, setup.GFX['shopsigns'], 32, 32)
         self.potion = self.get_tile(32, 0, setup.GFX['shopsigns'], 32, 32)
-        self.possible_potions = ['Healing Potion']
+        self.possible_potions = ['Healing Potion', 'ELIXIR']
         self.possible_armor = ['Wooden Shield', 'Chain Mail']
         self.possible_weapons = ['Long Sword', 'Rapier']
         self.possible_magic = ['Fire Blast', 'Cure']
-        self.quantity_items = ['Healing Potion']
-        self.slots = [None for i in range(5)]
+        self.quantity_items = ['Healing Potion', 'ELIXIR']
+        self.slots = [None for i in range(6)]
         self.state = 'stats'
         self.state_dict = self.make_state_dict()
         self.print_slots = True
@@ -192,7 +193,6 @@ class InfoBox(pg.sprite.Sprite):
         surface.blit(self.shield['surface'], self.shield['rect'])
         surface.blit(self.potion['surface'], self.potion['rect'])
 
-
         self.image = surface
         self.rect = rect
 
@@ -213,6 +213,9 @@ class InfoBox(pg.sprite.Sprite):
 
         if len(potions) == 2:
             self.slots[4] = potions[1]
+        elif len(potions) == 3:
+            self.slots[4] = potions[1]
+            self.slots[5] = potions[2]
 
 
 

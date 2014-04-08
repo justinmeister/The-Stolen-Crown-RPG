@@ -87,7 +87,7 @@ class ItemBox(DialogueBox):
 
         if self.item:
             type = list(self.item.keys())[0]
-            total = str(self.item[type])
+            total = str(self.item[type]['quantity'])
             dialogue = 'You received ' + total + ' ' + type + '.'
             self.dialogue_list = [dialogue]
             self.item = None
@@ -180,12 +180,23 @@ class TextHandler(object):
     def check_for_item(self):
         """Checks if sprite has an item to give to the player"""
         item = self.talking_sprite.item
+        type = list(item.keys())[0]
+        quantity = item[type]['quantity']
+        value = item[type]['value']
+
         if item:
-            if 'gold' in item:
-                self.game_data['player inventory']['gold'] += item['gold']
+            if type in self.game_data['player inventory']:
+                self.game_data['player inventory'][type]['quantity'] += item[type]['quantity']
+            else:
+                self.game_data['player inventory'][type] = {'quantity': quantity,
+                                                            'value': value}
+
             self.talking_sprite.item = None
+
             if self.talking_sprite.name == 'king':
                 self.game_data['king item'] = None
+            elif self.talking_sprite.name == 'oldmanbrother':
+                self.game_data['old man item'] = None
 
         return item
 
