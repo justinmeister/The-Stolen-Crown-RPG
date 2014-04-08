@@ -5,7 +5,7 @@ from ... import constants as c
 class Menu(tools._State):
     def __init__(self):
         super(Menu, self).__init__()
-        self.next = c.BROTHER_HOUSE
+        self.next = c.OVERWORLD
         self.surface = setup.SCREEN
         self.rect = self.surface.get_rect()
         text = 'Arrows for navigation, space for input, Enter/Return for menu'

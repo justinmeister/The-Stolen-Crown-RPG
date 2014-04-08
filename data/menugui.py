@@ -373,7 +373,7 @@ class MenuGui(object):
                 self.allow_input = False
             elif keys[pg.K_RETURN]:
                 self.level.state = 'normal'
-                self.state = 'stats'
+                self.info_box.state = 'stats'
                 self.allow_input = False
                 self.arrow_index = 0
 
