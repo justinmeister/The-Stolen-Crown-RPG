@@ -21,6 +21,7 @@ POTION_SHOP = 'potion shop'
 PLAYER_MENU = 'player menu'
 OVERWORLD = 'overworld'
 BROTHER_HOUSE = 'brother_house'
+BATTLE = 'battle'
 
 
 def main():

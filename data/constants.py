@@ -15,6 +15,7 @@ MAGIC_SHOP = 'magic shop'
 HOUSE = 'house'
 OVERWORLD = 'overworld'
 BROTHER_HOUSE = 'brother_house'
+BATTLE = 'battle'
 
 ##Colors
 

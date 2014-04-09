@@ -291,7 +291,6 @@ class Player(Person):
     def __init__(self, direction, x=0, y=0):
         super(Player, self).__init__('player', x, y, direction)
 
-
     def create_vector_dict(self):
         """Return a dictionary of x and y velocities set to
         direction keys."""
@@ -302,7 +301,6 @@ class Player(Person):
 
         return vector_dict
 
-
     def update(self, keys, current_time):
         """Updates player behavior"""
         self.blockers = self.set_blockers()
@@ -312,7 +310,6 @@ class Player(Person):
         state_function = self.state_dict[self.state]
         state_function()
         self.location = self.get_tile_location()
-
 
     def check_for_input(self):
         """Checks for player input"""
