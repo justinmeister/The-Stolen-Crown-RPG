@@ -277,7 +277,7 @@ class Gui(object):
             if (item['type'] in self.player_inventory
                 and self.name == 'Magic Shop'):
                     self.state = 'hasitem'
-                    self.player_inventory['gold']['quantity'] += item['price']
+                    self.player_inventory['GOLD']['quantity'] += item['price']
             else:
                 self.state = 'accept'
                 self.add_player_item(item)
@@ -316,7 +316,7 @@ class Gui(object):
             if self.arrow_index < (len(choices) - 1):
                 self.arrow_index += 1
                 self.allow_input = False
-        elif keys[pg.K_UP]:
+        elif keys[pg.K_UP] and self.allow_input:
             if self.arrow_index > 0:
                 self.arrow_index -= 1
                 self.allow_input = False
