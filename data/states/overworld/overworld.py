@@ -5,13 +5,14 @@ the tilemap.txt files in this state's directory.
 
 from .. import level_state
 from ... import constants as c
+from ... import setup
 
 class Overworld(level_state.LevelState):
     def __init__(self):
         super(Overworld, self).__init__()
         self.name = c.OVERWORLD
-        self.map_width = 30
-        self.map_height = 37
+        self.tmx_map = setup.TMX['overworld']
+
 
 
 

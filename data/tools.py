@@ -132,6 +132,10 @@ def load_all_fonts(directory, accept=('.ttf')):
     return load_all_music(directory, accept)
 
 
+def load_all_tmx(directory, accept=('.tmx')):
+    return load_all_music(directory, accept)
+
+
 def load_all_sfx(directory, accept=('.wav','.mp3','.ogg','.mdi')):
     effects = {}
     for fx in os.listdir(directory):
