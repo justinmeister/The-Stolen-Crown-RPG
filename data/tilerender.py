@@ -1,9 +1,10 @@
 """
 This is a test of using the pytmx library with Tiled.
 """
-import sys
 import pygame as pg
-import pytmx
+
+from . import pytmx
+
 
 class Renderer(object):
     """

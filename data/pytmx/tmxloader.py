@@ -1,8 +1,11 @@
 import itertools
 import os
+
 import pygame
-import pytmx
+
+from data.pytmx import pytmx
 from .constants import *
+
 
 __all__ = ['load_pygame', 'load_tmx']
 
