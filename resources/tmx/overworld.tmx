@@ -162,5 +162,11 @@
     <property name="state" value="main menu"/>
    </properties>
   </object>
+  <object name="portal" type="brotherhouse" gid="139" x="400" y="144"/>
+  <object name="start point" gid="123" x="400" y="160">
+   <properties>
+    <property name="state" value="brotherhouse"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

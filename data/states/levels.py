@@ -106,14 +106,15 @@ class LevelState(tools._State):
         for object in self.renderer.tmx_data.getObjects():
             properties = object.__dict__
             if properties['name'] == 'sprite':
-                left = properties['x'] * 2
-                top = ((properties['y']) * 2) - 32
+                x = properties['x'] * 2
+                y = ((properties['y']) * 2) - 32
 
-                sprite_dict = {'oldman': person.OldMan(left, top),
-                               'bluedressgirl': person.FemaleVillager(left, top, 'right'),
-                               'femalewarrior': person.FemaleVillager2(left, top),
-                               'devil': person.Devil(left, top)}
-
+                sprite_dict = {'oldman': person.Person('oldman', x, y, 'down'),
+                               'bluedressgirl': person.Person('femalevillager', x, y, 'right', 'resting', 1),
+                               'femalewarrior': person.Person('femvillager2', x, y, 'down', 'autoresting'),
+                               'devil': person.Person('devil', x, y, 'down', 'autoresting'),
+                               'oldmanbrother': person.Person('oldmanbrother', x, y, 'down')}
+                
                 sprite = sprite_dict[properties['type']]
                 self.assign_dialogue(sprite, properties)
                 sprites.add(sprite)

@@ -7,16 +7,13 @@ class Person(pg.sprite.Sprite):
     """Base class for all world characters
     controlled by the computer"""
 
-    def __init__(self, sheet_key, x, y, direction='right', state='resting'):
+    def __init__(self, sheet_key, x, y, direction='down', state='resting', index=0):
         super(Person, self).__init__()
         self.name = sheet_key
         self.get_image = setup.tools.get_image
         self.spritesheet_dict = self.create_spritesheet_dict(sheet_key)
         self.animation_dict = self.create_animation_dict()
-        if direction == 'left':
-            self.index = 1
-        else:
-            self.index = 0
+        self.index = index
         self.direction = direction
         self.image_list = self.animation_dict[self.direction]
         self.image = self.image_list[self.index]
@@ -130,10 +127,10 @@ class Person(pg.sprite.Sprite):
 
         return blockers
 
-
-
     def get_tile_location(self):
-        """Converts pygame coordinates into tile coordinates"""
+        """
+        Convert pygame coordinates into tile coordinates.
+        """
         if self.rect.x == 0:
             tile_x = 0
         elif self.rect.x % 32 == 0:
@@ -141,12 +138,10 @@ class Person(pg.sprite.Sprite):
         else:
             tile_x = 0
 
-
         if self.rect.y == 0:
             tile_y = 0
         elif self.rect.y % 32 == 0:
             tile_y = (self.rect.y / 32)
-
         else:
             tile_y = 0
 
@@ -154,8 +149,10 @@ class Person(pg.sprite.Sprite):
 
 
     def make_wander_box(self):
-        """Make a list of rects that surround the initial location
-        of a sprite to limit his/her wandering"""
+        """
+        Make a list of rects that surround the initial location
+        of a sprite to limit his/her wandering.
+        """
         x = int(self.location[0])
         y = int(self.location[1])
         box_list = []
@@ -189,21 +186,21 @@ class Person(pg.sprite.Sprite):
         assert(self.rect.x % 32 == 0), ('Player not centered on tile'
                                         + str(self.rect.x))
 
-
     def moving(self):
-        """Increment index and set self.image for animation."""
+        """
+        Increment index and set self.image for animation.
+        """
         self.animation()
-
         assert(self.rect.x % 32 == 0 or self.rect.y % 32 == 0), \
             'Not centered on tile'
-
 
     def animated_resting(self):
         self.animation(500)
 
-
     def animation(self, freq=100):
-        """Adjust sprite image frame based on timer"""
+        """
+        Adjust sprite image frame based on timer.
+        """
         if (self.current_time - self.timer) > freq:
             if self.index < (len(self.image_list) - 1):
                 self.index += 1
@@ -213,10 +210,10 @@ class Person(pg.sprite.Sprite):
 
         self.image = self.image_list[self.index]
 
-
-
     def begin_moving(self, direction):
-        """Transition the player into the 'moving' state."""
+        """
+        Transition the player into the 'moving' state.
+        """
         self.direction = direction
         self.image_list = self.animation_dict[direction]
         self.timer = self.current_time
@@ -230,14 +227,17 @@ class Person(pg.sprite.Sprite):
 
 
     def begin_resting(self):
-        """Transition the player into the 'resting' state."""
+        """
+        Transition the player into the 'resting' state.
+        """
         self.state = 'resting'
         self.index = 1
         self.x_vel = self.y_vel = 0
 
-
     def begin_auto_moving(self, direction):
-        """Transition sprite to a automatic moving state"""
+        """
+        Transition sprite to a automatic moving state.
+        """
         self.direction = direction
         self.image_list = self.animation_dict[direction]
         self.state = 'automoving'
@@ -245,9 +245,10 @@ class Person(pg.sprite.Sprite):
         self.y_vel = self.vector_dict[direction][1]
         self.move_timer = self.current_time
 
-
     def begin_auto_resting(self):
-        """Transition sprite to an automatic resting state"""
+        """
+        Transition sprite to an automatic resting state.
+        """
         self.state = 'autoresting'
         self.index = 1
         self.x_vel = self.y_vel = 0
@@ -275,10 +276,10 @@ class Person(pg.sprite.Sprite):
             self.begin_auto_moving(direction)
             self.move_timer = self.current_time
 
-
-
     def auto_moving(self):
-        """Animate sprite and check to stop"""
+        """
+        Animate sprite and check to stop.
+        """
         self.animation()
 
         assert(self.rect.x % 32 == 0 or self.rect.y % 32 == 0), \
@@ -286,7 +287,9 @@ class Person(pg.sprite.Sprite):
 
 
 class Player(Person):
-    """User controlled character"""
+    """
+    User controlled character.
+    """
 
     def __init__(self, direction, x=0, y=0):
         super(Player, self).__init__('player', x, y, direction)
@@ -330,45 +333,6 @@ class Soldier(Person):
 
     def __init__(self, x, y, direction='down', state='resting'):
         super(Soldier, self).__init__('soldier', x, y, direction, state)
-
-
-
-class FemaleVillager(Person):
-    """Female Person for town"""
-
-    def __init__(self, x, y, direction='down', state='resting'):
-        super(FemaleVillager, self).__init__('femalevillager', x, y, direction, state)
-        self.index = 1
-
-
-class FemaleVillager2(Person):
-    """A second female person for town"""
-    def __init__(self, x, y, direction='down'):
-        super(FemaleVillager2, self).__init__('femvillager2', x, y, direction, 'autoresting')
-        self.index = 1
-
-
-class King(Person):
-    """King of the town"""
-    def __init__(self, x, y, direction='down', state='resting'):
-        super(King, self).__init__('king', x, y, direction, state)
-
-
-class Devil(Person):
-    """Devil-like villager"""
-    def __init__(self, x, y, direction='down', state='autoresting'):
-        super(Devil, self).__init__('devil', x, y, direction, state)
-
-
-class OldMan(Person):
-    """Old man villager"""
-    def __init__(self, x, y, direction='down', state='resting'):
-        super(OldMan, self).__init__('oldman', x, y, direction, state)
-
-class OldManBrother(OldMan):
-    """Brother of Old Man"""
-    def __init__(self, x, y):
-        super(OldManBrother, self).__init__(x, y, 'oldmanbrother')
 
 
 class Well(pg.sprite.Sprite):

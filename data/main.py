@@ -16,7 +16,7 @@ MAGIC_SHOP = 'magic shop'
 POTION_SHOP = 'potion shop'
 PLAYER_MENU = 'player menu'
 OVERWORLD = 'overworld'
-BROTHER_HOUSE = 'brother_house'
+BROTHER_HOUSE = 'brotherhouse'
 BATTLE = 'battle'
 
 
@@ -27,6 +27,7 @@ def main():
                   TOWN: levels.LevelState(TOWN),
                   HOUSE: levels.LevelState(HOUSE),
                   OVERWORLD: levels.LevelState(OVERWORLD),
+                  BROTHER_HOUSE: levels.LevelState(BROTHER_HOUSE),
                   INN: shop.Inn(),
                   ARMOR_SHOP: shop.ArmorShop(),
                   WEAPON_SHOP: shop.WeaponShop(),
