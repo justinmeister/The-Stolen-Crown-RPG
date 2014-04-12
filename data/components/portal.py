@@ -9,5 +9,5 @@ class Portal(pg.sprite.Sprite):
         super(Portal, self).__init__()
         self.image = pg.Surface((32, 32))
         self.image.fill(c.BLACK)
-        self.rect = pg.Rect(x*32, y*32, 32, 32)
+        self.rect = pg.Rect(x, y, 32, 32)
         self.name = name

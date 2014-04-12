@@ -26,13 +26,6 @@
   </data>
  </layer>
  <objectgroup name="Object Layer 1" width="30" height="37">
-  <object name="Player start" x="272" y="480" width="16" height="16">
-   <properties>
-    <property name="person" value="player"/>
-    <property name="posx" value="17"/>
-    <property name="posy" value="30"/>
-   </properties>
-  </object>
   <object name="blocker" gid="120" x="288" y="512"/>
   <object name="blocker" gid="120" x="304" y="512"/>
   <object name="blocker" gid="120" x="320" y="512"/>
@@ -157,5 +150,16 @@
   <object name="blocker" gid="120" x="96" y="64"/>
   <object name="blocker" gid="120" x="96" y="80"/>
   <object name="blocker" gid="120" x="96" y="96"/>
+  <object name="portal" gid="139" x="272" y="480">
+   <properties>
+    <property name="new state" value="town"/>
+   </properties>
+  </object>
+  <object name="portal" gid="139" x="256" y="480">
+   <properties>
+    <property name="new state" value="town"/>
+   </properties>
+  </object>
+  <object name="player start" gid="123" x="272" y="496"/>
  </objectgroup>
 </map>

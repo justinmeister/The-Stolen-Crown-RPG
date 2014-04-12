@@ -9,8 +9,7 @@ found in the tools.py module.
 import copy
 import pygame as pg
 from .. import tools, collision
-from .. import tilemap as tm
-from .. components import person, textbox
+from .. components import person, textbox, portal
 from . import player_menu
 from .. import tilerender
 from .. import setup
@@ -53,7 +52,7 @@ class LevelState(tools._State):
 
         self.dialogue_handler = textbox.TextHandler(self)
         self.state_dict = self.make_state_dict()
-        #self.portals = tm.make_level_portals(self.name)
+        self.portals = self.make_level_portals()
         self.menu_screen = player_menu.Player_Menu(game_data, self)
 
     def make_viewport(self, map_image):
@@ -64,7 +63,12 @@ class LevelState(tools._State):
     def make_level_surface(self, map_image):
         """Creates the surface all images are blitted to"""
         map_rect = map_image.get_rect()
-        size = map_rect.size
+        map_width = map_rect.width
+        if self.name == 'town':
+            map_height = map_rect.height - 32
+        else:
+            map_height = map_rect.height
+        size = map_width, map_height
         return pg.Surface(size).convert()
 
     def make_player(self):
@@ -72,10 +76,12 @@ class LevelState(tools._State):
         player = person.Player(self.game_data['last direction'])
 
         for object in self.renderer.tmx_data.getObjects():
-            property_dict = object.__dict__
-            if property_dict['name'] == 'Player start':
-                player.rect.x = int(property_dict['posx']) * 32
-                player.rect.y = int(property_dict['posy']) * 32
+            properties = object.__dict__
+            if properties['name'] == 'player start':
+                posx = properties['x'] * 2
+                posy = (properties['y'] * 2) - 32
+                player.rect.x = posx
+                player.rect.y = posy
 
         return player
 
@@ -107,6 +113,21 @@ class LevelState(tools._State):
 
         return state_dict
 
+    def make_level_portals(self):
+        """Make the portals to switch state"""
+        portal_group = pg.sprite.Group()
+
+        for object in self.renderer.tmx_data.getObjects():
+            properties = object.__dict__
+            if properties['name'] == 'portal':
+                posx = properties['x'] * 2
+                posy = (properties['y'] * 2) - 32
+                new_state = properties['new state']
+                portal_group.add(portal.Portal(posx, posy, new_state))
+
+
+        return portal_group
+
 
     def running_normally(self, surface, keys, current_time):
         """Update level normally"""
@@ -124,16 +145,14 @@ class LevelState(tools._State):
 
     def check_for_portals(self):
         """Check if the player walks into a door, requiring a level change"""
-        """
         portal = pg.sprite.spritecollideany(self.player, self.portals)
 
         if portal and self.player.state == 'resting':
             self.player.location = self.player.get_tile_location()
             self.next = portal.name
+            print self.next
             self.update_game_data()
             self.done = True
-        """
-        pass
 
 
     def check_for_menu(self, keys):
@@ -209,8 +228,6 @@ class LevelState(tools._State):
         self.level_surface.blit(self.map_image, self.viewport, self.viewport)
         self.level_surface.blit(self.player.image, self.player.rect)
         self.sprites.draw(self.level_surface)
-
-
 
         surface.blit(self.level_surface, (0, 0), self.viewport)
         self.dialogue_handler.draw(surface)
