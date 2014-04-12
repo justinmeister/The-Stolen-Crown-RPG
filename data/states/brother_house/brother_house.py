@@ -6,10 +6,10 @@ only purpose of house.py is to assign dialogue to each sprite.
 """
 
 
-from .. import level_state
+from .. import levels
 from ... import constants as c
 
-class House(level_state.LevelState):
+class House(levels.LevelState):
     def __init__(self):
         super(House, self).__init__()
         self.name = c.BROTHER_HOUSE

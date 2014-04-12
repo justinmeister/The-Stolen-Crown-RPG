@@ -336,9 +336,9 @@ class Soldier(Person):
 class FemaleVillager(Person):
     """Female Person for town"""
 
-    def __init__(self, x, y):
-        super(FemaleVillager, self).__init__('femalevillager', x, y, 'right')
-        #self.index = 1
+    def __init__(self, x, y, direction='down', state='resting'):
+        super(FemaleVillager, self).__init__('femalevillager', x, y, direction, state)
+        self.index = 1
 
 
 class FemaleVillager2(Person):
@@ -362,8 +362,8 @@ class Devil(Person):
 
 class OldMan(Person):
     """Old man villager"""
-    def __init__(self, x, y, filename='oldman', direction='down', state='resting'):
-        super(OldMan, self).__init__(filename, x, y, direction, state)
+    def __init__(self, x, y, direction='down', state='resting'):
+        super(OldMan, self).__init__('oldman', x, y, direction, state)
 
 class OldManBrother(OldMan):
     """Brother of Old Man"""

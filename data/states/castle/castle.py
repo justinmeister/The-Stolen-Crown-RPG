@@ -4,12 +4,12 @@ in the tilemap .txt files in this state's directory.  Essentially the
 only purpose of castle.py is to assign dialogue to each sprite.
 """
 
-from .. import level_state
+from .. import levels
 from ... import constants as c
 
-class Castle(level_state.LevelState):
+class Castle(levels.LevelState):
     def __init__(self):
-        super(Castle, self).__init__()
+        super(Castle, self).__init__(self.name)
         self.name = c.CASTLE
         self.map_width = 25
         self.map_height = 27

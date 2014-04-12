@@ -28,7 +28,16 @@
   </data>
  </layer>
  <objectgroup name="Object Layer 1" width="25" height="19">
-  <object name="sprite" type="oldman" gid="115" x="240" y="128"/>
+  <object name="sprite" type="oldman" gid="115" x="240" y="128">
+   <properties>
+    <property name="dialogue length" value="5"/>
+    <property name="dialogue0" value="I am very sick.   cough... cough..."/>
+    <property name="dialogue1" value="Only an ELIXIR can help me."/>
+    <property name="dialogue2" value="Please go to my brother and obtain one for me."/>
+    <property name="dialogue3" value="He lives in a house on the NorthEast shores."/>
+    <property name="dialogue4" value="I will be forever in your debt."/>
+   </properties>
+  </object>
   <object name="start point" gid="123" x="176" y="224">
    <properties>
     <property name="state" value="town"/>
@@ -37,5 +46,60 @@
   <object name="portal" type="town" gid="139" x="192" y="240"/>
   <object name="portal" type="town" gid="139" x="176" y="240"/>
   <object name="portal" type="town" gid="139" x="160" y="240"/>
+  <object name="blocker" gid="120" x="144" y="240"/>
+  <object name="blocker" gid="120" x="128" y="240"/>
+  <object name="blocker" gid="120" x="112" y="240"/>
+  <object name="blocker" gid="120" x="96" y="240"/>
+  <object name="blocker" gid="120" x="80" y="224"/>
+  <object name="blocker" gid="120" x="80" y="192"/>
+  <object name="blocker" gid="120" x="80" y="208"/>
+  <object name="blocker" gid="120" x="80" y="176"/>
+  <object name="blocker" gid="120" x="80" y="160"/>
+  <object name="blocker" gid="120" x="80" y="128"/>
+  <object name="blocker" gid="120" x="80" y="128"/>
+  <object name="blocker" gid="120" x="80" y="144"/>
+  <object name="blocker" gid="120" x="80" y="112"/>
+  <object name="blocker" gid="120" x="80" y="96"/>
+  <object name="blocker" gid="120" x="96" y="96"/>
+  <object name="blocker" gid="120" x="112" y="96"/>
+  <object name="blocker" gid="120" x="112" y="112"/>
+  <object name="blocker" gid="120" x="112" y="128"/>
+  <object name="blocker" gid="120" x="112" y="128"/>
+  <object name="blocker" gid="120" x="112" y="144"/>
+  <object name="blocker" gid="120" x="112" y="144"/>
+  <object name="blocker" gid="120" x="112" y="160"/>
+  <object name="blocker" gid="120" x="128" y="160"/>
+  <object name="blocker" gid="120" x="128" y="128"/>
+  <object name="blocker" gid="120" x="128" y="144"/>
+  <object name="blocker" gid="120" x="128" y="96"/>
+  <object name="blocker" gid="120" x="128" y="112"/>
+  <object name="blocker" gid="120" x="160" y="80"/>
+  <object name="blocker" gid="120" x="144" y="80"/>
+  <object name="blocker" gid="120" x="176" y="80"/>
+  <object name="blocker" gid="120" x="192" y="80"/>
+  <object name="blocker" gid="120" x="224" y="80"/>
+  <object name="blocker" gid="120" x="208" y="80"/>
+  <object name="blocker" gid="120" x="256" y="80"/>
+  <object name="blocker" gid="120" x="240" y="80"/>
+  <object name="blocker" gid="120" x="272" y="80"/>
+  <object name="blocker" gid="120" x="288" y="80"/>
+  <object name="blocker" gid="120" x="288" y="80"/>
+  <object name="blocker" gid="120" x="288" y="96"/>
+  <object name="blocker" gid="120" x="288" y="112"/>
+  <object name="blocker" gid="120" x="288" y="128"/>
+  <object name="blocker" gid="120" x="288" y="128"/>
+  <object name="blocker" gid="120" x="288" y="144"/>
+  <object name="blocker" gid="120" x="288" y="144"/>
+  <object name="blocker" gid="120" x="288" y="160"/>
+  <object name="blocker" gid="120" x="288" y="176"/>
+  <object name="blocker" gid="120" x="288" y="192"/>
+  <object name="blocker" gid="120" x="288" y="192"/>
+  <object name="blocker" gid="120" x="288" y="208"/>
+  <object name="blocker" gid="120" x="288" y="224"/>
+  <object name="blocker" gid="120" x="272" y="240"/>
+  <object name="blocker" gid="120" x="256" y="240"/>
+  <object name="blocker" gid="120" x="240" y="240"/>
+  <object name="blocker" gid="120" x="224" y="240"/>
+  <object name="blocker" gid="120" x="208" y="240"/>
  </objectgroup>
 </map>

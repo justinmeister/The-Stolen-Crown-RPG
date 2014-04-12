@@ -16,10 +16,10 @@ from .. import setup
 
 
 class LevelState(tools._State):
-    def __init__(self):
+    def __init__(self, name):
         super(LevelState, self).__init__()
-        self.name = None
-        self.tmx_map = None
+        self.name = name
+        self.tmx_map = setup.TMX[name]
         self.map_width = None
         self.map_height = None
 
@@ -98,7 +98,9 @@ class LevelState(tools._State):
         return blockers
 
     def make_sprites(self):
-        """Make any sprites for the level as needed"""
+        """
+        Make any sprites for the level as needed.
+        """
         sprites = pg.sprite.Group()
 
         for object in self.renderer.tmx_data.getObjects():
@@ -107,24 +109,25 @@ class LevelState(tools._State):
                 left = properties['x'] * 2
                 top = ((properties['y']) * 2) - 32
 
-                if properties['type'] == 'oldman':
-                    sprites.add(person.OldMan(left, top))
-                elif properties['type'] == 'bluedressgirl':
-                    sprites.add(person.FemaleVillager(left, top))
-                elif properties['type'] == 'femalewarrior':
-                    sprites.add(person.FemaleVillager2(left, top))
-                elif properties['type'] == 'devil':
-                    print 'hi'
-                    sprites.add(person.Devil(left, top))
+                sprite_dict = {'oldman': person.OldMan(left, top),
+                               'bluedressgirl': person.FemaleVillager(left, top, 'right'),
+                               'femalewarrior': person.FemaleVillager2(left, top),
+                               'devil': person.Devil(left, top)}
 
+                sprite = sprite_dict[properties['type']]
+                self.assign_dialogue(sprite, properties)
+                sprites.add(sprite)
 
         return sprites
 
-
-    def set_sprite_dialogue(self):
-        """Sets unique dialogue for each sprite"""
-        pass
-
+    def assign_dialogue(self, sprite, property_dict):
+        """
+        Assign dialogue from object property dictionaries in tmx maps to sprites.
+        """
+        dialogue_list = []
+        for i in range(int(property_dict['dialogue length'])):
+            dialogue_list.append(property_dict['dialogue'+str(i)])
+            sprite.dialogue = dialogue_list
 
     def make_state_dict(self):
         """Make a dictionary of states the level can be in"""
@@ -149,9 +152,10 @@ class LevelState(tools._State):
 
         return portal_group
 
-
     def running_normally(self, surface, keys, current_time):
-        """Update level normally"""
+        """
+        Update level normally.
+        """
         self.check_for_dialogue()
         self.check_for_portals()
         self.player.update(keys, current_time)
@@ -165,7 +169,9 @@ class LevelState(tools._State):
 
 
     def check_for_portals(self):
-        """Check if the player walks into a door, requiring a level change"""
+        """
+        Check if the player walks into a door, requiring a level change.
+        """
         portal = pg.sprite.spritecollideany(self.player, self.portals)
 
         if portal and self.player.state == 'resting':
@@ -176,7 +182,9 @@ class LevelState(tools._State):
 
 
     def check_for_menu(self, keys):
-        """Check if player hits enter to go to menu"""
+        """
+        Check if player hits enter to go to menu.
+        """
         if keys[pg.K_RETURN] and self.allow_input:
             if self.player.state == 'resting':
                 self.state = 'menu'
@@ -187,7 +195,9 @@ class LevelState(tools._State):
 
 
     def update_game_data(self):
-        """Update the persistant game data dictionary"""
+        """
+        Update the persistant game data dictionary.
+        """
         self.game_data['last location'] = self.player.location
         self.game_data['last direction'] = self.player.direction
         self.game_data['last state'] = self.name
