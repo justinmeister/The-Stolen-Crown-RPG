@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="25" height="19" tilewidth="16" tileheight="16" backgroundcolor="#130f30">
+ <tileset firstgid="1" name="tileset1" tilewidth="16" tileheight="16">
+  <image source="../graphics/tileset1.png" width="160" height="80"/>
+ </tileset>
+ <tileset firstgid="51" name="tileset2" tilewidth="16" tileheight="16">
+  <image source="../graphics/tileset2.png" width="160" height="180"/>
+ </tileset>
+ <tileset firstgid="161" name="tileset3" tilewidth="16" tileheight="16">
+  <image source="../graphics/tileset3.png" width="176" height="192"/>
+ </tileset>
+ <tileset firstgid="293" name="house" tilewidth="16" tileheight="16">
+  <image source="../graphics/house.png" width="512" height="448"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="25" height="19">
+  <data encoding="base64" compression="zlib">
+   eJzt0TEOgCAQBdFFStTa46rHFShRSifxBCSsiWZ/eO1OgYjN9mxp1LtxICIhKzUKTlyoSg1xPAzwTqcRuDtiwqzUeOPPv9xYsWHv2LD9dzcEmhGk
+  </data>
+ </layer>
+ <layer name="Tile Layer 2" width="25" height="19">
+  <data encoding="base64" compression="zlib">
+   eJzty7cRwlAQRdE/2wYI3wVOmC4ACaMucMJ0AUgCVKhutinzE5K9Myd7z7n/VRPn6gjQQBMttNFBFz3RnU99fgMMMcIYISaYYoa56M6nBb8lVogQY40NttghEd35tOd3wBEnnJHigituuIvufHrwe+KFDDkKvPHBF6XozrIsy/qtCvPJFrM=
+  </data>
+ </layer>
+ <layer name="Tile Layer 3" width="25" height="19">
+  <data encoding="base64" compression="zlib">
+   eJztzckNgEAMBMHBJhGORDgSgSXxXQiElojBvNxSfWekLPuqJjXceCzmo3PJ4Og95mNgd8SEOehjYXfFhj3o42D3RMEV9JFl2T+9ywQG6w==
+  </data>
+ </layer>
+ <objectgroup name="Object Layer 1" width="25" height="19">
+  <object name="sprite" type="oldman" gid="115" x="240" y="128"/>
+  <object name="start point" gid="123" x="176" y="224">
+   <properties>
+    <property name="state" value="town"/>
+   </properties>
+  </object>
+  <object name="portal" type="town" gid="139" x="192" y="240"/>
+  <object name="portal" type="town" gid="139" x="176" y="240"/>
+  <object name="portal" type="town" gid="139" x="160" y="240"/>
+ </objectgroup>
+</map>

@@ -6,6 +6,12 @@
  <tileset firstgid="51" name="tileset2" tilewidth="16" tileheight="16">
   <image source="../graphics/tileset2.png" width="160" height="180"/>
  </tileset>
+ <tileset firstgid="161" name="medievalsigns" tilewidth="16" tileheight="16">
+  <image source="../graphics/medievalsigns.png" width="64" height="64"/>
+ </tileset>
+ <tileset firstgid="177" name="shopsigns" tilewidth="16" tileheight="16">
+  <image source="../graphics/shopsigns.png" width="64" height="16"/>
+ </tileset>
  <layer name="Tile Layer 1" width="25" height="51">
   <data encoding="base64" compression="zlib">
    eJztlc8KgCAMh733Rl58gB2jl4q6Rc+bBwOJmVv5Z8iC7yDu54eOGBhjQFEGZ/Vs6iBxeE4BPcNwDL5kXMb/ZA7UvLM6xnHsEdg656DkWziWCGydc1DyLRyAZLGz3nrOyZdkxP+Dev4UqOGJz2/lqf1eUntuGdwOTsYO9Fbq6ONIzU9OjQRHav5xaiQ4gLCfqynp6DHHOff4izrqO1p8Fz0Qegc=
@@ -13,11 +19,15 @@
  </layer>
  <layer name="Tile Layer 2" width="25" height="51">
   <data encoding="base64" compression="zlib">
-   eJztVlsKxCAQyzH6vfjtkXZ7/1NsF1qQwceMmilbDAxFahPiqGkAF+Go6MAfHPhZOpKfsV7Lhx4ePqQOC+zzAfT52M6y6ljQo/GDZa1eZ1n5mT0H+D0Hlg8Llg89Uh9v8U6OWyh97+nD69+EAXbWAn2Z/jlqH+Bv6Vz8Gp0af0zm1HRG+YGxPRCTZxBjBtj3lARz717PJ57BmXqaPTyKf+dHgX9235k+ZMbmfFhzvIS7+v2UczHjnIcKPzJjrZa8W1vZGsV8jU5uLTTZas3H3HzvDPwCwBwqqw==
+   eJztVkkKwzAMnGf0XHz2k9p+sIcuD2wKDhjhRbI9LjUZEEJEmUGWFcWBC7eZn8DvJvCzdCQ/47yOOvSYUYfUYYE9H0BbHadgVh0LWjS+sJzVOZiVn9lzgN9z4KjDghXreItnLyPXU8SP4OM6LiJHxjXk3p/Zj1n/Jgywdy3QttOvm906+Gs6O79Gp8Tvo5ySTi8/0HcHfOSdiBlgf6ckmHd39yvO4Eg9zR3uxb/zI8M/qg/34Jl1yB2bqsO6x3P4Vb9XmYsRc+4K/EjEWi35ba3tVi/yNTqps9DsVut+TOXP3oEfnVUuIg==
   </data>
  </layer>
  <objectgroup name="Object Layer 1" width="25" height="51">
-  <object name="player start" gid="123" x="176" y="800"/>
+  <object name="start point" gid="123" x="176" y="800">
+   <properties>
+    <property name="state" value="overworld"/>
+   </properties>
+  </object>
   <object name="blocker" gid="120" x="112" y="800"/>
   <object name="blocker" gid="120" x="112" y="784"/>
   <object name="blocker" gid="120" x="96" y="768"/>
@@ -190,41 +200,46 @@
   <object name="blocker" gid="120" x="384" y="256"/>
   <object name="blocker" gid="120" x="384" y="240"/>
   <object name="blocker" gid="120" x="384" y="224"/>
-  <object name="portal" gid="139" x="192" y="816">
+  <object name="portal" type="overworld" gid="139" x="192" y="816"/>
+  <object name="portal" type="overworld" gid="139" x="176" y="816"/>
+  <object name="portal" type="house" gid="139" x="64" y="688"/>
+  <object name="portal" type="Inn" gid="139" x="320" y="672"/>
+  <object name="portal" type="armor shop" gid="139" x="96" y="368"/>
+  <object name="portal" type="weapon shop" gid="139" x="32" y="368"/>
+  <object name="portal" type="potion shop" gid="139" x="288" y="368"/>
+  <object name="portal" type="magic shop" gid="139" x="352" y="368"/>
+  <object name="start point" gid="123" x="320" y="688">
    <properties>
-    <property name="new state" value="overworld"/>
+    <property name="state" value="Inn"/>
    </properties>
   </object>
-  <object name="portal" gid="139" x="176" y="816">
+  <object name="start point" gid="123" x="64" y="704">
    <properties>
-    <property name="new state" value="overworld"/>
+    <property name="state" value="house"/>
    </properties>
   </object>
-  <object gid="139" x="64" y="688"/>
-  <object name="portal" gid="139" x="320" y="672">
+  <object name="start point" gid="123" x="352" y="384">
    <properties>
-    <property name="new state" value="Inn"/>
+    <property name="state" value="magic shop"/>
    </properties>
   </object>
-  <object name="portal" gid="139" x="96" y="368">
+  <object name="start point" gid="123" x="288" y="384">
    <properties>
-    <property name="new state" value="armor shop"/>
+    <property name="state" value="potion shop"/>
    </properties>
   </object>
-  <object name="portal" gid="139" x="32" y="368">
+  <object name="start point" gid="123" x="96" y="384">
    <properties>
-    <property name="new state" value="weapon shop"/>
+    <property name="state" value="armor shop"/>
    </properties>
   </object>
-  <object name="portal" gid="139" x="288" y="368">
+  <object name="start point" gid="123" x="32" y="384">
    <properties>
-    <property name="new state" value="potion shop"/>
+    <property name="state" value="weapon shop"/>
    </properties>
   </object>
-  <object name="portal" gid="139" x="352" y="368">
-   <properties>
-    <property name="new state" value="magic shop"/>
-   </properties>
-  </object>
+  <object name="sprite" type="bluedressgirl" gid="124" x="144" y="768"/>
+  <object name="sprite" type="femalewarrior" gid="124" x="240" y="640"/>
+  <object name="sprite" type="devil" gid="124" x="288" y="464"/>
  </objectgroup>
 </map>

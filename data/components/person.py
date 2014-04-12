@@ -337,14 +337,14 @@ class FemaleVillager(Person):
     """Female Person for town"""
 
     def __init__(self, x, y):
-        super(FemaleVillager, self).__init__('femalevillager', x, y)
-        self.index = 1
+        super(FemaleVillager, self).__init__('femalevillager', x, y, 'right')
+        #self.index = 1
 
 
 class FemaleVillager2(Person):
     """A second female person for town"""
     def __init__(self, x, y, direction='down'):
-        super(FemaleVillager2, self).__init__('femvillager2', x, y, direction)
+        super(FemaleVillager2, self).__init__('femvillager2', x, y, direction, 'autoresting')
         self.index = 1
 
 

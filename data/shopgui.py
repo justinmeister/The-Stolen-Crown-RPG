@@ -13,6 +13,7 @@ class Gui(object):
     """Class that controls the GUI of the shop state"""
     def __init__(self, level):
         self.level = level
+        self.game_data = self.level.game_data
         self.level.game_data['last direction'] = 'down'
         self.sellable_items = level.sell_items
         self.player_inventory = level.game_data['player inventory']
@@ -224,6 +225,7 @@ class Gui(object):
             else:
                 if self.level.name in self.no_selling:
                     self.level.done = True
+                    self.game_data['last state'] = self.level.name
                 else:
                     self.state = 'buysell'
 
@@ -433,7 +435,9 @@ class Gui(object):
                     self.arrow_index = 0
 
             else:
+
                 self.level.done = True
+                self.game_data['last state'] = self.level.name
 
             self.arrow_index = 0
 

@@ -150,16 +150,17 @@
   <object name="blocker" gid="120" x="96" y="64"/>
   <object name="blocker" gid="120" x="96" y="80"/>
   <object name="blocker" gid="120" x="96" y="96"/>
-  <object name="portal" gid="139" x="272" y="480">
+  <object name="portal" type="town" gid="139" x="272" y="480"/>
+  <object name="portal" type="town" gid="139" x="256" y="480"/>
+  <object name="start point" gid="123" x="272" y="496">
    <properties>
-    <property name="new state" value="town"/>
+    <property name="state" value="town"/>
    </properties>
   </object>
-  <object name="portal" gid="139" x="256" y="480">
+  <object name="start point" gid="123" x="256" y="496">
    <properties>
-    <property name="new state" value="town"/>
+    <property name="state" value="main menu"/>
    </properties>
   </object>
-  <object name="player start" gid="123" x="272" y="496"/>
  </objectgroup>
 </map>

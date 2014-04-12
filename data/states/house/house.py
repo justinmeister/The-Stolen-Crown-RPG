@@ -8,13 +8,13 @@ only purpose of house.py is to assign dialogue to each sprite.
 
 from .. import level_state
 from ... import constants as c
+from ... import setup
 
 class House(level_state.LevelState):
     def __init__(self):
         super(House, self).__init__()
         self.name = c.HOUSE
-        self.map_width = 25
-        self.map_height = 19
+        self.tmx_map = setup.TMX['house']
 
     def set_sprite_dialogue(self):
         """Sets unique dialogue for each sprite"""

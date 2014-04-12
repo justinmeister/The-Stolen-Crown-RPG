@@ -40,12 +40,8 @@ class LevelState(tools._State):
         self.player = person.Player(game_data['last direction'])
         self.player = self.make_player()
         self.blockers = self.make_blockers()
-        self.sprites = pg.sprite.Group()
-        #self.start_positions = tm.set_sprite_positions(self.player,
-        #                                               self.sprites,
-        #                                               self.name,
-        #                                               self.game_data)
-        #self.set_sprite_dialogue()
+        self.sprites = self.make_sprites()
+
         self.collision_handler = collision.CollisionHandler(self.player,
                                                             self.blockers,
                                                             self.sprites)
@@ -74,14 +70,16 @@ class LevelState(tools._State):
     def make_player(self):
         """Makes the player and sets location"""
         player = person.Player(self.game_data['last direction'])
+        last_state = self.game_data['last state']
 
         for object in self.renderer.tmx_data.getObjects():
             properties = object.__dict__
-            if properties['name'] == 'player start':
-                posx = properties['x'] * 2
-                posy = (properties['y'] * 2) - 32
-                player.rect.x = posx
-                player.rect.y = posy
+            if properties['name'] == 'start point':
+                if last_state == properties['state']:
+                    posx = properties['x'] * 2
+                    posy = (properties['y'] * 2) - 32
+                    player.rect.x = posx
+                    player.rect.y = posy
 
         return player
 
@@ -98,6 +96,29 @@ class LevelState(tools._State):
                 blockers.append(blocker)
 
         return blockers
+
+    def make_sprites(self):
+        """Make any sprites for the level as needed"""
+        sprites = pg.sprite.Group()
+
+        for object in self.renderer.tmx_data.getObjects():
+            properties = object.__dict__
+            if properties['name'] == 'sprite':
+                left = properties['x'] * 2
+                top = ((properties['y']) * 2) - 32
+
+                if properties['type'] == 'oldman':
+                    sprites.add(person.OldMan(left, top))
+                elif properties['type'] == 'bluedressgirl':
+                    sprites.add(person.FemaleVillager(left, top))
+                elif properties['type'] == 'femalewarrior':
+                    sprites.add(person.FemaleVillager2(left, top))
+                elif properties['type'] == 'devil':
+                    print 'hi'
+                    sprites.add(person.Devil(left, top))
+
+
+        return sprites
 
 
     def set_sprite_dialogue(self):
@@ -122,7 +143,7 @@ class LevelState(tools._State):
             if properties['name'] == 'portal':
                 posx = properties['x'] * 2
                 posy = (properties['y'] * 2) - 32
-                new_state = properties['new state']
+                new_state = properties['type']
                 portal_group.add(portal.Portal(posx, posy, new_state))
 
 
@@ -134,9 +155,9 @@ class LevelState(tools._State):
         self.check_for_dialogue()
         self.check_for_portals()
         self.player.update(keys, current_time)
-        #self.sprites.update(current_time)
+        self.sprites.update(current_time)
         self.collision_handler.update(keys, current_time)
-        #self.dialogue_handler.update(keys, current_time)
+        self.dialogue_handler.update(keys, current_time)
         self.check_for_menu(keys)
         self.viewport_update()
 
@@ -150,7 +171,6 @@ class LevelState(tools._State):
         if portal and self.player.state == 'resting':
             self.player.location = self.player.get_tile_location()
             self.next = portal.name
-            print self.next
             self.update_game_data()
             self.done = True
 
@@ -171,7 +191,6 @@ class LevelState(tools._State):
         self.game_data['last location'] = self.player.location
         self.game_data['last direction'] = self.player.direction
         self.game_data['last state'] = self.name
-
         self.set_new_start_pos()
 
 
@@ -179,7 +198,6 @@ class LevelState(tools._State):
         """Set new start position based on previous state"""
         location = copy.deepcopy(self.game_data['last location'])
         direction = self.game_data['last direction']
-        state = self.game_data['last state']
 
         if self.next == 'player menu':
             pass
@@ -192,12 +210,11 @@ class LevelState(tools._State):
         elif direction == 'right':
             location[0] -= 1
 
-        self.game_data[state + ' start pos'] = location
 
 
     def handling_dialogue(self, surface, keys, current_time):
         """Update only dialogue boxes"""
-        #self.dialogue_handler.update(keys, current_time)
+        self.dialogue_handler.update(keys, current_time)
         self.draw_level(surface)
 
 
@@ -209,9 +226,8 @@ class LevelState(tools._State):
 
     def check_for_dialogue(self):
         """Check if the level needs to freeze"""
-        #if self.dialogue_handler.textbox:
-        #    self.state = 'dialogue'
-        pass
+        if self.dialogue_handler.textbox:
+            self.state = 'dialogue'
 
     def update(self, surface, keys, current_time):
         """Updates state"""

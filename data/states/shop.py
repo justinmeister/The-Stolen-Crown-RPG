@@ -119,7 +119,7 @@ class Inn(Shop):
     """Where our hero gets rest"""
     def __init__(self):
         super(Inn, self).__init__()
-        self.name = 'Inn'
+        self.name = c.INN
         self.key = 'innman'
 
     def make_dialogue(self):
@@ -150,7 +150,7 @@ class WeaponShop(Shop):
     """A place to buy weapons"""
     def __init__(self):
         super(WeaponShop, self).__init__()
-        self.name = 'Weapon Shop'
+        self.name = c.WEAPON_SHOP
         self.key = 'weaponman'
         self.sell_items = ['Long Sword', 'Rapier']
 
@@ -183,7 +183,7 @@ class ArmorShop(Shop):
     """A place to buy armor"""
     def __init__(self):
         super(ArmorShop, self).__init__()
-        self.name = 'Armor Shop'
+        self.name = c.ARMOR_SHOP
         self.key = 'armorman'
         self.sell_items = ['Chain Mail', 'Wooden Shield']
 
@@ -216,7 +216,7 @@ class MagicShop(Shop):
     """A place to buy magic"""
     def __init__(self):
         super(MagicShop, self).__init__()
-        self.name = 'Magic Shop'
+        self.name = c.MAGIC_SHOP
         self.key = 'magiclady'
 
 
@@ -248,7 +248,7 @@ class PotionShop(Shop):
     """A place to buy potions"""
     def __init__(self):
         super(PotionShop, self).__init__()
-        self.name = 'Potion Shop'
+        self.name = c.POTION_SHOP
         self.key = 'potionlady'
         self.sell_items = 'Healing Potion'
 
