@@ -155,6 +155,17 @@ def get_image(x, y, width, height, sprite_sheet):
 
     return image
 
+def get_tile(x, y, tileset, width=16, height=16, scale=1):
+    """Gets the surface and rect for a tile"""
+    surface = get_image(x, y, width, height, tileset)
+    surface = pg.transform.scale(surface, (int(width*scale), int(height*scale)))
+    rect = surface.get_rect()
+
+    tile_dict = {'surface': surface,
+                 'rect': rect}
+
+    return tile_dict
+
 
 def create_game_data_dict():
     """Create a dictionary of persistant values the player

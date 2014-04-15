@@ -6,7 +6,7 @@ menu screen.
 import pygame as pg
 from . import setup
 from . import constants as c
-from . import tilemap
+from . import tools
 
 
 class SmallArrow(pg.sprite.Sprite):
@@ -119,10 +119,10 @@ class InfoBox(pg.sprite.Sprite):
         self.big_font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 24)
         self.title_font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 28)
         self.title_font.set_underline(True)
-        self.get_tile = tilemap.get_tile
-        self.sword = self.get_tile(96, 0, setup.GFX['shopsigns'], 32, 32)
-        self.shield = self.get_tile(64, 0, setup.GFX['shopsigns'], 32, 32)
-        self.potion = self.get_tile(32, 0, setup.GFX['shopsigns'], 32, 32)
+        self.get_tile = tools.get_tile
+        self.sword = self.get_tile(48, 0, setup.GFX['shopsigns'], 16, 16, 2)
+        self.shield = self.get_tile(32, 0, setup.GFX['shopsigns'], 16, 16, 2)
+        self.potion = self.get_tile(16, 0, setup.GFX['shopsigns'], 16, 16, 2)
         self.possible_potions = ['Healing Potion', 'ELIXIR']
         self.possible_armor = ['Wooden Shield', 'Chain Mail']
         self.possible_weapons = ['Long Sword', 'Rapier']

@@ -25,6 +25,7 @@ def main():
     run_it = tools.Control(setup.ORIGINAL_CAPTION)
     state_dict = {MAIN_MENU: main_menu.Menu(),
                   TOWN: levels.LevelState(TOWN),
+                  CASTLE: levels.LevelState(CASTLE),
                   HOUSE: levels.LevelState(HOUSE),
                   OVERWORLD: levels.LevelState(OVERWORLD),
                   BROTHER_HOUSE: levels.LevelState(BROTHER_HOUSE),

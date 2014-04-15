@@ -29,6 +29,7 @@ class LevelState(tools._State):
         self.current_time = current_time
         self.state = 'normal'
         self.allow_input = False
+        self.cut_off_bottom_map = ['castle', 'town']
         self.renderer = tilerender.Renderer(self.tmx_map)
         self.map_image = self.renderer.make_2x_map()
 
@@ -63,7 +64,7 @@ class LevelState(tools._State):
         """
         map_rect = map_image.get_rect()
         map_width = map_rect.width
-        if self.name == 'town':
+        if self.name in self.cut_off_bottom_map:
             map_height = map_rect.height - 32
         else:
             map_height = map_rect.height
@@ -114,23 +115,35 @@ class LevelState(tools._State):
         for object in self.renderer.tmx_data.getObjects():
             properties = object.__dict__
             if properties['name'] == 'sprite':
+                if 'direction' in properties:
+                    direction = properties['direction']
+                else:
+                    direction = 'down'
+
+                if properties['type'] == 'soldier' and direction == 'left':
+                    index = 1
+                else:
+                    index = 0
+
                 x = properties['x'] * 2
                 y = ((properties['y']) * 2) - 32
 
                 sprite_dict = {'oldman': person.Person('oldman',
-                                                       x, y, 'down'),
+                                                       x, y, direction),
                                'bluedressgirl': person.Person('femalevillager',
-                                                              x, y, 'right',
+                                                              x, y, direction,
                                                               'resting', 1),
                                'femalewarrior': person.Person('femvillager2',
-                                                              x, y, 'down',
+                                                              x, y, direction,
                                                               'autoresting'),
                                'devil': person.Person('devil', x, y,
                                                       'down', 'autoresting'),
                                'oldmanbrother': person.Person('oldmanbrother',
-                                                              x, y, 'down'),
+                                                              x, y, direction),
                                'soldier': person.Person('soldier',
-                                                        x, y, 'down')}
+                                                        x, y, direction,
+                                                        'resting', index),
+                               'king': person.Person('king', x, y, direction)}
 
                 sprite = sprite_dict[properties['type']]
                 self.assign_dialogue(sprite, properties)

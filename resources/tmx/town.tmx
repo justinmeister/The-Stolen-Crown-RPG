@@ -25,7 +25,7 @@
  </layer>
  <layer name="Tile Layer 2" width="25" height="51">
   <data encoding="base64" compression="zlib">
-   eJztVksOwiAQ5RiuDeseSb2gCz9Rqxs/1YOoW+0VnCaQTCYDHQSqNr7khSHCexlhmGqVFxpYoPkGWAK3wB3wCrwB78IY78X6GnmcgBXwDLwAH8AnsBbGeC/Wpz4YtZAcqH4z7hN7cHmk9vimPGIgzSOlj0VTHyvgmolLtM7WQOmILVz1cQAembhC62wNVI7Yl0cbBoYhCNF/16OBq8Y5DA1D9UNzCYXvrUqFfx5y9DGPJfltEag1J/OZGXEeI7KGztvg2t/leeTyoT0qByTfPrGQfmNhjIGTCP02H6sv8fHpF2iNzydWX6m4O1CgUZN5DuR+pyhy3l079rEGU/pJ7nAsfl1fOfRTncPUjDnzoD2WyyO0j7vwqfPuS12kqHPt0VfMXOpF39a23lqQ9RIf7r+Q9NbQ/sit77oHvgDuCY9D
+   eJztVkFuAjEMzDM4o3Dd/gj6QQ4tFbBwKbDtQwpX4At4pUSyLDtxSNLSFSON4izOOCbxeq2pCwts0HwNbIEb4Bb4AzwCT0obr8X6FsU4ADvgF/AbeAZegFeljddifRoH46okB6rfj5+FY3B5lI7xSHnkQJtHyTgefX0sgSvGbpGfr4FWsD2k+tgB94zdIT9fA51gh/KIYeSYghT9e2P0kGqcw9gxVT81l1SE3lWl8MxDjyHm8UF+WyRqvZP5mxtxHlPiQ+cxSOt/8zxqxaE9qgY03z650H5jYcyArxn6sTheXxMnpN8gn1CcXH1j8u5Ag0ZL5jVQ+z1FUfPu+nGINVgynuYO5+K/6xtBv9Q5zN1YMw/aY7k8Uvu4hL8676HUBVfnkzu0Q/vneuGLUhfvPdZbG+JvCel+pf9C01txbpiGeU79Jc3auAHzA5GD
   </data>
  </layer>
  <layer name="Tile Layer 3" width="25" height="51">
@@ -259,12 +259,13 @@
     <property name="state" value="weapon shop"/>
    </properties>
   </object>
-  <object name="sprite" type="bluedressgirl" gid="124" x="144" y="768">
+  <object name="sprite" type="bluedressgirl" gid="124" x="144" y="752">
    <properties>
     <property name="dialogue length" value="3"/>
     <property name="dialogue0" value="Welcome to our town, traveller!"/>
     <property name="dialogue1" value="Our King protects us against the evil forces of the outside world."/>
     <property name="dialogue2" value="As long as we never leave, we have nothing to fear!"/>
+    <property name="direction" value="right"/>
    </properties>
   </object>
   <object name="sprite" type="femalewarrior" gid="124" x="240" y="640">
@@ -384,5 +385,27 @@
     <property name="dialogue2" value="Spells and potions are useful too."/>
    </properties>
   </object>
+  <object name="portal" type="castle" gid="139" x="176" y="112"/>
+  <object name="portal" type="castle" gid="139" x="192" y="112"/>
+  <object name="start point" gid="123" x="192" y="128">
+   <properties>
+    <property name="state" value="castle"/>
+   </properties>
+  </object>
+  <object name="start point" gid="123" x="176" y="128">
+   <properties>
+    <property name="state" value="castle"/>
+   </properties>
+  </object>
+  <object name="blocker" gid="120" x="240" y="784"/>
+  <object name="blocker" gid="120" x="224" y="784"/>
+  <object name="blocker" gid="120" x="208" y="784"/>
+  <object name="blocker" gid="120" x="208" y="800"/>
+  <object name="blocker" gid="120" x="160" y="800"/>
+  <object name="blocker" gid="120" x="160" y="784"/>
+  <object name="blocker" gid="120" x="144" y="784"/>
+  <object name="blocker" gid="120" x="128" y="784"/>
+  <object name="blocker" gid="120" x="112" y="768"/>
+  <object name="blocker" gid="120" x="112" y="752"/>
  </objectgroup>
 </map>

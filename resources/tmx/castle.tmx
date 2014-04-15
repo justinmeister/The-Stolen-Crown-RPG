@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="25" height="27" tilewidth="16" tileheight="16" backgroundcolor="#130f30">
+ <tileset firstgid="1" name="tileset2" tilewidth="16" tileheight="16">
+  <image source="../graphics/tileset2.png" width="160" height="180"/>
+ </tileset>
+ <tileset firstgid="111" name="tileset3" tilewidth="16" tileheight="16">
+  <image source="../graphics/tileset3.png" width="176" height="192"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="25" height="27">
+  <data encoding="base64" compression="zlib">
+   eJxjYBh+IB+Ii4C4GIhLoOwCIC4kkl0KxS147KgC4gYgrgbiGiCuJZHdAMXE2IEL1yJhfOoI2bGdCniw2nEIB6a2P/yA2B8JB9DAjgggjkTCUaN2jNpBZTtqh4k/Ru0YtWMk2jGbAbXtg9wGSgLiZCScApUDtXXKgLgcSi8lYAetAAB7/gvf
+  </data>
+ </layer>
+ <layer name="Tile Layer 2" width="25" height="27">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgF5IIeJHYvEruPRDX4wHQk9gwk9kwS1YyCUTAKRgEhEDnQDhgFo2AUjEgAAF4VBzg=
+  </data>
+ </layer>
+ <objectgroup name="Object Layer 1" width="25" height="27">
+  <object name="start point" gid="73" x="192" y="416">
+   <properties>
+    <property name="state" value="town"/>
+   </properties>
+  </object>
+  <object name="portal" type="town" gid="89" x="224" y="432"/>
+  <object name="portal" type="town" gid="89" x="208" y="432"/>
+  <object name="portal" type="town" gid="89" x="192" y="432"/>
+  <object name="portal" type="town" gid="89" x="176" y="432"/>
+  <object name="portal" type="town" gid="89" x="160" y="432"/>
+  <object name="blocker" gid="70" x="240" y="416"/>
+  <object name="blocker" gid="70" x="272" y="416"/>
+  <object name="blocker" gid="70" x="256" y="416"/>
+  <object name="blocker" gid="70" x="288" y="416"/>
+  <object name="blocker" gid="70" x="304" y="416"/>
+  <object name="blocker" gid="70" x="320" y="416"/>
+  <object name="blocker" gid="70" x="336" y="400"/>
+  <object name="blocker" gid="70" x="336" y="384"/>
+  <object name="blocker" gid="70" x="336" y="352"/>
+  <object name="blocker" gid="70" x="336" y="368"/>
+  <object name="blocker" gid="70" x="336" y="336"/>
+  <object name="blocker" gid="70" x="336" y="320"/>
+  <object name="blocker" gid="70" x="336" y="304"/>
+  <object name="blocker" gid="70" x="336" y="272"/>
+  <object name="blocker" gid="70" x="336" y="288"/>
+  <object name="blocker" gid="70" x="336" y="240"/>
+  <object name="blocker" gid="70" x="336" y="256"/>
+  <object name="blocker" gid="70" x="336" y="208"/>
+  <object name="blocker" gid="70" x="336" y="224"/>
+  <object name="blocker" gid="70" x="336" y="192"/>
+  <object name="blocker" gid="70" x="336" y="160"/>
+  <object name="blocker" gid="70" x="336" y="176"/>
+  <object name="blocker" gid="70" x="336" y="144"/>
+  <object name="blocker" gid="70" x="336" y="112"/>
+  <object name="blocker" gid="70" x="336" y="128"/>
+  <object name="blocker" gid="70" x="336" y="96"/>
+  <object name="blocker" gid="70" x="320" y="80"/>
+  <object name="blocker" gid="70" x="304" y="80"/>
+  <object name="blocker" gid="70" x="288" y="80"/>
+  <object name="blocker" gid="70" x="272" y="80"/>
+  <object name="blocker" gid="70" x="256" y="80"/>
+  <object name="blocker" gid="70" x="240" y="80"/>
+  <object name="blocker" gid="70" x="224" y="80"/>
+  <object name="blocker" gid="70" x="208" y="80"/>
+  <object name="blocker" gid="70" x="192" y="80"/>
+  <object name="blocker" gid="70" x="176" y="80"/>
+  <object name="blocker" gid="70" x="160" y="80"/>
+  <object name="blocker" gid="70" x="144" y="80"/>
+  <object name="blocker" gid="70" x="128" y="80"/>
+  <object name="blocker" gid="70" x="112" y="80"/>
+  <object name="blocker" gid="70" x="96" y="80"/>
+  <object name="blocker" gid="70" x="80" y="80"/>
+  <object name="blocker" gid="70" x="64" y="80"/>
+  <object name="blocker" gid="70" x="48" y="96"/>
+  <object name="blocker" gid="70" x="48" y="96"/>
+  <object name="blocker" gid="70" x="48" y="112"/>
+  <object name="blocker" gid="70" x="48" y="128"/>
+  <object name="blocker" gid="70" x="48" y="144"/>
+  <object name="blocker" gid="70" x="48" y="160"/>
+  <object name="blocker" gid="70" x="48" y="176"/>
+  <object name="blocker" gid="70" x="48" y="192"/>
+  <object name="blocker" gid="70" x="48" y="208"/>
+  <object name="blocker" gid="70" x="48" y="224"/>
+  <object name="blocker" gid="70" x="48" y="240"/>
+  <object name="blocker" gid="70" x="48" y="256"/>
+  <object name="blocker" gid="70" x="48" y="272"/>
+  <object name="blocker" gid="70" x="48" y="288"/>
+  <object name="blocker" gid="70" x="48" y="304"/>
+  <object name="blocker" gid="70" x="48" y="320"/>
+  <object name="blocker" gid="70" x="48" y="336"/>
+  <object name="blocker" gid="70" x="48" y="352"/>
+  <object name="blocker" gid="70" x="48" y="368"/>
+  <object name="blocker" gid="70" x="48" y="384"/>
+  <object name="blocker" gid="70" x="48" y="400"/>
+  <object name="blocker" gid="70" x="64" y="416"/>
+  <object name="blocker" gid="70" x="80" y="416"/>
+  <object name="blocker" gid="70" x="96" y="416"/>
+  <object name="blocker" gid="70" x="112" y="416"/>
+  <object name="blocker" gid="70" x="128" y="416"/>
+  <object name="blocker" gid="70" x="144" y="416"/>
+  <object name="sprite" type="soldier" gid="74" x="256" y="368">
+   <properties>
+    <property name="dialogue length" value="1"/>
+    <property name="dialogue0" value="Hail to the King!"/>
+    <property name="direction" value="left"/>
+   </properties>
+  </object>
+  <object name="sprite" type="soldier" gid="74" x="256" y="304">
+   <properties>
+    <property name="dialogue length" value="1"/>
+    <property name="dialogue0" value="Hail to the King!"/>
+    <property name="direction" value="left"/>
+   </properties>
+  </object>
+  <object name="sprite" type="soldier" gid="74" x="256" y="336">
+   <properties>
+    <property name="dialogue length" value="1"/>
+    <property name="dialogue0" value="Hail to the King!"/>
+    <property name="direction" value="left"/>
+   </properties>
+  </object>
+  <object name="sprite" type="soldier" gid="74" x="256" y="240">
+   <properties>
+    <property name="dialogue length" value="1"/>
+    <property name="dialogue0" value="Hail to the King!"/>
+    <property name="direction" value="left"/>
+   </properties>
+  </object>
+  <object name="sprite" type="soldier" gid="74" x="128" y="368">
+   <properties>
+    <property name="dialogue length" value="1"/>
+    <property name="dialogue0" value="Hail to the King!"/>
+    <property name="direction" value="right"/>
+   </properties>
+  </object>
+  <object name="sprite" type="soldier" gid="74" x="256" y="208">
+   <properties>
+    <property name="dialogue length" value="1"/>
+    <property name="dialogue0" value="Hail to the King!"/>
+    <property name="direction" value="left"/>
+   </properties>
+  </object>
+  <object name="sprite" type="soldier" gid="74" x="256" y="272">
+   <properties>
+    <property name="dialogue length" value="1"/>
+    <property name="dialogue0" value="Hail to the King!"/>
+    <property name="direction" value="left"/>
+   </properties>
+  </object>
+  <object name="sprite" type="soldier" gid="74" x="256" y="176">
+   <properties>
+    <property name="dialogue length" value="1"/>
+    <property name="dialogue0" value="Hail to the King!"/>
+    <property name="direction" value="left"/>
+   </properties>
+  </object>
+  <object name="sprite" type="soldier" gid="74" x="256" y="144">
+   <properties>
+    <property name="dialogue length" value="1"/>
+    <property name="dialogue0" value="Hail to the King!"/>
+    <property name="direction" value="left"/>
+   </properties>
+  </object>
+  <object name="sprite" type="king" gid="74" x="192" y="112">
+   <properties>
+    <property name="dialogue length" value="5"/>
+    <property name="dialogue0" value="Please!  You must help me!"/>
+    <property name="dialogue1" value="An evil sorceror has stolen my magic crown."/>
+    <property name="dialogue2" value="WIthout it, our town will be overrun by monsters!"/>
+    <property name="dialogue3" value="Take this money for supplies."/>
+    <property name="dialogue4" value="Our town's fate is in your hands."/>
+   </properties>
+  </object>
+  <object name="sprite" type="soldier" gid="74" x="128" y="336">
+   <properties>
+    <property name="dialogue length" value="1"/>
+    <property name="dialogue0" value="Hail to the King!"/>
+    <property name="direction" value="right"/>
+   </properties>
+  </object>
+  <object name="sprite" type="soldier" gid="74" x="128" y="304">
+   <properties>
+    <property name="dialogue length" value="1"/>
+    <property name="dialogue0" value="Hail to the King!"/>
+    <property name="direction" value="right"/>
+   </properties>
+  </object>
+  <object name="sprite" type="soldier" gid="74" x="128" y="272">
+   <properties>
+    <property name="dialogue length" value="1"/>
+    <property name="dialogue0" value="Hail to the King!"/>
+    <property name="direction" value="right"/>
+   </properties>
+  </object>
+  <object name="sprite" type="soldier" gid="74" x="128" y="208">
+   <properties>
+    <property name="dialogue length" value="1"/>
+    <property name="dialogue0" value="Hail to the King!"/>
+    <property name="direction" value="right"/>
+   </properties>
+  </object>
+  <object name="sprite" type="soldier" gid="74" x="128" y="240">
+   <properties>
+    <property name="dialogue length" value="1"/>
+    <property name="dialogue0" value="Hail to the King!"/>
+    <property name="direction" value="right"/>
+   </properties>
+  </object>
+  <object name="sprite" type="soldier" gid="74" x="128" y="144">
+   <properties>
+    <property name="dialogue length" value="1"/>
+    <property name="dialogue0" value="Hail to the King!"/>
+    <property name="direction" value="right"/>
+   </properties>
+  </object>
+  <object name="sprite" type="soldier" gid="74" x="128" y="176">
+   <properties>
+    <property name="dialogue length" value="1"/>
+    <property name="dialogue0" value="Hail to the King!"/>
+    <property name="direction" value="right"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
