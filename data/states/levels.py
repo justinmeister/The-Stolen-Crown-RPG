@@ -1,8 +1,8 @@
-__author__ = 'justinarmstrong'
 """
-This is the base class all level states (i.e. states
-where the player can move around the screen) inherit
-from.  This class inherits from the generic state class
+This is the base class for all level states (i.e. states
+where the player can move around the screen).  Levels are
+differentiated by self.name and self.tmx_map.
+This class inherits from the generic state class
 found in the tools.py module.
 """
 
@@ -20,11 +20,11 @@ class LevelState(tools._State):
         super(LevelState, self).__init__()
         self.name = name
         self.tmx_map = setup.TMX[name]
-        self.map_width = None
-        self.map_height = None
 
     def startup(self, current_time, game_data):
-        """Called when the State object is created"""
+        """
+        Call when the State object is flipped to.
+        """
         self.game_data = game_data
         self.current_time = current_time
         self.state = 'normal'
@@ -45,19 +45,22 @@ class LevelState(tools._State):
         self.collision_handler = collision.CollisionHandler(self.player,
                                                             self.blockers,
                                                             self.sprites)
-
         self.dialogue_handler = textbox.TextHandler(self)
         self.state_dict = self.make_state_dict()
         self.portals = self.make_level_portals()
         self.menu_screen = player_menu.Player_Menu(game_data, self)
 
     def make_viewport(self, map_image):
-        """Create the viewport to view the level through"""
+        """
+        Create the viewport to view the level through.
+        """
         map_rect = map_image.get_rect()
         return setup.SCREEN.get_rect(bottom=map_rect.bottom)
 
     def make_level_surface(self, map_image):
-        """Creates the surface all images are blitted to"""
+        """
+        Create the surface all images are blitted to.
+        """
         map_rect = map_image.get_rect()
         map_width = map_rect.width
         if self.name == 'town':
@@ -65,10 +68,13 @@ class LevelState(tools._State):
         else:
             map_height = map_rect.height
         size = map_width, map_height
+
         return pg.Surface(size).convert()
 
     def make_player(self):
-        """Makes the player and sets location"""
+        """
+        Make the player and sets location.
+        """
         player = person.Player(self.game_data['last direction'])
         last_state = self.game_data['last state']
 
@@ -84,7 +90,9 @@ class LevelState(tools._State):
         return player
 
     def make_blockers(self):
-        """Make the blockers for the level"""
+        """
+        Make the blockers for the level.
+        """
         blockers = []
 
         for object in self.renderer.tmx_data.getObjects():
@@ -109,12 +117,21 @@ class LevelState(tools._State):
                 x = properties['x'] * 2
                 y = ((properties['y']) * 2) - 32
 
-                sprite_dict = {'oldman': person.Person('oldman', x, y, 'down'),
-                               'bluedressgirl': person.Person('femalevillager', x, y, 'right', 'resting', 1),
-                               'femalewarrior': person.Person('femvillager2', x, y, 'down', 'autoresting'),
-                               'devil': person.Person('devil', x, y, 'down', 'autoresting'),
-                               'oldmanbrother': person.Person('oldmanbrother', x, y, 'down')}
-                
+                sprite_dict = {'oldman': person.Person('oldman',
+                                                       x, y, 'down'),
+                               'bluedressgirl': person.Person('femalevillager',
+                                                              x, y, 'right',
+                                                              'resting', 1),
+                               'femalewarrior': person.Person('femvillager2',
+                                                              x, y, 'down',
+                                                              'autoresting'),
+                               'devil': person.Person('devil', x, y,
+                                                      'down', 'autoresting'),
+                               'oldmanbrother': person.Person('oldmanbrother',
+                                                              x, y, 'down'),
+                               'soldier': person.Person('soldier',
+                                                        x, y, 'down')}
+
                 sprite = sprite_dict[properties['type']]
                 self.assign_dialogue(sprite, properties)
                 sprites.add(sprite)
@@ -131,7 +148,9 @@ class LevelState(tools._State):
             sprite.dialogue = dialogue_list
 
     def make_state_dict(self):
-        """Make a dictionary of states the level can be in"""
+        """
+        Make a dictionary of states the level can be in.
+        """
         state_dict = {'normal': self.running_normally,
                       'dialogue': self.handling_dialogue,
                       'menu': self.goto_menu}
@@ -139,7 +158,9 @@ class LevelState(tools._State):
         return state_dict
 
     def make_level_portals(self):
-        """Make the portals to switch state"""
+        """
+        Make the portals to switch state.
+        """
         portal_group = pg.sprite.Group()
 
         for object in self.renderer.tmx_data.getObjects():
@@ -206,7 +227,9 @@ class LevelState(tools._State):
 
 
     def set_new_start_pos(self):
-        """Set new start position based on previous state"""
+        """
+        Set new start position based on previous state.
+        """
         location = copy.deepcopy(self.game_data['last location'])
         direction = self.game_data['last direction']
 
@@ -224,34 +247,47 @@ class LevelState(tools._State):
 
 
     def handling_dialogue(self, surface, keys, current_time):
-        """Update only dialogue boxes"""
+        """
+        Update only dialogue boxes.
+        """
         self.dialogue_handler.update(keys, current_time)
         self.draw_level(surface)
 
 
     def goto_menu(self, surface, keys, *args):
-        """Go to menu screen"""
+        """
+        Go to menu screen.
+        """
         self.menu_screen.update(surface, keys)
         self.menu_screen.draw(surface)
 
 
     def check_for_dialogue(self):
-        """Check if the level needs to freeze"""
+        """
+        Check if the level needs to freeze.
+        """
         if self.dialogue_handler.textbox:
             self.state = 'dialogue'
 
     def update(self, surface, keys, current_time):
-        """Updates state"""
+        """
+        Update state.
+        """
         state_function = self.state_dict[self.state]
         state_function(surface, keys, current_time)
 
     def viewport_update(self):
-        """Viewport stays centered on character, unless at edge of map"""
+        """
+        Update viewport so it stays centered on character,
+        unless at edge of map.
+        """
         self.viewport.center = self.player.rect.center
         self.viewport.clamp_ip(self.level_rect)
 
     def draw_level(self, surface):
-        """Blits all images to screen"""
+        """
+        Blit all images to screen.
+        """
         self.level_surface.blit(self.map_image, self.viewport, self.viewport)
         self.level_surface.blit(self.player.image, self.player.rect)
         self.sprites.draw(self.level_surface)

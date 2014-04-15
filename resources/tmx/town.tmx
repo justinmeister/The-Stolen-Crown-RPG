@@ -12,6 +12,12 @@
  <tileset firstgid="177" name="shopsigns" tilewidth="16" tileheight="16">
   <image source="../graphics/shopsigns.png" width="64" height="16"/>
  </tileset>
+ <tileset firstgid="181" name="tileset3" tilewidth="16" tileheight="16">
+  <image source="../graphics/tileset3.png" width="176" height="192"/>
+ </tileset>
+ <tileset firstgid="313" name="castledoor" tilewidth="16" tileheight="16">
+  <image source="../graphics/castledoor.png" width="32" height="48"/>
+ </tileset>
  <layer name="Tile Layer 1" width="25" height="51">
   <data encoding="base64" compression="zlib">
    eJztlc8KgCAMh733Rl58gB2jl4q6Rc+bBwOJmVv5Z8iC7yDu54eOGBhjQFEGZ/Vs6iBxeE4BPcNwDL5kXMb/ZA7UvLM6xnHsEdg656DkWziWCGydc1DyLRyAZLGz3nrOyZdkxP+Dev4UqOGJz2/lqf1eUntuGdwOTsYO9Fbq6ONIzU9OjQRHav5xaiQ4gLCfqynp6DHHOff4izrqO1p8Fz0Qegc=
@@ -19,7 +25,22 @@
  </layer>
  <layer name="Tile Layer 2" width="25" height="51">
   <data encoding="base64" compression="zlib">
-   eJztVkkKwzAMnGf0XHz2k9p+sIcuD2wKDhjhRbI9LjUZEEJEmUGWFcWBC7eZn8DvJvCzdCQ/47yOOvSYUYfUYYE9H0BbHadgVh0LWjS+sJzVOZiVn9lzgN9z4KjDghXreItnLyPXU8SP4OM6LiJHxjXk3p/Zj1n/Jgywdy3QttOvm906+Gs6O79Gp8Tvo5ySTi8/0HcHfOSdiBlgf6ckmHd39yvO4Eg9zR3uxb/zI8M/qg/34Jl1yB2bqsO6x3P4Vb9XmYsRc+4K/EjEWi35ba3tVi/yNTqps9DsVut+TOXP3oEfnVUuIg==
+   eJztVksOwiAQ5RiuDeseSb2gCz9Rqxs/1YOoW+0VnCaQTCYDHQSqNr7khSHCexlhmGqVFxpYoPkGWAK3wB3wCrwB78IY78X6GnmcgBXwDLwAH8AnsBbGeC/Wpz4YtZAcqH4z7hN7cHmk9vimPGIgzSOlj0VTHyvgmolLtM7WQOmILVz1cQAembhC62wNVI7Yl0cbBoYhCNF/16OBq8Y5DA1D9UNzCYXvrUqFfx5y9DGPJfltEag1J/OZGXEeI7KGztvg2t/leeTyoT0qByTfPrGQfmNhjIGTCP02H6sv8fHpF2iNzydWX6m4O1CgUZN5DuR+pyhy3l079rEGU/pJ7nAsfl1fOfRTncPUjDnzoD2WyyO0j7vwqfPuS12kqHPt0VfMXOpF39a23lqQ9RIf7r+Q9NbQ/sit77oHvgDuCY9D
+  </data>
+ </layer>
+ <layer name="Tile Layer 3" width="25" height="51">
+  <data encoding="base64" compression="zlib">
+   eJzt0zsOgEAIBFC4glqqpVqqnd/7H8s5AGTZSDkvmY4MCQkiIg3SIp3853X1yICMCTu8rgmZkSVhh9e1IhuyJ+yo6bLueqjIqeW5KOuuF/pvLc9FWXd90P9qeS4qetfoXOZ/eDL/w5P5H57M/yAiIiIiIiKieh8VTwlk
+  </data>
+ </layer>
+ <layer name="Tile Layer 4" width="25" height="51">
+  <data encoding="base64" compression="zlib">
+   eJztzTEOQBEAREGHkajdv1E7lQv8fIRCmCm32BfCXcrGr/qxxU4jDW5/jZ48uK00Zmm81wAAAADO0wDcCwil
+  </data>
+ </layer>
+ <layer name="Tile Layer 5" width="25" height="51">
+  <data encoding="base64" compression="zlib">
+   eJztzkEOQwAQRmGKKku1xErKSnD/w/WdQLowjcj7kredf5LkGlJ6UEYvqqgOuJ1TQU8qf9gaT/rhyPKHDV1DQ29qAzc66mkI3PjQRHPgxkob7YEbkiRJkiTdzReuiwJD
   </data>
  </layer>
  <objectgroup name="Object Layer 1" width="25" height="51">
@@ -259,6 +280,108 @@
     <property name="dialogue0" value="Don't be frightened. I'm a friendly Demon."/>
     <property name="dialogue1" value="My brothers and sisters, however, are not so nice."/>
     <property name="dialogue2" value="Be careful not to run into them."/>
+   </properties>
+  </object>
+  <object name="blocker" gid="120" x="208" y="176"/>
+  <object name="blocker" gid="120" x="208" y="160"/>
+  <object name="blocker" gid="120" x="240" y="160"/>
+  <object name="blocker" gid="120" x="224" y="160"/>
+  <object name="blocker" gid="120" x="272" y="160"/>
+  <object name="blocker" gid="120" x="256" y="160"/>
+  <object name="blocker" gid="120" x="256" y="176"/>
+  <object name="blocker" gid="120" x="240" y="176"/>
+  <object name="blocker" gid="120" x="224" y="176"/>
+  <object name="blocker" gid="120" x="272" y="176"/>
+  <object name="blocker" gid="120" x="304" y="176"/>
+  <object name="blocker" gid="120" x="288" y="176"/>
+  <object name="blocker" gid="120" x="320" y="192"/>
+  <object name="blocker" gid="120" x="288" y="160"/>
+  <object name="blocker" gid="120" x="304" y="160"/>
+  <object name="blocker" gid="120" x="320" y="160"/>
+  <object name="blocker" gid="120" x="320" y="144"/>
+  <object name="blocker" gid="120" x="336" y="128"/>
+  <object name="blocker" gid="120" x="336" y="96"/>
+  <object name="blocker" gid="120" x="336" y="112"/>
+  <object name="blocker" gid="120" x="336" y="80"/>
+  <object name="blocker" gid="120" x="320" y="64"/>
+  <object name="blocker" gid="120" x="304" y="48"/>
+  <object name="blocker" gid="120" x="288" y="48"/>
+  <object name="blocker" gid="120" x="272" y="48"/>
+  <object name="blocker" gid="120" x="256" y="64"/>
+  <object name="blocker" gid="120" x="272" y="80"/>
+  <object name="blocker" gid="120" x="288" y="80"/>
+  <object name="blocker" gid="120" x="288" y="96"/>
+  <object name="blocker" gid="120" x="288" y="112"/>
+  <object name="blocker" gid="120" x="288" y="112"/>
+  <object name="blocker" gid="120" x="288" y="128"/>
+  <object name="blocker" gid="120" x="272" y="128"/>
+  <object name="blocker" gid="120" x="256" y="112"/>
+  <object name="blocker" gid="120" x="256" y="128"/>
+  <object name="blocker" gid="120" x="240" y="112"/>
+  <object name="blocker" gid="120" x="224" y="112"/>
+  <object name="blocker" gid="120" x="208" y="112"/>
+  <object name="blocker" gid="120" x="160" y="112"/>
+  <object name="blocker" gid="120" x="144" y="112"/>
+  <object name="blocker" gid="120" x="128" y="128"/>
+  <object name="blocker" gid="120" x="112" y="128"/>
+  <object name="blocker" gid="120" x="96" y="112"/>
+  <object name="blocker" gid="120" x="96" y="128"/>
+  <object name="blocker" gid="120" x="96" y="96"/>
+  <object name="blocker" gid="120" x="96" y="80"/>
+  <object name="blocker" gid="120" x="112" y="64"/>
+  <object name="blocker" gid="120" x="96" y="48"/>
+  <object name="blocker" gid="120" x="80" y="48"/>
+  <object name="blocker" gid="120" x="64" y="48"/>
+  <object name="blocker" gid="120" x="48" y="64"/>
+  <object name="blocker" gid="120" x="32" y="80"/>
+  <object name="blocker" gid="120" x="32" y="96"/>
+  <object name="blocker" gid="120" x="32" y="96"/>
+  <object name="blocker" gid="120" x="32" y="112"/>
+  <object name="blocker" gid="120" x="32" y="128"/>
+  <object name="blocker" gid="120" x="48" y="144"/>
+  <object name="blocker" gid="120" x="64" y="160"/>
+  <object name="blocker" gid="120" x="80" y="160"/>
+  <object name="blocker" gid="120" x="96" y="160"/>
+  <object name="blocker" gid="120" x="112" y="160"/>
+  <object name="blocker" gid="120" x="144" y="160"/>
+  <object name="blocker" gid="120" x="128" y="160"/>
+  <object name="blocker" gid="120" x="160" y="160"/>
+  <object name="blocker" gid="120" x="160" y="176"/>
+  <object name="blocker" gid="120" x="144" y="176"/>
+  <object name="blocker" gid="120" x="144" y="176"/>
+  <object name="blocker" gid="120" x="128" y="176"/>
+  <object name="blocker" gid="120" x="112" y="176"/>
+  <object name="blocker" gid="120" x="96" y="176"/>
+  <object name="blocker" gid="120" x="80" y="176"/>
+  <object name="blocker" gid="120" x="64" y="160"/>
+  <object name="blocker" gid="120" x="64" y="176"/>
+  <object name="blocker" gid="120" x="48" y="192"/>
+  <object name="sprite" type="soldier" gid="124" x="160" y="128">
+   <properties>
+    <property name="dialogue length" value="2"/>
+    <property name="dialogue0" value="I have heard rumours that the King has lost something..."/>
+    <property name="dialogue1" value="Perhaps you should pay him a visit."/>
+   </properties>
+  </object>
+  <object name="sprite" type="soldier" gid="124" x="208" y="128">
+   <properties>
+    <property name="dialogue length" value="1"/>
+    <property name="dialogue0" value="Welcome to the castle, citizen."/>
+   </properties>
+  </object>
+  <object name="sprite" type="soldier" gid="124" x="160" y="224">
+   <properties>
+    <property name="dialogue length" value="2"/>
+    <property name="dialogue0" value="Only those given special permission by the King can leave this town."/>
+    <property name="dialogue1" value="It is for our own good, as few could survive in the outside world."/>
+   </properties>
+  </object>
+  <object name="sprite" type="soldier" gid="124" x="208" y="224">
+   <properties>
+    <property name="dialogue length" value="3"/>
+    <property name="dialogue0" value="Be careful.  There are monsters surrounding our town."/>
+    <property name="dialogue1" value="Make sure to equip sufficient armor and weapons."/>
+    <property name="dialogue2" value="Spells and potions are useful too."/>
    </properties>
   </object>
  </objectgroup>
