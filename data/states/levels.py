@@ -16,10 +16,11 @@ from .. import setup
 
 
 class LevelState(tools._State):
-    def __init__(self, name):
+    def __init__(self, name, battles=False):
         super(LevelState, self).__init__()
         self.name = name
         self.tmx_map = setup.TMX[name]
+        self.allow_battles = battles
 
     def startup(self, current_time, game_data):
         """
@@ -28,6 +29,7 @@ class LevelState(tools._State):
         self.game_data = game_data
         self.current_time = current_time
         self.state = 'normal'
+        self.switch_to_battle = False
         self.allow_input = False
         self.cut_off_bottom_map = ['castle', 'town']
         self.renderer = tilerender.Renderer(self.tmx_map)
@@ -45,7 +47,8 @@ class LevelState(tools._State):
 
         self.collision_handler = collision.CollisionHandler(self.player,
                                                             self.blockers,
-                                                            self.sprites)
+                                                            self.sprites,
+                                                            self)
         self.dialogue_handler = textbox.TextHandler(self)
         self.state_dict = self.make_state_dict()
         self.portals = self.make_level_portals()
@@ -79,14 +82,19 @@ class LevelState(tools._State):
         player = person.Player(self.game_data['last direction'])
         last_state = self.game_data['last state']
 
-        for object in self.renderer.tmx_data.getObjects():
-            properties = object.__dict__
-            if properties['name'] == 'start point':
-                if last_state == properties['state']:
-                    posx = properties['x'] * 2
-                    posy = (properties['y'] * 2) - 32
-                    player.rect.x = posx
-                    player.rect.y = posy
+        if last_state == 'battle':
+            player.rect.x = self.game_data['last location'][0] * 32
+            player.rect.y = self.game_data['last location'][1] * 32
+
+        else:
+            for object in self.renderer.tmx_data.getObjects():
+                properties = object.__dict__
+                if properties['name'] == 'start point':
+                    if last_state == properties['state']:
+                        posx = properties['x'] * 2
+                        posy = (properties['y'] * 2) - 32
+                        player.rect.x = posx
+                        player.rect.y = posy
 
         return player
 
@@ -196,12 +204,11 @@ class LevelState(tools._State):
         self.player.update(keys, current_time)
         self.sprites.update(current_time)
         self.collision_handler.update(keys, current_time)
+        self.check_for_battle()
         self.dialogue_handler.update(keys, current_time)
         self.check_for_menu(keys)
         self.viewport_update()
-
         self.draw_level(surface)
-
 
     def check_for_portals(self):
         """
@@ -215,6 +222,16 @@ class LevelState(tools._State):
             self.update_game_data()
             self.done = True
 
+    def check_for_battle(self):
+        """
+        Check if the flag has been made true, indicating
+        to switch state to a battle.
+        """
+        if self.switch_to_battle and self.allow_battles:
+            self.player.location = self.player.get_tile_location()
+            self.update_game_data()
+            self.next = 'battle'
+            self.done = True
 
     def check_for_menu(self, keys):
         """

@@ -76,7 +76,8 @@ class Person(pg.sprite.Sprite):
                       'moving': self.moving,
                       'animated resting': self.animated_resting,
                       'autoresting': self.auto_resting,
-                      'automoving': self.auto_moving}
+                      'automoving': self.auto_moving,
+                      'battle resting': self.battle_resting}
 
         return state_dict
 
@@ -182,7 +183,7 @@ class Person(pg.sprite.Sprite):
         self.image = self.image_list[self.index]
 
         assert(self.rect.y % 32 == 0), ('Player not centered on tile: '
-                                        + str(self.rect.y))
+                                        + str(self.rect.y) + " : " + str(self.name))
         assert(self.rect.x % 32 == 0), ('Player not centered on tile'
                                         + str(self.rect.x))
 
@@ -276,6 +277,12 @@ class Person(pg.sprite.Sprite):
             self.begin_auto_moving(direction)
             self.move_timer = self.current_time
 
+    def battle_resting(self):
+        """
+        Player stays still during battle state unless he attacks.
+        """
+        pass
+
     def auto_moving(self):
         """
         Animate sprite and check to stop.
@@ -291,8 +298,8 @@ class Player(Person):
     User controlled character.
     """
 
-    def __init__(self, direction, x=0, y=0):
-        super(Player, self).__init__('player', x, y, direction)
+    def __init__(self, direction, x=0, y=0, state='resting'):
+        super(Player, self).__init__('player', x, y, direction, state)
 
     def create_vector_dict(self):
         """Return a dictionary of x and y velocities set to
@@ -327,12 +334,6 @@ class Player(Person):
                 self.begin_moving('right')
 
 
-
-class Soldier(Person):
-    """Soldier for the castle"""
-
-    def __init__(self, x, y, direction='down', state='resting'):
-        super(Soldier, self).__init__('soldier', x, y, direction, state)
 
 
 class Well(pg.sprite.Sprite):

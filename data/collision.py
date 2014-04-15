@@ -1,18 +1,22 @@
-__author__ = 'justinarmstrong'
+import random
 import pygame as pg
+from . import constants as c
 
 class CollisionHandler(object):
     """Handles collisions between the user, blockers and computer
     characters"""
-    def __init__(self, player, blockers, sprites):
+    def __init__(self, player, blockers, sprites, level):
         self.player = player
         self.static_blockers = blockers
         self.blockers = self.make_blocker_list(blockers, sprites)
         self.sprites = sprites
+        self.level = level
 
 
     def make_blocker_list(self, blockers, sprites):
-        """Return a combined list of sprite blockers and object blockers"""
+        """
+        Return a combined list of sprite blockers and object blockers.
+        """
         blocker_list = []
 
         for blocker in blockers:
@@ -25,7 +29,9 @@ class CollisionHandler(object):
 
 
     def update(self, keys, current_time):
-        """Checks for collisions between game objects"""
+        """
+        Check for collisions between game objects.
+        """
         self.blockers = self.make_blocker_list(self.static_blockers,
                                                self.sprites)
         self.player.rect.move_ip(self.player.x_vel, self.player.y_vel)
@@ -36,6 +42,8 @@ class CollisionHandler(object):
         self.check_for_blockers()
 
         if self.player.rect.x % 32 == 0 and self.player.rect.y % 32 == 0:
+            if not self.player.state == 'resting':
+                self.check_for_battle()
             self.player.begin_resting()
 
         for sprite in self.sprites:
@@ -84,6 +92,15 @@ class CollisionHandler(object):
                 sprite.rect.x -= sprite.x_vel
         else:
             sprite.rect.y -= sprite.y_vel
+
+    def check_for_battle(self):
+        """
+        Switch scene to battle 1/5 times if battles are allowed.
+        """
+        random_number = random.randint(0, 5)
+
+        if random_number == 0:
+            self.level.switch_to_battle = True
 
 
 

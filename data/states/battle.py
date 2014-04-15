@@ -18,6 +18,8 @@ class Battle(tools._State):
         self.enemy_group = self.make_enemies()
         self.player_group = self.make_player()
         self.menu = None
+        self.name = 'battle'
+        self.next = game_data['last state']
 
     def make_background(self):
         """Make the blue/black background"""
@@ -32,29 +34,38 @@ class Battle(tools._State):
 
     def make_enemies(self):
         """Make the enemies for the battle. Return sprite group"""
-        enemy = person.Devil(100, 100, 'down', 'resting')
+        enemy = person.Person('devil', 100, 100, 'down', 'battle resting')
         group = pg.sprite.Group(enemy)
 
         return group
 
     def make_player(self):
         """Make the sprite for the player's character"""
-        player = person.Player('left', 300, 300)
+        player = person.Player('left', 300, 300, 'battle resting')
         player_group = pg.sprite.Group(player)
 
         return player_group
 
     def update(self, surface, keys, current_time):
         """Update the battle state"""
-        self.enemy_group.update()
-        self.player_group.update()
-        self.menu.update()
+        self.check_input(keys)
+        self.enemy_group.update(current_time)
+        self.player_group.update(keys, current_time)
+        #self.menu.update()
         self.draw_battle(surface)
+
+    def check_input(self, keys):
+        """
+        Check user input to navigate GUI.
+        """
+        if keys[pg.K_SPACE]:
+            self.game_data['last state'] = self.name
+            self.done = True
 
     def draw_battle(self, surface):
         """Draw all elements of battle state"""
         self.background.draw(surface)
         self.enemy_group.draw(surface)
         self.player_group.draw(surface)
-        self.menu.draw(surface)
+        #self.menu.draw(surface)
 

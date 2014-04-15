@@ -1,6 +1,5 @@
 from data.states.main_menu import main_menu
-from data.states import shop
-from data.states import levels
+from data.states import shop, levels, battle
 from . import setup, tools
 from . import constants as c
 
@@ -27,13 +26,14 @@ def main():
                   TOWN: levels.LevelState(TOWN),
                   CASTLE: levels.LevelState(CASTLE),
                   HOUSE: levels.LevelState(HOUSE),
-                  OVERWORLD: levels.LevelState(OVERWORLD),
+                  OVERWORLD: levels.LevelState(OVERWORLD, True),
                   BROTHER_HOUSE: levels.LevelState(BROTHER_HOUSE),
                   INN: shop.Inn(),
                   ARMOR_SHOP: shop.ArmorShop(),
                   WEAPON_SHOP: shop.WeaponShop(),
                   MAGIC_SHOP: shop.MagicShop(),
                   POTION_SHOP: shop.PotionShop(),
+                  BATTLE: battle.Battle()
                   }
 
     run_it.setup_states(state_dict, c.MAIN_MENU)
