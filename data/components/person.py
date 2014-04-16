@@ -298,8 +298,8 @@ class Player(Person):
     User controlled character.
     """
 
-    def __init__(self, direction, x=0, y=0, state='resting'):
-        super(Player, self).__init__('player', x, y, direction, state)
+    def __init__(self, direction, x=0, y=0, state='resting', index=0):
+        super(Player, self).__init__('player', x, y, direction, state, index)
 
     def create_vector_dict(self):
         """Return a dictionary of x and y velocities set to

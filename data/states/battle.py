@@ -2,7 +2,7 @@
 monsters"""
 
 import pygame as pg
-from .. import tools
+from .. import tools, setup
 from .. components import person
 from .. import constants as c
 
@@ -17,7 +17,8 @@ class Battle(tools._State):
         self.background = self.make_background()
         self.enemy_group = self.make_enemies()
         self.player_group = self.make_player()
-        self.menu = None
+        self.battle_info = BattleInfo()
+        self.select_box = SelectBox()
         self.name = 'battle'
         self.next = game_data['last state']
 
@@ -34,17 +35,59 @@ class Battle(tools._State):
 
     def make_enemies(self):
         """Make the enemies for the battle. Return sprite group"""
-        enemy = person.Person('devil', 100, 100, 'down', 'battle resting')
+        enemy = person.Person('devil', 100, 220, 'down', 'battle resting')
+        enemy.image = pg.transform.scale2x(enemy.image)
         group = pg.sprite.Group(enemy)
 
         return group
 
     def make_player(self):
         """Make the sprite for the player's character"""
-        player = person.Player('left', 300, 300, 'battle resting')
+        player = person.Player('left', 630, 220, 'battle resting', 1)
+        player.image = pg.transform.scale2x(player.image)
         player_group = pg.sprite.Group(player)
 
         return player_group
+
+    def make_state_dict(self):
+        """
+        Make the dictionary of states the battle can be in.
+        """
+        state_dict = {'select action': self.select_action,
+                      'select enemy': self.select_enemy,
+                      'enemy attack': self.enemy_attack,
+                      'player attack': self.player_attack,
+                      'run away': self.run_away}
+
+    def select_action(self):
+        """
+        Select player action, of either attack, item, magic, run away.
+        """
+        pass
+
+    def select_enemy(self):
+        """
+        Select enemy you wish to attack.
+        """
+        pass
+
+    def enemy_attack(self):
+        """
+        Enemies, each in turn, attack the player.
+        """
+        pass
+
+    def player_attack(self):
+        """
+        Player attacks enemy
+        """
+        pass
+
+    def run_away(self):
+        """
+        Player attempts to run away.
+        """
+        pass
 
     def update(self, surface, keys, current_time):
         """Update the battle state"""
@@ -67,5 +110,26 @@ class Battle(tools._State):
         self.background.draw(surface)
         self.enemy_group.draw(surface)
         self.player_group.draw(surface)
-        #self.menu.draw(surface)
+        surface.blit(self.battle_info.image, self.battle_info.rect)
+        surface.blit(self.select_box.image, self.select_box.rect)
+
+
+class BattleInfo(object):
+    """
+    Info box that describes attack damage and other battle
+    related information.
+    """
+    def __init__(self):
+        self.image = setup.GFX['shopbox']
+        self.rect = self.image.get_rect(bottom=608)
+
+
+class SelectBox(object):
+    """
+    Box to select whether to attack, use item, use magic or run away.
+    """
+    def __init__(self):
+        self.image = setup.GFX['goldbox']
+        self.rect = self.image.get_rect(bottom=608, right=800)
+
 

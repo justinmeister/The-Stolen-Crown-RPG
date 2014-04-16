@@ -200,10 +200,10 @@ class LevelState(tools._State):
         Update level normally.
         """
         self.check_for_dialogue()
-        self.check_for_portals()
         self.player.update(keys, current_time)
         self.sprites.update(current_time)
         self.collision_handler.update(keys, current_time)
+        self.check_for_portals()
         self.check_for_battle()
         self.dialogue_handler.update(keys, current_time)
         self.check_for_menu(keys)
@@ -227,7 +227,7 @@ class LevelState(tools._State):
         Check if the flag has been made true, indicating
         to switch state to a battle.
         """
-        if self.switch_to_battle and self.allow_battles:
+        if self.switch_to_battle and self.allow_battles and not self.done:
             self.player.location = self.player.get_tile_location()
             self.update_game_data()
             self.next = 'battle'
