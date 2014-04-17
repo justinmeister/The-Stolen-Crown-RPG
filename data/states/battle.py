@@ -6,6 +6,10 @@ from .. import tools, setup
 from .. components import person
 from .. import constants as c
 
+
+
+
+
 class Battle(tools._State):
     def __init__(self):
         super(Battle, self).__init__()
@@ -19,6 +23,7 @@ class Battle(tools._State):
         self.player_group = self.make_player()
         self.battle_info = BattleInfo()
         self.select_box = SelectBox()
+        self.state_dict = self.make_state_dict()
         self.name = 'battle'
         self.next = game_data['last state']
 
@@ -59,6 +64,8 @@ class Battle(tools._State):
                       'player attack': self.player_attack,
                       'run away': self.run_away}
 
+        return state_dict
+
     def select_action(self):
         """
         Select player action, of either attack, item, magic, run away.
@@ -94,7 +101,7 @@ class Battle(tools._State):
         self.check_input(keys)
         self.enemy_group.update(current_time)
         self.player_group.update(keys, current_time)
-        #self.menu.update()
+        self.select_box.update(keys)
         self.draw_battle(surface)
 
     def check_input(self, keys):
@@ -129,7 +136,132 @@ class SelectBox(object):
     Box to select whether to attack, use item, use magic or run away.
     """
     def __init__(self):
-        self.image = setup.GFX['goldbox']
-        self.rect = self.image.get_rect(bottom=608, right=800)
+        self.font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
+        self.slots = self.make_slots()
+        self.arrow = SelectArrow()
+        self.image = self.make_image()
+        self.rect = self.image.get_rect(bottom=608,
+                                        right=800)
 
+    def make_image(self):
+        """
+        Make the box image for
+        """
+        image = setup.GFX['goldbox']
+        rect = image.get_rect(bottom=608)
+        surface = pg.Surface(rect.size)
+        surface.set_colorkey(c.BLACK)
+        surface.blit(image, (0, 0))
+
+        for text in self.slots:
+            text_surface = self.font.render(text, True, c.NEAR_BLACK)
+            text_rect = text_surface.get_rect(x=self.slots[text]['x'],
+                                              y=self.slots[text]['y'])
+            surface.blit(text_surface, text_rect)
+
+        surface.blit(self.arrow.image, self.arrow.rect)
+
+        return surface
+
+    def make_slots(self):
+        """
+        Make the slots that hold the text selections, and locations.
+        """
+        slot_dict = {}
+        selections = ['Attack', 'Magic', 'Items', 'Run']
+
+        for i, text in enumerate(selections):
+            slot_dict[text] = {'x': 150,
+                               'y': (i*34)+10}
+
+        return slot_dict
+
+    def update(self, keys):
+        """Update components.
+        """
+        self.arrow.update(keys)
+        self.image = self.make_image()
+
+
+class SelectArrow(object):
+    """Small arrow for menu"""
+    def __init__(self):
+        self.image = setup.GFX['smallarrow']
+        self.rect = self.image.get_rect()
+        self.state = 'select action'
+        self.state_dict = self.make_state_dict()
+        self.pos_list = self.make_select_action_pos_list()
+        self.index = 0
+        self.rect.topleft = self.pos_list[self.index]
+        self.allow_input = False
+
+    def make_state_dict(self):
+        """Make state dictionary"""
+        state_dict = {'select action': self.select_action,
+                      'select enemy': self.select_enemy}
+
+        return state_dict
+
+    def select_action(self, keys):
+        """
+        Select what action the player should take.
+        """
+        self.pos_list = self.make_select_action_pos_list()
+        self.rect.topleft = self.pos_list[self.index]
+
+        if self.allow_input:
+            if keys[pg.K_DOWN] and self.index < (len(self.pos_list) - 1):
+                self.index += 1
+                self.allow_input = False
+            elif keys[pg.K_UP] and self.index > 0:
+                self.index -= 1
+                self.allow_input = False
+
+        if keys[pg.K_DOWN] == False and keys[pg.K_UP] == False:
+            self.allow_input = True
+
+
+    def make_select_action_pos_list(self):
+        """
+        Make the list of positions the arrow can be in.
+        """
+        pos_list = []
+
+        for i in range(4):
+            x = 50
+            y = (i * 34) + 12
+            pos_list.append((x, y))
+
+        return pos_list
+
+    def select_enemy(self):
+        """
+        Select what enemy you want to take action on.
+        """
+        pass
+
+    def enter_select_action(self):
+        """
+        Assign values for the select action state.
+        """
+        pass
+
+    def enter_select_enemy(self):
+        """
+        Assign values for the select enemy state.
+        """
+        pass
+
+    def update(self, keys):
+        """
+        Update arrow position.
+        """
+        state_function = self.state_dict[self.state]
+        state_function(keys)
+
+    def draw(self, surface):
+        """
+        Draw to surface.
+        """
+        surface.blit(self.image, self.rect)
 
