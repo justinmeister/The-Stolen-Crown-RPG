@@ -1,11 +1,13 @@
 """This is the state that handles battles against
 monsters"""
 
+import random
 import pygame as pg
 from .. import tools, setup
 from .. components import person
 from .. import constants as c
 
+#STATES
 
 SELECT_ACTION = 'select action'
 SELECT_ENEMY = 'select enemy'
@@ -15,6 +17,9 @@ SELECT_ITEM = 'select item'
 SELECT_MAGIC = 'select magic'
 RUN_AWAY = 'run away'
 
+#EVENTS
+
+END_BATTLE = 'end battle'
 
 
 class Battle(tools._State):
@@ -26,15 +31,17 @@ class Battle(tools._State):
         self.current_time = current_time
         self.game_data = game_data
         self.background = self.make_background()
+        self.enemy_pos_list = []
         self.enemy_group = self.make_enemies()
         self.player_group = self.make_player()
-        self.battle_info = BattleInfo()
+        self.info_box = InfoBox()
+        self.arrow = SelectArrow(self.enemy_group)
         self.select_box = SelectBox()
-        self.state_dict = self.make_state_dict()
         self.state = SELECT_ACTION
         self.select_action_state_dict = self.make_selection_state_dict()
         self.name = 'battle'
         self.next = game_data['last state']
+        self.observer = Observer(self)
 
     def make_background(self):
         """Make the blue/black background"""
@@ -49,9 +56,18 @@ class Battle(tools._State):
 
     def make_enemies(self):
         """Make the enemies for the battle. Return sprite group"""
-        enemy = person.Person('devil', 100, 220, 'down', 'battle resting')
-        enemy.image = pg.transform.scale2x(enemy.image)
-        group = pg.sprite.Group(enemy)
+        group = pg.sprite.Group()
+        columns =  random.randint(1,3)
+        rows = random.randint(1,3)
+
+        for column in range(columns):
+            for row in range(rows):
+                x = (column * 100) + 100
+                y = (row * 100) + 100
+                enemy = person.Person('devil', x, y, 'down', 'battle resting')
+                enemy.image = pg.transform.scale2x(enemy.image)
+                group.add(enemy)
+                self.enemy_pos_list.append(enemy.rect.topleft)
 
         return group
 
@@ -63,88 +79,120 @@ class Battle(tools._State):
 
         return player_group
 
-    def make_state_dict(self):
-        """
-        Make the dictionary of states the battle can be in.
-        """
-        state_dict = {SELECT_ACTION: self.select_action,
-                      SELECT_ENEMY: self.select_enemy,
-                      ENEMY_ATTACK: self.enemy_attack,
-                      PLAYER_ATTACK: self.player_attack,
-                      RUN_AWAY: self.run_away}
-
-        return state_dict
-
     def make_selection_state_dict(self):
         """
         Make a dictionary of states with arrow coordinates as keys.
         """
-        pos_list = self.select_box.arrow.make_select_action_pos_list()
+        pos_list = self.arrow.make_select_action_pos_list()
         state_list = [SELECT_ENEMY, SELECT_ITEM, SELECT_MAGIC, RUN_AWAY]
         return dict(zip(pos_list, state_list))
-
-    def select_action(self):
-        """
-        Select player action, of either attack, item, magic, run away.
-        """
-        pass
-
-    def select_enemy(self):
-        """
-        Select enemy you wish to attack.
-        """
-        pass
-
-    def enemy_attack(self):
-        """
-        Enemies, each in turn, attack the player.
-        """
-        pass
-
-    def player_attack(self):
-        """
-        Player attacks enemy
-        """
-        pass
-
-    def run_away(self):
-        """
-        Player attempts to run away.
-        """
-        pass
 
     def update(self, surface, keys, current_time):
         """Update the battle state"""
         self.check_input(keys)
         self.enemy_group.update(current_time)
         self.player_group.update(keys, current_time)
-        self.select_box.update(keys)
-        self.battle_info.update(self.state)
+        self.select_box.update()
+        self.arrow.update(keys)
+        self.info_box.update(self.state)
         self.draw_battle(surface)
 
     def check_input(self, keys):
         """
         Check user input to navigate GUI.
         """
-        arrow = self.select_box.arrow
-
         if keys[pg.K_RETURN]:
-            self.game_data['last state'] = self.name
-            self.done = True
+            self.notify(END_BATTLE)
 
-        elif keys[pg.K_SPACE]:
-            self.state = self.select_action_state_dict[arrow.rect.topleft]
+        elif keys[pg.K_SPACE] and self.state == SELECT_ACTION:
+            self.state = self.select_action_state_dict[self.arrow.rect.topleft]
+            self.notify(self.state)
+
+    def notify(self, event):
+        """
+        Notify observer of event.
+        """
+        self.observer.on_notify(event)
+
+    def end_battle(self):
+        """
+        End battle and flip back to previous state.
+        """
+        self.game_data['last state'] = self.name
+        self.done = True
 
     def draw_battle(self, surface):
         """Draw all elements of battle state"""
         self.background.draw(surface)
         self.enemy_group.draw(surface)
         self.player_group.draw(surface)
-        surface.blit(self.battle_info.image, self.battle_info.rect)
+        surface.blit(self.info_box.image, self.info_box.rect)
         surface.blit(self.select_box.image, self.select_box.rect)
+        surface.blit(self.arrow.image, self.arrow.rect)
 
 
-class BattleInfo(object):
+class Observer(object):
+    """
+    Observes events of battle and passes info to components.
+    """
+    def __init__(self, level):
+        self.level = level
+        self.info_box = level.info_box
+        self.select_box = level.info_box
+        self.arrow = level.arrow
+        self.player = level.player_group
+        self.enemies = level.enemy_group
+        self.event_dict = self.make_event_dict()
+
+    def make_event_dict(self):
+        """
+        Make a dictionary of events the Observer can
+        receive.
+        """
+        event_dict = {END_BATTLE: self.end_battle,
+                      SELECT_ACTION: self.select_action,
+                      SELECT_ENEMY: self.select_enemy,
+                      ENEMY_ATTACK: self.enemy_attack,
+                      PLAYER_ATTACK: self.player_attack,
+                      RUN_AWAY: self.run_away}
+
+        return event_dict
+
+    def on_notify(self, event):
+        """
+        Notify Observer of event.
+        """
+        if event in self.event_dict:
+            self.event_dict[event]()
+
+    def end_battle(self):
+        """
+        End Battle and flip to previous state.
+        """
+        self.level.end_battle()
+
+    def select_action(self):
+        """
+        Set components to select action.
+        """
+        self.level.state = SELECT_ACTION
+        self.arrow.index = 0
+
+    def select_enemy(self):
+        self.level.state = SELECT_ENEMY
+        self.arrow.state = SELECT_ENEMY
+
+    def enemy_attack(self):
+        pass
+
+    def player_attack(self):
+        pass
+
+    def run_away(self):
+        pass
+
+
+class InfoBox(object):
     """
     Info box that describes attack damage and other battle
     related information.
@@ -196,7 +244,6 @@ class SelectBox(object):
     def __init__(self):
         self.font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
         self.slots = self.make_slots()
-        self.arrow = SelectArrow()
         self.image = self.make_image()
         self.rect = self.image.get_rect(bottom=608,
                                         right=800)
@@ -217,8 +264,6 @@ class SelectBox(object):
                                               y=self.slots[text]['y'])
             surface.blit(text_surface, text_rect)
 
-        surface.blit(self.arrow.image, self.arrow.rect)
-
         return surface
 
     def make_slots(self):
@@ -234,16 +279,16 @@ class SelectBox(object):
 
         return slot_dict
 
-    def update(self, keys):
-        """Update components.
+    def update(self):
         """
-        self.arrow.update(keys)
+        Update components.
+        """
         self.image = self.make_image()
 
 
 class SelectArrow(object):
     """Small arrow for menu"""
-    def __init__(self):
+    def __init__(self, enemy_group):
         self.image = setup.GFX['smallarrow']
         self.rect = self.image.get_rect()
         self.state = 'select action'
@@ -252,6 +297,7 @@ class SelectArrow(object):
         self.index = 0
         self.rect.topleft = self.pos_list[self.index]
         self.allow_input = False
+        self.enemies = enemy_group
 
     def make_state_dict(self):
         """Make state dictionary"""
@@ -286,17 +332,54 @@ class SelectArrow(object):
         pos_list = []
 
         for i in range(4):
-            x = 50
-            y = (i * 34) + 12
+            x = 590
+            y = (i * 34) + 472
             pos_list.append((x, y))
 
         return pos_list
 
-    def select_enemy(self):
+    def make_select_enemy_pos_list(self):
+        """
+        Make the list of positions the arrow can be when selecting
+        enemy.
+        """
+        pos_list = []
+
+        for enemy in self.enemies:
+            x = enemy.rect.x - 10
+            y = enemy.rect.y - 10
+            pos_list.append((x, y))
+
+        print pos_list
+
+        return pos_list
+
+
+    def select_enemy(self, keys):
         """
         Select what enemy you want to take action on.
         """
-        pass
+        self.pos_list = self.make_select_enemy_pos_list()
+        self.rect.topleft = self.pos_list[self.index]
+
+        if self.allow_input:
+            if keys[pg.K_DOWN] and self.index < (len(self.pos_list) - 1):
+                self.index += 1
+                self.allow_input = False
+            elif keys[pg.K_UP] and self.index > 0:
+                self.index -= 1
+                self.allow_input = False
+            elif keys[pg.K_RIGHT] and self.index < (len(self.pos_list) - 4):
+                self.index += 3
+                self.allow_input = False
+            elif keys[pg.K_RIGHT] and self.index >= 3:
+                self.index -= 3
+                self.allow_input = False
+
+        if keys[pg.K_DOWN] == False and keys[pg.K_UP] == False \
+                and keys[pg.K_RIGHT] and keys[pg.K_LEFT]:
+            self.allow_input = True
+
 
     def enter_select_action(self):
         """
