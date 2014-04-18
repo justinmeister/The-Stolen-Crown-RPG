@@ -7,6 +7,13 @@ from .. components import person
 from .. import constants as c
 
 
+SELECT_ACTION = 'select action'
+SELECT_ENEMY = 'select enemy'
+ENEMY_ATTACK = 'enemy attack'
+PLAYER_ATTACK = 'player attack'
+SELECT_ITEM = 'select item'
+SELECT_MAGIC = 'select magic'
+RUN_AWAY = 'run away'
 
 
 
@@ -24,6 +31,8 @@ class Battle(tools._State):
         self.battle_info = BattleInfo()
         self.select_box = SelectBox()
         self.state_dict = self.make_state_dict()
+        self.state = SELECT_ACTION
+        self.select_action_state_dict = self.make_selection_state_dict()
         self.name = 'battle'
         self.next = game_data['last state']
 
@@ -58,13 +67,21 @@ class Battle(tools._State):
         """
         Make the dictionary of states the battle can be in.
         """
-        state_dict = {'select action': self.select_action,
-                      'select enemy': self.select_enemy,
-                      'enemy attack': self.enemy_attack,
-                      'player attack': self.player_attack,
-                      'run away': self.run_away}
+        state_dict = {SELECT_ACTION: self.select_action,
+                      SELECT_ENEMY: self.select_enemy,
+                      ENEMY_ATTACK: self.enemy_attack,
+                      PLAYER_ATTACK: self.player_attack,
+                      RUN_AWAY: self.run_away}
 
         return state_dict
+
+    def make_selection_state_dict(self):
+        """
+        Make a dictionary of states with arrow coordinates as keys.
+        """
+        pos_list = self.select_box.arrow.make_select_action_pos_list()
+        state_list = [SELECT_ENEMY, SELECT_ITEM, SELECT_MAGIC, RUN_AWAY]
+        return dict(zip(pos_list, state_list))
 
     def select_action(self):
         """
@@ -102,15 +119,21 @@ class Battle(tools._State):
         self.enemy_group.update(current_time)
         self.player_group.update(keys, current_time)
         self.select_box.update(keys)
+        self.battle_info.update(self.state)
         self.draw_battle(surface)
 
     def check_input(self, keys):
         """
         Check user input to navigate GUI.
         """
-        if keys[pg.K_SPACE]:
+        arrow = self.select_box.arrow
+
+        if keys[pg.K_RETURN]:
             self.game_data['last state'] = self.name
             self.done = True
+
+        elif keys[pg.K_SPACE]:
+            self.state = self.select_action_state_dict[arrow.rect.topleft]
 
     def draw_battle(self, surface):
         """Draw all elements of battle state"""
@@ -127,8 +150,43 @@ class BattleInfo(object):
     related information.
     """
     def __init__(self):
-        self.image = setup.GFX['shopbox']
+        self.font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
+        self.message_dict = self.make_message_dict()
+        self.image = self.make_image('select action')
         self.rect = self.image.get_rect(bottom=608)
+
+    def make_message_dict(self):
+        """
+        Make dictionary of states Battle info can be in.
+        """
+        message_dict = {SELECT_ACTION: 'Select an action.',
+                        SELECT_MAGIC: 'Select a magic spell.',
+                        SELECT_ITEM: 'Select an item.',
+                        SELECT_ENEMY: 'Select an enemy.',
+                        ENEMY_ATTACK: 'The enemy attacks player!',
+                        PLAYER_ATTACK: 'Player attacks enemy.',
+                        RUN_AWAY: 'Run away'}
+
+        return message_dict
+
+    def make_image(self, state):
+        """
+        Make image out of box and message.
+        """
+        image = setup.GFX['shopbox']
+        rect = image.get_rect(bottom=608)
+        surface = pg.Surface(rect.size)
+        surface.set_colorkey(c.BLACK)
+        surface.blit(image, (0, 0))
+
+        text_surface = self.font.render(self.message_dict[state], True, c.NEAR_BLACK)
+        text_rect = text_surface.get_rect(x=50, y=50)
+        surface.blit(text_surface, text_rect)
+
+        return surface
+
+    def update(self, state):
+        self.image = self.make_image(state)
 
 
 class SelectBox(object):
@@ -168,7 +226,7 @@ class SelectBox(object):
         Make the slots that hold the text selections, and locations.
         """
         slot_dict = {}
-        selections = ['Attack', 'Magic', 'Items', 'Run']
+        selections = ['Attack', 'Items', 'Magic', 'Run']
 
         for i, text in enumerate(selections):
             slot_dict[text] = {'x': 150,

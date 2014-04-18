@@ -84,8 +84,6 @@ class CollisionHandler(object):
             self.reset_after_collision(sprite)
             sprite.begin_auto_resting()
 
-
-
     def reset_after_collision(self, sprite):
         """Put player back to original position"""
         if sprite.x_vel != 0:
@@ -97,7 +95,7 @@ class CollisionHandler(object):
         """
         Switch scene to battle 1/5 times if battles are allowed.
         """
-        random_number = random.randint(0, 20)
+        random_number = random.randint(0, 2)
 
         if random_number == 0:
             self.level.switch_to_battle = True
