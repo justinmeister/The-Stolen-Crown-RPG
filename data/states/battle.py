@@ -31,11 +31,10 @@ class Battle(tools._State):
         self.current_time = current_time
         self.game_data = game_data
         self.background = self.make_background()
-        self.enemy_pos_list = []
-        self.enemy_group = self.make_enemies()
+        self.enemy_group, self.enemy_pos_list = self.make_enemies()
         self.player_group = self.make_player()
         self.info_box = InfoBox()
-        self.arrow = SelectArrow(self.enemy_group)
+        self.arrow = SelectArrow(self.enemy_pos_list)
         self.select_box = SelectBox()
         self.state = SELECT_ACTION
         self.select_action_state_dict = self.make_selection_state_dict()
@@ -56,20 +55,25 @@ class Battle(tools._State):
 
     def make_enemies(self):
         """Make the enemies for the battle. Return sprite group"""
-        group = pg.sprite.Group()
-        columns =  random.randint(1,3)
-        rows = random.randint(1,3)
+        pos_list  = []
 
-        for column in range(columns):
-            for row in range(rows):
+        for column in range(3):
+            for row in range(3):
                 x = (column * 100) + 100
                 y = (row * 100) + 100
-                enemy = person.Person('devil', x, y, 'down', 'battle resting')
-                enemy.image = pg.transform.scale2x(enemy.image)
-                group.add(enemy)
-                self.enemy_pos_list.append(enemy.rect.topleft)
+                pos_list.append([x,y])
 
-        return group
+        enemy_group = pg.sprite.Group()
+
+        for enemy in range(random.randint(1, 6)):
+            enemy_group.add(person.Person('devil', 0, 0,
+                                          'down', 'battle resting'))
+
+        for i, enemy in enumerate(enemy_group):
+            enemy.rect.topleft = pos_list[i]
+            enemy.image = pg.transform.scale2x(enemy.image)
+
+        return enemy_group, pos_list[0:len(enemy_group)]
 
     def make_player(self):
         """Make the sprite for the player's character"""
@@ -288,7 +292,7 @@ class SelectBox(object):
 
 class SelectArrow(object):
     """Small arrow for menu"""
-    def __init__(self, enemy_group):
+    def __init__(self, enemy_pos_list):
         self.image = setup.GFX['smallarrow']
         self.rect = self.image.get_rect()
         self.state = 'select action'
@@ -297,7 +301,7 @@ class SelectArrow(object):
         self.index = 0
         self.rect.topleft = self.pos_list[self.index]
         self.allow_input = False
-        self.enemies = enemy_group
+        self.enemy_pos_list = enemy_pos_list
 
     def make_state_dict(self):
         """Make state dictionary"""
@@ -338,29 +342,14 @@ class SelectArrow(object):
 
         return pos_list
 
-    def make_select_enemy_pos_list(self):
-        """
-        Make the list of positions the arrow can be when selecting
-        enemy.
-        """
-        pos_list = []
-
-        for enemy in self.enemies:
-            x = enemy.rect.x - 10
-            y = enemy.rect.y - 10
-            pos_list.append((x, y))
-
-        print pos_list
-
-        return pos_list
-
-
     def select_enemy(self, keys):
         """
         Select what enemy you want to take action on.
         """
-        self.pos_list = self.make_select_enemy_pos_list()
-        self.rect.topleft = self.pos_list[self.index]
+        self.pos_list = self.enemy_pos_list
+        pos = self.pos_list[self.index]
+        self.rect.x = pos[0] - 60
+        self.rect.y = pos[1] + 20
 
         if self.allow_input:
             if keys[pg.K_DOWN] and self.index < (len(self.pos_list) - 1):
@@ -369,15 +358,10 @@ class SelectArrow(object):
             elif keys[pg.K_UP] and self.index > 0:
                 self.index -= 1
                 self.allow_input = False
-            elif keys[pg.K_RIGHT] and self.index < (len(self.pos_list) - 4):
-                self.index += 3
-                self.allow_input = False
-            elif keys[pg.K_RIGHT] and self.index >= 3:
-                self.index -= 3
-                self.allow_input = False
+
 
         if keys[pg.K_DOWN] == False and keys[pg.K_UP] == False \
-                and keys[pg.K_RIGHT] and keys[pg.K_LEFT]:
+                and keys[pg.K_RIGHT] == False and keys[pg.K_LEFT] == False:
             self.allow_input = True
 
 
