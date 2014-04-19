@@ -172,7 +172,9 @@ def create_game_data_dict():
     carries between states"""
 
     player_items = {'GOLD': dict([('quantity',600),
-                                  ('value',0)])}
+                                  ('value',0)]),
+                    'Healing Potion': dict([('quantity',1),
+                                            ('value',15)])}
 
     player_health = {'current': 100,
                      'maximum': 100}
@@ -191,11 +193,6 @@ def create_game_data_dict():
     data_dict = {'last location': None,
                  'last state': None,
                  'last direction': 'down',
-                 'town start pos': [12, 49],
-                 'castle start pos': [12, 26],
-                 'house start pos': [12, 13],
-                 'brother_house start pos': [12, 13],
-                 'overworld start pos': [17, 30],
                  'king item': {'GOLD': dict([('quantity', 500),
                                              ('value',0)])},
                  'old man item': {'ELIXIR': dict([('value',1000),

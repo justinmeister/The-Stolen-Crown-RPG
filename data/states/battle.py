@@ -33,7 +33,7 @@ class Battle(tools._State):
         self.background = self.make_background()
         self.enemy_group, self.enemy_pos_list = self.make_enemies()
         self.player_group = self.make_player()
-        self.info_box = InfoBox()
+        self.info_box = InfoBox(game_data)
         self.arrow = SelectArrow(self.enemy_pos_list)
         self.select_box = SelectBox()
         self.state = SELECT_ACTION
@@ -96,9 +96,8 @@ class Battle(tools._State):
         self.check_input(keys)
         self.enemy_group.update(current_time)
         self.player_group.update(keys, current_time)
-        self.select_box.update()
         self.arrow.update(keys)
-        self.info_box.update(self.state)
+
         self.draw_battle(surface)
 
     def check_input(self, keys):
@@ -155,6 +154,7 @@ class Observer(object):
         """
         event_dict = {END_BATTLE: self.end_battle,
                       SELECT_ACTION: self.select_action,
+                      SELECT_ITEM: self.select_item,
                       SELECT_ENEMY: self.select_enemy,
                       ENEMY_ATTACK: self.enemy_attack,
                       PLAYER_ATTACK: self.player_attack,
@@ -186,6 +186,10 @@ class Observer(object):
         self.level.state = SELECT_ENEMY
         self.arrow.state = SELECT_ENEMY
 
+    def select_item(self):
+        self.level.state = SELECT_ITEM
+        self.info_box.image = self.info_box.make_image(SELECT_ITEM)
+
     def enemy_attack(self):
         pass
 
@@ -201,10 +205,14 @@ class InfoBox(object):
     Info box that describes attack damage and other battle
     related information.
     """
-    def __init__(self):
-        self.font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
+    def __init__(self, game_data):
+        self.game_data = game_data
+        self.state = SELECT_ACTION
+        self.title_font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
+        self.title_font.set_underline(True)
+        self.font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 18)
         self.message_dict = self.make_message_dict()
-        self.image = self.make_image('select action')
+        self.image = self.make_image(SELECT_ACTION)
         self.rect = self.image.get_rect(bottom=608)
 
     def make_message_dict(self):
@@ -221,6 +229,49 @@ class InfoBox(object):
 
         return message_dict
 
+    def make_item_text(self):
+        """
+        Make the text for when the player selects items.
+        """
+        inventory = self.game_data['player inventory']
+        allowed_item_list = ['Healing Potion']
+        title = 'SELECT ITEM'
+        item_text_list = [title]
+
+        for item in inventory:
+            if item in allowed_item_list:
+                text = item + ": " + str(inventory[item]['quantity'])
+                item_text_list.append(text)
+
+        item_text_list.append('BACK')
+
+        return item_text_list
+
+    def make_text_sprites(self, text_list):
+        """
+        Make sprites out of text.
+        """
+        sprite_group = pg.sprite.Group()
+
+        for i, text in enumerate(text_list):
+            sprite = pg.sprite.Sprite()
+
+            if i == 0:
+                x = 195
+                y = 10
+                surface = self.title_font.render(text, True, c.NEAR_BLACK)
+                rect = surface.get_rect(x=x, y=y)
+            else:
+                x = 100
+                y = (i * 30) + 20
+                surface = self.font.render(text, True, c.NEAR_BLACK)
+                rect = surface.get_rect(x=x, y=y)
+            sprite.image = surface
+            sprite.rect = rect
+            sprite_group.add(sprite)
+
+        return sprite_group
+
     def make_image(self, state):
         """
         Make image out of box and message.
@@ -231,14 +282,15 @@ class InfoBox(object):
         surface.set_colorkey(c.BLACK)
         surface.blit(image, (0, 0))
 
-        text_surface = self.font.render(self.message_dict[state], True, c.NEAR_BLACK)
-        text_rect = text_surface.get_rect(x=50, y=50)
-        surface.blit(text_surface, text_rect)
+        if state == SELECT_ITEM:
+            text_sprites = self.make_text_sprites(self.make_item_text())
+            text_sprites.draw(surface)
+        else:
+            text_surface = self.font.render(self.message_dict[state], True, c.NEAR_BLACK)
+            text_rect = text_surface.get_rect(x=50, y=50)
+            surface.blit(text_surface, text_rect)
 
         return surface
-
-    def update(self, state):
-        self.image = self.make_image(state)
 
 
 class SelectBox(object):
@@ -283,11 +335,6 @@ class SelectBox(object):
 
         return slot_dict
 
-    def update(self):
-        """
-        Update components.
-        """
-        self.image = self.make_image()
 
 
 class SelectArrow(object):
