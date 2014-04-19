@@ -29,10 +29,11 @@ class Battle(tools._State):
     def startup(self, current_time, game_data):
         """Initialize state attributes"""
         self.current_time = current_time
+        self.allow_input = False
         self.game_data = game_data
         self.background = self.make_background()
         self.enemy_group, self.enemy_pos_list = self.make_enemies()
-        self.player_group = self.make_player()
+        self.player = self.make_player()
         self.info_box = InfoBox(game_data)
         self.arrow = SelectArrow(self.enemy_pos_list)
         self.select_box = SelectBox()
@@ -41,6 +42,7 @@ class Battle(tools._State):
         self.name = 'battle'
         self.next = game_data['last state']
         self.observer = Observer(self)
+        self.player.observer = self.observer
 
     def make_background(self):
         """Make the blue/black background"""
@@ -79,9 +81,8 @@ class Battle(tools._State):
         """Make the sprite for the player's character"""
         player = person.Player('left', 630, 220, 'battle resting', 1)
         player.image = pg.transform.scale2x(player.image)
-        player_group = pg.sprite.Group(player)
 
-        return player_group
+        return player
 
     def make_selection_state_dict(self):
         """
@@ -95,7 +96,7 @@ class Battle(tools._State):
         """Update the battle state"""
         self.check_input(keys)
         self.enemy_group.update(current_time)
-        self.player_group.update(keys, current_time)
+        self.player.update(keys, current_time)
         self.arrow.update(keys)
 
         self.draw_battle(surface)
@@ -104,12 +105,23 @@ class Battle(tools._State):
         """
         Check user input to navigate GUI.
         """
-        if keys[pg.K_RETURN]:
-            self.notify(END_BATTLE)
+        if self.allow_input:
+            if keys[pg.K_RETURN]:
+                self.notify(END_BATTLE)
 
-        elif keys[pg.K_SPACE] and self.state == SELECT_ACTION:
-            self.state = self.select_action_state_dict[self.arrow.rect.topleft]
-            self.notify(self.state)
+            elif keys[pg.K_SPACE] and self.state == SELECT_ACTION:
+                self.state = self.select_action_state_dict[
+                    self.arrow.rect.topleft]
+                self.notify(self.state)
+
+            elif keys[pg.K_SPACE] and self.state == SELECT_ENEMY:
+                self.state = PLAYER_ATTACK
+                self.notify(self.state)
+
+            self.allow_input = False
+
+        if keys[pg.K_RETURN] == False and keys[pg.K_SPACE] == False:
+            self.allow_input = True
 
     def notify(self, event):
         """
@@ -128,7 +140,7 @@ class Battle(tools._State):
         """Draw all elements of battle state"""
         self.background.draw(surface)
         self.enemy_group.draw(surface)
-        self.player_group.draw(surface)
+        surface.blit(self.player.image, self.player.rect)
         surface.blit(self.info_box.image, self.info_box.rect)
         surface.blit(self.select_box.image, self.select_box.rect)
         surface.blit(self.arrow.image, self.arrow.rect)
@@ -143,7 +155,7 @@ class Observer(object):
         self.info_box = level.info_box
         self.select_box = level.info_box
         self.arrow = level.arrow
-        self.player = level.player_group
+        self.player = level.player
         self.enemies = level.enemy_group
         self.event_dict = self.make_event_dict()
 
@@ -181,6 +193,7 @@ class Observer(object):
         """
         self.level.state = SELECT_ACTION
         self.arrow.index = 0
+        self.arrow.state = SELECT_ACTION
 
     def select_enemy(self):
         self.level.state = SELECT_ENEMY
@@ -194,7 +207,20 @@ class Observer(object):
         pass
 
     def player_attack(self):
-        pass
+        enemy_posx = self.arrow.rect.x + 60
+        enemy_posy = self.arrow.rect.y - 20
+        enemy_pos = (enemy_posx, enemy_posy)
+        enemy_to_attack = None
+
+        for enemy in self.enemies:
+            if enemy.rect.topleft == enemy_pos:
+                enemy_to_attack = enemy
+
+        self.player.enter_attack_state(enemy_to_attack)
+
+
+
+
 
     def run_away(self):
         pass

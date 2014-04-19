@@ -18,6 +18,7 @@ class Person(pg.sprite.Sprite):
         self.image_list = self.animation_dict[self.direction]
         self.image = self.image_list[self.index]
         self.rect = self.image.get_rect(left=x, top=y)
+        self.origin_pos = self.rect.topleft
         self.state_dict = self.create_state_dict()
         self.vector_dict = self.create_vector_dict()
         self.x_vel = 0
@@ -77,7 +78,8 @@ class Person(pg.sprite.Sprite):
                       'animated resting': self.animated_resting,
                       'autoresting': self.auto_resting,
                       'automoving': self.auto_moving,
-                      'battle resting': self.battle_resting}
+                      'battle resting': self.battle_resting,
+                      'attack': self.attack}
 
         return state_dict
 
@@ -282,6 +284,38 @@ class Person(pg.sprite.Sprite):
         Player stays still during battle state unless he attacks.
         """
         pass
+
+    def enter_attack_state(self, enemy):
+        """
+        Set values for attack state.
+        """
+        self.x_vel = 1
+        self.state = 'attack'
+
+    def attack(self):
+        """
+        Player does an attack animation.
+        """
+        SLOW_BACK = 1
+        FAST_FORWARD = -5
+        FAST_BACK = 5
+
+        self.rect.x += self.x_vel
+
+        if self.x_vel == SLOW_BACK:
+            if self.rect.x >= self.origin_pos[0] + 10:
+                self.x_vel = FAST_FORWARD
+        elif self.x_vel == FAST_FORWARD:
+            if self.rect.x <= self.origin_pos[0] - 60:
+                self.x_vel = FAST_BACK
+        else:
+            if self.rect.x >= self.origin_pos[0]:
+                self.rect.x = self.origin_pos[0]
+                self.x_vel = 0
+                self.state = 'battle resting'
+                self.observer.on_notify('select action')
+
+
 
     def auto_moving(self):
         """
