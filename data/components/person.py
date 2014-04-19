@@ -306,13 +306,18 @@ class Person(pg.sprite.Sprite):
             if self.rect.x >= self.origin_pos[0] + 10:
                 self.x_vel = FAST_FORWARD
         elif self.x_vel == FAST_FORWARD:
-            if self.rect.x <= self.origin_pos[0] - 60:
+            if self.rect.topleft >= self.origin_pos:
+                self.image = self.spritesheet_dict['facing left 1']
+                self.image = pg.transform.scale2x(self.image)
+            elif self.rect.x <= self.origin_pos[0] - 100:
                 self.x_vel = FAST_BACK
         else:
             if self.rect.x >= self.origin_pos[0]:
                 self.rect.x = self.origin_pos[0]
                 self.x_vel = 0
                 self.state = 'battle resting'
+                self.image = self.spritesheet_dict['facing left 2']
+                self.image = pg.transform.scale2x(self.image)
                 self.observer.on_notify('select action')
 
 
