@@ -289,6 +289,7 @@ class Person(pg.sprite.Sprite):
         """
         Set values for attack state.
         """
+        self.attacked_enemy = enemy
         self.x_vel = 1
         self.state = 'attack'
 
@@ -303,14 +304,15 @@ class Person(pg.sprite.Sprite):
         self.rect.x += self.x_vel
 
         if self.x_vel == SLOW_BACK:
-            if self.rect.x >= self.origin_pos[0] + 10:
+            if self.rect.x >= self.origin_pos[0] + 20:
                 self.x_vel = FAST_FORWARD
         elif self.x_vel == FAST_FORWARD:
             if self.rect.topleft >= self.origin_pos:
                 self.image = self.spritesheet_dict['facing left 1']
                 self.image = pg.transform.scale2x(self.image)
-            elif self.rect.x <= self.origin_pos[0] - 100:
+            elif self.rect.x <= self.origin_pos[0] - 110:
                 self.x_vel = FAST_BACK
+                self.observer.on_notify('attack animation')
         else:
             if self.rect.x >= self.origin_pos[0]:
                 self.rect.x = self.origin_pos[0]

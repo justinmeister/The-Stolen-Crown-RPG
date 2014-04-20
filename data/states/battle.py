@@ -4,7 +4,7 @@ monsters"""
 import random
 import pygame as pg
 from .. import tools, setup
-from .. components import person
+from .. components import person, attack
 from .. import constants as c
 
 #STATES
@@ -16,6 +16,7 @@ PLAYER_ATTACK = 'player attack'
 SELECT_ITEM = 'select item'
 SELECT_MAGIC = 'select magic'
 RUN_AWAY = 'run away'
+ATTACK_ANIMATION = 'attack animation'
 
 #EVENTS
 
@@ -34,8 +35,11 @@ class Battle(tools._State):
         self.background = self.make_background()
         self.enemy_group, self.enemy_pos_list = self.make_enemies()
         self.player = self.make_player()
+        self.attack_animations = pg.sprite.Group()
         self.info_box = InfoBox(game_data)
         self.arrow = SelectArrow(self.enemy_pos_list)
+        self.attacked_enemy = None
+        self.attacking_enemy = None
         self.select_box = SelectBox()
         self.state = SELECT_ACTION
         self.select_action_state_dict = self.make_selection_state_dict()
@@ -97,6 +101,7 @@ class Battle(tools._State):
         self.check_input(keys)
         self.enemy_group.update(current_time)
         self.player.update(keys, current_time)
+        self.attack_animations.update()
         self.arrow.update(keys)
 
         self.draw_battle(surface)
@@ -109,14 +114,15 @@ class Battle(tools._State):
             if keys[pg.K_RETURN]:
                 self.notify(END_BATTLE)
 
-            elif keys[pg.K_SPACE] and self.state == SELECT_ACTION:
-                self.state = self.select_action_state_dict[
-                    self.arrow.rect.topleft]
-                self.notify(self.state)
+            elif keys[pg.K_SPACE]:
+                if self.state == SELECT_ACTION:
+                    self.state = self.select_action_state_dict[
+                        self.arrow.rect.topleft]
+                    self.notify(self.state)
 
-            elif keys[pg.K_SPACE] and self.state == SELECT_ENEMY:
-                self.state = PLAYER_ATTACK
-                self.notify(self.state)
+                elif self.state == SELECT_ENEMY:
+                    self.state = PLAYER_ATTACK
+                    self.notify(self.state)
 
             self.allow_input = False
 
@@ -140,6 +146,7 @@ class Battle(tools._State):
         """Draw all elements of battle state"""
         self.background.draw(surface)
         self.enemy_group.draw(surface)
+        self.attack_animations.draw(surface)
         surface.blit(self.player.image, self.player.rect)
         surface.blit(self.info_box.image, self.info_box.rect)
         surface.blit(self.select_box.image, self.select_box.rect)
@@ -170,6 +177,7 @@ class Observer(object):
                       SELECT_ENEMY: self.select_enemy,
                       ENEMY_ATTACK: self.enemy_attack,
                       PLAYER_ATTACK: self.player_attack,
+                      ATTACK_ANIMATION: self.attack_animation,
                       RUN_AWAY: self.run_away}
 
         return event_dict
@@ -194,6 +202,7 @@ class Observer(object):
         self.level.state = SELECT_ACTION
         self.arrow.index = 0
         self.arrow.state = SELECT_ACTION
+        self.arrow.image = setup.GFX['smallarrow']
 
     def select_enemy(self):
         self.level.state = SELECT_ENEMY
@@ -217,13 +226,22 @@ class Observer(object):
                 enemy_to_attack = enemy
 
         self.player.enter_attack_state(enemy_to_attack)
+        self.arrow.become_invisible_surface()
 
-
-
-
+    def attack_animation(self):
+        """
+        Make an attack animation over attacked enemy.
+        """
+        enemy = self.player.attacked_enemy
+        if enemy:
+            enemy.kill()
+            posx = enemy.rect.x - 32
+            posy = enemy.rect.y - 64
+            fire_sprite = attack.Fire(posx, posy)
+            self.level.attack_animations.add(fire_sprite)
 
     def run_away(self):
-        pass
+        self.level.end_battle()
 
 
 class InfoBox(object):
@@ -436,6 +454,13 @@ class SelectArrow(object):
         if keys[pg.K_DOWN] == False and keys[pg.K_UP] == False \
                 and keys[pg.K_RIGHT] == False and keys[pg.K_LEFT] == False:
             self.allow_input = True
+
+    def become_invisible_surface(self):
+        """
+        Make image attribute an invisible surface.
+        """
+        self.image = pg.Surface((32, 32))
+        self.image.set_colorkey(c.BLACK)
 
 
     def enter_select_action(self):
