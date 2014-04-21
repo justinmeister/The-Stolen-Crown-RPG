@@ -31,5 +31,25 @@ DARK_RED = (118, 27, 12)
 MAIN_FONT = 'DroidSans'
 
 
+#STATES
+
+SELECT_ACTION = 'select action'
+SELECT_ENEMY = 'select enemy'
+ENEMY_ATTACK = 'enemy attack'
+PLAYER_ATTACK = 'player attack'
+SELECT_ITEM = 'select item'
+SELECT_MAGIC = 'select magic'
+RUN_AWAY = 'run away'
+ATTACK_ANIMATION = 'attack animation'
+BATTLE_WON = 'battle won'
+ENEMY_HIT = 'enemy hit'
+ENEMY_DEAD = 'enemy dead'
+PLAYER_FINISHED_ATTACK = 'player finished attack'
+
+#EVENTS
+
+END_BATTLE = 'end battle'
+
+
 
 

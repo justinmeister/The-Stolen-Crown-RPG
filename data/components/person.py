@@ -1,6 +1,7 @@
 import math, random
 import pygame as pg
 from .. import setup
+from .. import constants as c
 
 
 class Person(pg.sprite.Sprite):
@@ -320,7 +321,7 @@ class Person(pg.sprite.Sprite):
                 self.state = 'battle resting'
                 self.image = self.spritesheet_dict['facing left 2']
                 self.image = pg.transform.scale2x(self.image)
-                self.observer.on_notify('select action')
+                self.observer.on_notify(c.PLAYER_FINISHED_ATTACK)
 
 
 
