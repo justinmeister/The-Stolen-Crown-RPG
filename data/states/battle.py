@@ -24,7 +24,8 @@ class Battle(tools._State):
         self.player = self.make_player()
         self.attack_animations = pg.sprite.Group()
         self.info_box = battlegui.InfoBox(game_data)
-        self.arrow = battlegui.SelectArrow(self.enemy_pos_list)
+        self.arrow = battlegui.SelectArrow(self.enemy_pos_list,
+                                           self.info_box)
         self.attacked_enemy = None
         self.attacking_enemy = None
         self.select_box = battlegui.SelectBox()
@@ -120,6 +121,11 @@ class Battle(tools._State):
                 elif self.state == c.ENEMY_DEAD:
                     self.state = c.SELECT_ACTION
                     self.notify(self.state)
+
+                elif self.state == c.SELECT_ITEM:
+                    if self.arrow.index == (len(self.arrow.pos_list) - 1):
+                        self.state = c.SELECT_ACTION
+                        self.notify(self.state)
 
             self.allow_input = False
 

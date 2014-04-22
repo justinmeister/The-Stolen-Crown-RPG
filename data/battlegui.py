@@ -157,7 +157,8 @@ class SelectBox(object):
 
 class SelectArrow(object):
     """Small arrow for menu"""
-    def __init__(self, enemy_pos_list):
+    def __init__(self, enemy_pos_list, info_box):
+        self.info_box = info_box
         self.image = setup.GFX['smallarrow']
         self.rect = self.image.get_rect()
         self.state = 'select action'
@@ -171,7 +172,8 @@ class SelectArrow(object):
     def make_state_dict(self):
         """Make state dictionary"""
         state_dict = {'select action': self.select_action,
-                      'select enemy': self.select_enemy}
+                      'select enemy': self.select_enemy,
+                      'select item': self.select_item}
 
         return state_dict
 
@@ -182,17 +184,7 @@ class SelectArrow(object):
         self.pos_list = self.make_select_action_pos_list()
         self.rect.topleft = self.pos_list[self.index]
 
-        if self.allow_input:
-            if keys[pg.K_DOWN] and self.index < (len(self.pos_list) - 1):
-                self.index += 1
-                self.allow_input = False
-            elif keys[pg.K_UP] and self.index > 0:
-                self.index -= 1
-                self.allow_input = False
-
-        if keys[pg.K_DOWN] == False and keys[pg.K_UP] == False:
-            self.allow_input = True
-
+        self.check_input(keys)
 
     def make_select_action_pos_list(self):
         """
@@ -218,6 +210,9 @@ class SelectArrow(object):
             self.rect.x = pos[0] - 60
             self.rect.y = pos[1] + 20
 
+        self.check_input(keys)
+
+    def check_input(self, keys):
         if self.allow_input:
             if keys[pg.K_DOWN] and self.index < (len(self.pos_list) - 1):
                 self.index += 1
@@ -231,6 +226,34 @@ class SelectArrow(object):
                 and keys[pg.K_RIGHT] == False and keys[pg.K_LEFT] == False:
             self.allow_input = True
 
+    def select_item(self, keys):
+        """
+        Select item to use.
+        """
+        self.pos_list = self.make_select_item_pos_list()
+
+        pos = self.pos_list[self.index]
+        self.rect.x = pos[0] - 60
+        self.rect.y = pos[1] + 20
+
+        self.check_input(keys)
+
+    def make_select_item_pos_list(self):
+        """
+        Make the coordinates for the arrow for the item select screen.
+        """
+        pos_list = []
+        text_list = self.info_box.make_item_text()
+        text_list = text_list[1:]
+
+        for i in range(len(text_list)):
+            left = 90
+            top = (i * 29) + 488
+            pos_list.append((left, top))
+
+        return pos_list
+
+
     def become_invisible_surface(self):
         """
         Make image attribute an invisible surface.
@@ -238,6 +261,9 @@ class SelectArrow(object):
         self.image = pg.Surface((32, 32))
         self.image.set_colorkey(c.BLACK)
 
+    def become_select_item_state(self):
+        self.index = 0
+        self.state = c.SELECT_ITEM
 
     def enter_select_action(self):
         """

@@ -61,11 +61,13 @@ class Battle(object):
 
     def select_enemy(self):
         self.level.state = c.SELECT_ENEMY
+        self.arrow.index = 0
         self.arrow.state = c.SELECT_ENEMY
 
     def select_item(self):
         self.level.state = c.SELECT_ITEM
         self.info_box.state = c.SELECT_ITEM
+        self.arrow.become_select_item_state()
 
     def enemy_attack(self):
         pass
@@ -88,6 +90,7 @@ class Battle(object):
         Make an attack animation over attacked enemy.
         """
         self.arrow.remove_pos(self.player.attacked_enemy)
+        self.arrow.state = c.SELECT_ACTION
         self.level.attack_enemy()
         self.info_box.state = c.ENEMY_HIT
 
