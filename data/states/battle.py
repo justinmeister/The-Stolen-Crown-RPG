@@ -4,8 +4,9 @@ monsters"""
 import random
 import pygame as pg
 from .. import tools, battlegui, observer
-from .. components import person
+from .. components import person, attack
 from .. import constants as c
+
 
 
 class Battle(tools._State):
@@ -145,6 +146,17 @@ class Battle(tools._State):
         """
         self.game_data['last state'] = self.name
         self.done = True
+
+    def attack_enemy(self):
+        enemy = self.player.attacked_enemy
+
+        if enemy:
+            enemy.kill()
+            posx = enemy.rect.x - 32
+            posy = enemy.rect.y - 64
+            fire_sprite = attack.Fire(posx, posy)
+            self.attack_animations.add(fire_sprite)
+            self.player.attacked_enemy = None
 
     def draw_battle(self, surface):
         """Draw all elements of battle state"""

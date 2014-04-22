@@ -212,9 +212,11 @@ class SelectArrow(object):
         Select what enemy you want to take action on.
         """
         self.pos_list = self.enemy_pos_list
-        pos = self.pos_list[self.index]
-        self.rect.x = pos[0] - 60
-        self.rect.y = pos[1] + 20
+
+        if self.pos_list:
+            pos = self.pos_list[self.index]
+            self.rect.x = pos[0] - 60
+            self.rect.y = pos[1] + 20
 
         if self.allow_input:
             if keys[pg.K_DOWN] and self.index < (len(self.pos_list) - 1):
@@ -261,4 +263,11 @@ class SelectArrow(object):
         Draw to surface.
         """
         surface.blit(self.image, self.rect)
+
+    def remove_pos(self, enemy):
+        enemy_list = self.enemy_pos_list
+        enemy_pos = list(enemy.rect.topleft)
+
+        self.enemy_pos_list = [pos for pos in enemy_list if pos != enemy_pos]
+
 

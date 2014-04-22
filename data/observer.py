@@ -87,14 +87,8 @@ class Battle(object):
         """
         Make an attack animation over attacked enemy.
         """
-        enemy = self.player.attacked_enemy
-        if enemy:
-            enemy.kill()
-            posx = enemy.rect.x - 32
-            posy = enemy.rect.y - 64
-            fire_sprite = attack.Fire(posx, posy)
-            self.level.attack_animations.add(fire_sprite)
-
+        self.arrow.remove_pos(self.player.attacked_enemy)
+        self.level.attack_enemy()
         self.info_box.state = c.ENEMY_HIT
 
     def run_away(self):
