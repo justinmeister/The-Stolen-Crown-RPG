@@ -22,7 +22,7 @@ class InfoBox(object):
         self.image = self.make_image()
         self.rect = self.image.get_rect(bottom=608)
         self.arrow = textbox.NextArrow()
-        self.arrow.rect.topleft = (380, 110)
+        self.arrow.rect.topleft = (380, 55)
 
 
     def make_state_dict(self):
@@ -355,7 +355,7 @@ class PlayerHealth(object):
         self.magic_stats = game_data['player stats']['Magic Points']
         self.title_font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
         self.posx = select_box_rect.centerx
-        self.posy = select_box_rect.y - 10
+        self.posy = select_box_rect.y - 5
 
     @property
     def image(self):
@@ -365,16 +365,20 @@ class PlayerHealth(object):
         current_health = str(self.health_stats['current'])
         max_health = str(self.health_stats['maximum'])
         health_string = "Health: " + current_health + "/" + max_health
-        health_surface =  self.title_font.render(health_string, True, c.WHITE)
-        health_rect = health_surface.get_rect()
+        health_surface =  self.title_font.render(health_string, True, c.NEAR_BLACK)
+        health_rect = health_surface.get_rect(x=20, y=9)
 
         current_magic = str(self.magic_stats['current'])
         max_magic = str(self.magic_stats['maximum'])
         magic_string = "Magic:  " + current_magic + "/" + max_magic
-        magic_surface = self.title_font.render(magic_string, True, c.WHITE)
-        magic_rect = magic_surface.get_rect(top=health_rect.bottom)
+        magic_surface = self.title_font.render(magic_string, True, c.NEAR_BLACK)
+        magic_rect = magic_surface.get_rect(x=20, top=health_rect.bottom)
 
-        parent_surface = pg.Surface((health_rect.width, health_rect.height*2))
+        box_surface = setup.GFX['battlestatbox']
+        box_rect = box_surface.get_rect()
+
+        parent_surface = pg.Surface(box_rect.size)
+        parent_surface.blit(box_surface, box_rect)
         parent_surface.blit(health_surface, health_rect)
         parent_surface.blit(magic_surface, magic_rect)
 
