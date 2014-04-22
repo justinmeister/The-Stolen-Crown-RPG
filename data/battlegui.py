@@ -346,3 +346,49 @@ class SelectArrow(object):
         self.enemy_pos_list = [pos for pos in enemy_list if pos != enemy_pos]
 
 
+class PlayerHealth(object):
+    """
+    Basic health meter for player.
+    """
+    def __init__(self, select_box_rect, game_data):
+        self.health_stats = game_data['player stats']['Health']
+        self.magic_stats = game_data['player stats']['Magic Points']
+        self.title_font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
+        self.posx = select_box_rect.centerx
+        self.posy = select_box_rect.y - 10
+
+    @property
+    def image(self):
+        """
+        Make the image surface for the player
+        """
+        current_health = str(self.health_stats['current'])
+        max_health = str(self.health_stats['maximum'])
+        health_string = "Health: " + current_health + "/" + max_health
+        health_surface =  self.title_font.render(health_string, True, c.WHITE)
+        health_rect = health_surface.get_rect()
+
+        current_magic = str(self.magic_stats['current'])
+        max_magic = str(self.magic_stats['maximum'])
+        magic_string = "Magic:  " + current_magic + "/" + max_magic
+        magic_surface = self.title_font.render(magic_string, True, c.WHITE)
+        magic_rect = magic_surface.get_rect(top=health_rect.bottom)
+
+        parent_surface = pg.Surface((health_rect.width, health_rect.height*2))
+        parent_surface.blit(health_surface, health_rect)
+        parent_surface.blit(magic_surface, magic_rect)
+
+        return parent_surface
+
+    @property
+    def rect(self):
+        """
+        Make the rect object for image surface.
+        """
+        return self.image.get_rect(centerx=self.posx, bottom=self.posy)
+
+    def draw(self, surface):
+        """
+        Draw health to surface.
+        """
+        surface.blit(self.image, self.rect)

@@ -26,9 +26,11 @@ class Battle(tools._State):
         self.info_box = battlegui.InfoBox(game_data)
         self.arrow = battlegui.SelectArrow(self.enemy_pos_list,
                                            self.info_box)
+        self.select_box = battlegui.SelectBox()
+        self.player_health = battlegui.PlayerHealth(self.select_box.rect,
+                                                    self.game_data)
         self.attacked_enemy = None
         self.attacking_enemy = None
-        self.select_box = battlegui.SelectBox()
         self.state = c.SELECT_ACTION
         self.select_action_state_dict = self.make_selection_state_dict()
         self.name = 'battle'
@@ -173,5 +175,6 @@ class Battle(tools._State):
         surface.blit(self.info_box.image, self.info_box.rect)
         surface.blit(self.select_box.image, self.select_box.rect)
         surface.blit(self.arrow.image, self.arrow.rect)
+        self.player_health.draw(surface)
 
 
