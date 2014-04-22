@@ -122,7 +122,7 @@ class Battle(tools._State):
                     self.state = c.SELECT_ACTION
                     self.notify(self.state)
 
-                elif self.state == c.SELECT_ITEM:
+                elif self.state == c.SELECT_ITEM or self.state == c.SELECT_MAGIC:
                     if self.arrow.index == (len(self.arrow.pos_list) - 1):
                         self.state = c.SELECT_ACTION
                         self.notify(self.state)

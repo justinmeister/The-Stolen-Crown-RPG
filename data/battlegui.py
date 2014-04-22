@@ -60,6 +60,20 @@ class InfoBox(object):
 
         return item_text_list
 
+    def make_magic_text(self):
+        """
+        Make the text for when the player selects magic.
+        """
+        inventory = self.game_data['player inventory']
+        allowed_item_list = ['Fire Blast', 'Cure']
+        title = 'SELECT MAGIC SPELL'
+        magic_text_list = [title]
+        spell_list = [item for item in inventory if item in allowed_item_list]
+        magic_text_list.extend(spell_list)
+        magic_text_list.append('BACK')
+
+        return magic_text_list
+
     def make_text_sprites(self, text_list):
         """
         Make sprites out of text.
@@ -97,6 +111,9 @@ class InfoBox(object):
 
         if self.state == c.SELECT_ITEM:
             text_sprites = self.make_text_sprites(self.make_item_text())
+            text_sprites.draw(surface)
+        elif self.state == c.SELECT_MAGIC:
+            text_sprites = self.make_text_sprites(self.make_magic_text())
             text_sprites.draw(surface)
         else:
             text_surface = self.font.render(self.state_dict[self.state], True, c.NEAR_BLACK)
@@ -173,7 +190,8 @@ class SelectArrow(object):
         """Make state dictionary"""
         state_dict = {'select action': self.select_action,
                       'select enemy': self.select_enemy,
-                      'select item': self.select_item}
+                      'select item': self.select_item,
+                      'select magic': self.select_magic}
 
         return state_dict
 
@@ -253,6 +271,33 @@ class SelectArrow(object):
 
         return pos_list
 
+    def select_magic(self, keys):
+        """
+        Select magic to use.
+        """
+        self.pos_list = self.make_select_magic_pos_list()
+
+        pos = self.pos_list[self.index]
+        self.rect.x = pos[0] - 60
+        self.rect.y = pos[1] + 20
+
+        self.check_input(keys)
+
+    def make_select_magic_pos_list(self):
+        """
+        Make the coordinates for the arrow for the magic select screen.
+        """
+        pos_list = []
+        text_list = self.info_box.make_magic_text()
+        text_list = text_list[1:]
+
+        for i in range(len(text_list)):
+            left = 90
+            top = (i * 29) + 488
+            pos_list.append((left, top))
+
+        return pos_list
+
 
     def become_invisible_surface(self):
         """
@@ -264,6 +309,10 @@ class SelectArrow(object):
     def become_select_item_state(self):
         self.index = 0
         self.state = c.SELECT_ITEM
+
+    def become_select_magic_state(self):
+        self.index = 0
+        self.state = c.SELECT_MAGIC
 
     def enter_select_action(self):
         """

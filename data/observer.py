@@ -27,6 +27,7 @@ class Battle(object):
                       c.SELECT_ACTION: self.select_action,
                       c.SELECT_ITEM: self.select_item,
                       c.SELECT_ENEMY: self.select_enemy,
+                      c.SELECT_MAGIC: self.select_magic,
                       c.ENEMY_ATTACK: self.enemy_attack,
                       c.PLAYER_ATTACK: self.player_attack,
                       c.ATTACK_ANIMATION: self.attack_animation,
@@ -68,6 +69,11 @@ class Battle(object):
         self.level.state = c.SELECT_ITEM
         self.info_box.state = c.SELECT_ITEM
         self.arrow.become_select_item_state()
+
+    def select_magic(self):
+        self.level.state = c.SELECT_MAGIC
+        self.info_box.state = c.SELECT_MAGIC
+        self.arrow.become_select_magic_state()
 
     def enemy_attack(self):
         pass
