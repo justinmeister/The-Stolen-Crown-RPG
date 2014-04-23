@@ -4,7 +4,7 @@ monsters"""
 import random
 import pygame as pg
 from .. import tools, battlegui, observer
-from .. components import person, attack
+from .. components import person, attack, attackitems
 from .. import constants as c
 
 
@@ -29,6 +29,7 @@ class Battle(tools._State):
         self.select_box = battlegui.SelectBox()
         self.player_health = battlegui.PlayerHealth(self.select_box.rect,
                                                     self.game_data)
+        self.sword = attackitems.Sword(self.player)
         self.attacked_enemy = None
         self.attacking_enemy = None
         self.state = c.SELECT_ACTION
@@ -176,5 +177,6 @@ class Battle(tools._State):
         surface.blit(self.select_box.image, self.select_box.rect)
         surface.blit(self.arrow.image, self.arrow.rect)
         self.player_health.draw(surface)
+        self.sword.draw(surface)
 
 
