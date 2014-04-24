@@ -80,7 +80,8 @@ class Person(pg.sprite.Sprite):
                       'autoresting': self.auto_resting,
                       'automoving': self.auto_moving,
                       'battle resting': self.battle_resting,
-                      'attack': self.attack}
+                      'attack': self.attack,
+                      'enemy attack': self.enemy_attack}
 
         return state_dict
 
@@ -291,7 +292,7 @@ class Person(pg.sprite.Sprite):
         Set values for attack state.
         """
         self.attacked_enemy = enemy
-        self.x_vel = 1
+        self.x_vel = -5
         self.state = 'attack'
 
     def attack(self):
@@ -322,6 +323,39 @@ class Person(pg.sprite.Sprite):
                 self.image = self.spritesheet_dict['facing left 2']
                 self.image = pg.transform.scale2x(self.image)
                 self.observer.on_notify(c.PLAYER_FINISHED_ATTACK)
+
+    def enter_enemy_attack_state(self):
+        """
+        Set values for enemy attack state.
+        """
+        self.x_vel = -5
+        self.state = 'enemy attack'
+        self.origin_pos = self.rect.topleft
+        self.move_counter = 0
+
+    def enemy_attack(self):
+        """
+        Enemy does an attack animation.
+        """
+        FAST_LEFT = -5
+        FAST_RIGHT = 5
+        STARTX = self.origin_pos[0]
+
+        self.rect.x += self.x_vel
+
+        if self.move_counter == 3:
+            self.x_vel = 0
+            self.state = 'battle resting'
+            self.rect.x = STARTX
+
+        elif self.x_vel == FAST_LEFT:
+            if self.rect.x <= (STARTX - 15):
+                self.x_vel = FAST_RIGHT
+        elif self.x_vel == FAST_RIGHT:
+            if self.rect.x >= (STARTX + 15):
+                self.move_counter += 1
+                self.x_vel = FAST_LEFT
+
 
 
 

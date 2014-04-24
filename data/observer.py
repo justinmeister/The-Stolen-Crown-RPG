@@ -76,7 +76,8 @@ class Battle(object):
         self.arrow.become_select_magic_state()
 
     def enemy_attack(self):
-        pass
+        enemy = self.level.enemy_list[self.level.enemy_index]
+        enemy.enter_enemy_attack_state()
 
     def player_attack(self):
         enemy_posx = self.arrow.rect.x + 60

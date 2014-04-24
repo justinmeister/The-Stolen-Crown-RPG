@@ -20,7 +20,8 @@ class Battle(tools._State):
         self.allow_info_box_change = False
         self.game_data = game_data
         self.background = self.make_background()
-        self.enemy_group, self.enemy_pos_list = self.make_enemies()
+        self.enemy_group, self.enemy_pos_list, self.enemy_list = self.make_enemies()
+        self.enemy_index = 0
         self.player = self.make_player()
         self.attack_animations = pg.sprite.Group()
         self.info_box = battlegui.InfoBox(game_data)
@@ -69,8 +70,11 @@ class Battle(tools._State):
         for i, enemy in enumerate(enemy_group):
             enemy.rect.topleft = pos_list[i]
             enemy.image = pg.transform.scale2x(enemy.image)
+            enemy.index = i
 
-        return enemy_group, pos_list[0:len(enemy_group)]
+        enemy_list = [enemy for enemy in enemy_group]
+
+        return enemy_group, pos_list[0:len(enemy_group)], enemy_list
 
     def make_player(self):
         """Make the sprite for the player's character"""
@@ -122,7 +126,7 @@ class Battle(tools._State):
                     self.info_box.state = c.ENEMY_DEAD
 
                 elif self.state == c.ENEMY_DEAD:
-                    self.state = c.SELECT_ACTION
+                    self.state = c.ENEMY_ATTACK
                     self.notify(self.state)
 
                 elif self.state == c.SELECT_ITEM or self.state == c.SELECT_MAGIC:
@@ -161,6 +165,7 @@ class Battle(tools._State):
 
         if enemy:
             enemy.kill()
+            self.enemy_list.pop(enemy.index)
             posx = enemy.rect.x - 32
             posy = enemy.rect.y - 64
             fire_sprite = attack.Fire(posx, posy)
