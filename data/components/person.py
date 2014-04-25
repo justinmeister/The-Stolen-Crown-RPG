@@ -34,6 +34,7 @@ class Person(pg.sprite.Sprite):
         self.default_direction = direction
         self.item = None
         self.wander_box = self.make_wander_box()
+        self.observers = []
 
     def create_spritesheet_dict(self, sheet_key):
         """Implemented by inheriting classes"""
@@ -314,7 +315,7 @@ class Person(pg.sprite.Sprite):
                 self.image = pg.transform.scale2x(self.image)
             elif self.rect.x <= self.origin_pos[0] - 110:
                 self.x_vel = FAST_BACK
-                self.observer.on_notify('attack animation')
+                self.notify('attack animation')
         else:
             if self.rect.x >= self.origin_pos[0]:
                 self.rect.x = self.origin_pos[0]
@@ -322,7 +323,7 @@ class Person(pg.sprite.Sprite):
                 self.state = 'battle resting'
                 self.image = self.spritesheet_dict['facing left 2']
                 self.image = pg.transform.scale2x(self.image)
-                self.observer.on_notify(c.PLAYER_FINISHED_ATTACK)
+                self.notify(c.PLAYER_FINISHED_ATTACK)
 
     def enter_enemy_attack_state(self):
         """
@@ -347,6 +348,7 @@ class Person(pg.sprite.Sprite):
             self.x_vel = 0
             self.state = 'battle resting'
             self.rect.x = STARTX
+            self.notify(c.SWITCH_ENEMY)
 
         elif self.x_vel == FAST_LEFT:
             if self.rect.x <= (STARTX - 15):
@@ -356,9 +358,6 @@ class Person(pg.sprite.Sprite):
                 self.move_counter += 1
                 self.x_vel = FAST_LEFT
 
-
-
-
     def auto_moving(self):
         """
         Animate sprite and check to stop.
@@ -367,6 +366,13 @@ class Person(pg.sprite.Sprite):
 
         assert(self.rect.x % 32 == 0 or self.rect.y % 32 == 0), \
             'Not centered on tile'
+
+    def notify(self, event):
+        """
+        Notify all observers of events.
+        """
+        for observer in self.observers:
+            observer.on_notify(event)
 
 
 class Player(Person):

@@ -33,7 +33,7 @@ class InfoBox(object):
                         c.SELECT_MAGIC: 'Select a magic spell.',
                         c.SELECT_ITEM: 'Select an item.',
                         c.SELECT_ENEMY: 'Select an enemy.',
-                        c.ENEMY_ATTACK: 'The enemy attacks player!',
+                        c.ENEMY_ATTACK: 'Enemy attacks player!',
                         c.PLAYER_ATTACK: 'Player attacks enemy.',
                         c.RUN_AWAY: 'Run away',
                         c.ENEMY_HIT: 'Enemy hit with 20 damage.',

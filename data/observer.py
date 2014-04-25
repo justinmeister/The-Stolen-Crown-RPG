@@ -16,7 +16,12 @@ class Battle(object):
         self.arrow = level.arrow
         self.player = level.player
         self.enemies = level.enemy_group
+        self.set_observer_for_enemies()
         self.event_dict = self.make_event_dict()
+
+    def set_observer_for_enemies(self):
+        for enemy in self.enemies:
+            enemy.observers.append(self)
 
     def make_event_dict(self):
         """
@@ -29,6 +34,7 @@ class Battle(object):
                       c.SELECT_ENEMY: self.select_enemy,
                       c.SELECT_MAGIC: self.select_magic,
                       c.ENEMY_ATTACK: self.enemy_attack,
+                      c.SWITCH_ENEMY: self.switch_enemy,
                       c.PLAYER_ATTACK: self.player_attack,
                       c.ATTACK_ANIMATION: self.attack_animation,
                       c.RUN_AWAY: self.run_away,
@@ -78,6 +84,15 @@ class Battle(object):
     def enemy_attack(self):
         enemy = self.level.enemy_list[self.level.enemy_index]
         enemy.enter_enemy_attack_state()
+        self.info_box.state = c.ENEMY_ATTACK
+
+    def switch_enemy(self):
+        """Switch which enemy is attacking player."""
+        if self.level.enemy_index < len(self.level.enemy_list) - 1:
+            self.level.enemy_index += 1
+            self.on_notify(c.ENEMY_ATTACK)
+        else:
+            self.on_notify(c.SELECT_ACTION)
 
     def player_attack(self):
         enemy_posx = self.arrow.rect.x + 60

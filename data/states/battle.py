@@ -37,8 +37,8 @@ class Battle(tools._State):
         self.select_action_state_dict = self.make_selection_state_dict()
         self.name = 'battle'
         self.next = game_data['last state']
-        self.observer = observer.Battle(self)
-        self.player.observer = self.observer
+        self.observers = [observer.Battle(self)]
+        self.player.observers.extend(self.observers)
 
     def make_background(self):
         """Make the blue/black background"""
@@ -126,7 +126,10 @@ class Battle(tools._State):
                     self.info_box.state = c.ENEMY_DEAD
 
                 elif self.state == c.ENEMY_DEAD:
-                    self.state = c.ENEMY_ATTACK
+                    if len(self.enemy_list):
+                        self.state = c.ENEMY_ATTACK
+                    else:
+                        self.state = c.BATTLE_WON
                     self.notify(self.state)
 
                 elif self.state == c.SELECT_ITEM or self.state == c.SELECT_MAGIC:
@@ -151,7 +154,8 @@ class Battle(tools._State):
         """
         Notify observer of event.
         """
-        self.observer.on_notify(event)
+        for observer in self.observers:
+            observer.on_notify(event)
 
     def end_battle(self):
         """
@@ -162,15 +166,22 @@ class Battle(tools._State):
 
     def attack_enemy(self):
         enemy = self.player.attacked_enemy
+        self.set_enemy_indices()
 
         if enemy:
             enemy.kill()
             self.enemy_list.pop(enemy.index)
+            self.enemy_index = 0
             posx = enemy.rect.x - 32
             posy = enemy.rect.y - 64
             fire_sprite = attack.Fire(posx, posy)
             self.attack_animations.add(fire_sprite)
             self.player.attacked_enemy = None
+
+    def set_enemy_indices(self):
+        for i, enemy in enumerate(self.enemy_list):
+            enemy.index = i
+
 
     def draw_battle(self, surface):
         """Draw all elements of battle state"""
