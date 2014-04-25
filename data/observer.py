@@ -113,6 +113,7 @@ class Battle(object):
         """
         self.arrow.remove_pos(self.player.attacked_enemy)
         self.arrow.state = c.SELECT_ACTION
+        self.arrow.index = 0
         self.level.attack_enemy()
         self.info_box.state = c.ENEMY_HIT
 
