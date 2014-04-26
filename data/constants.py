@@ -46,6 +46,8 @@ BATTLE_WON = 'battle won'
 ENEMY_HIT = 'enemy hit'
 ENEMY_DEAD = 'enemy dead'
 PLAYER_FINISHED_ATTACK = 'player finished attack'
+ENEMY_ATTACK_DAMAGE = 'enemy attack damage'
+DISPLAY_ENEMY_ATTACK_DAMAGE = 'display enemy attack damage'
 
 #EVENTS
 

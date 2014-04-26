@@ -16,6 +16,7 @@ class Battle(tools._State):
     def startup(self, current_time, game_data):
         """Initialize state attributes"""
         self.current_time = current_time
+        self.timer = current_time
         self.allow_input = False
         self.allow_info_box_change = False
         self.game_data = game_data
@@ -137,6 +138,14 @@ class Battle(tools._State):
                         self.state = c.SELECT_ACTION
                         self.notify(self.state)
 
+                elif self.state == c.DISPLAY_ENEMY_ATTACK_DAMAGE:
+                    if self.enemy_index == (len(self.enemy_list) - 1):
+                        self.state = c.SELECT_ACTION
+                    else:
+                        self.state = c.SWITCH_ENEMY
+                    self.notify(self.state)
+
+
             self.allow_input = False
 
         if keys[pg.K_RETURN] == False and keys[pg.K_SPACE] == False:
@@ -194,5 +203,8 @@ class Battle(tools._State):
         surface.blit(self.arrow.image, self.arrow.rect)
         self.player_health.draw(surface)
         self.sword.draw(surface)
+
+    def player_damaged(self, damage):
+        self.game_data['player stats']['Health']['current'] -= damage
 
 

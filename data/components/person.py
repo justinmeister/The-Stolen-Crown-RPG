@@ -348,7 +348,7 @@ class Person(pg.sprite.Sprite):
             self.x_vel = 0
             self.state = 'battle resting'
             self.rect.x = STARTX
-            self.notify(c.SWITCH_ENEMY)
+            self.notify(c.ENEMY_ATTACK_DAMAGE)
 
         elif self.x_vel == FAST_LEFT:
             if self.rect.x <= (STARTX - 15):

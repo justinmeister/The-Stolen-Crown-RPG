@@ -39,6 +39,7 @@ class Battle(object):
                       c.ATTACK_ANIMATION: self.attack_animation,
                       c.RUN_AWAY: self.run_away,
                       c.BATTLE_WON: self.battle_won,
+                      c.ENEMY_ATTACK_DAMAGE: self.display_enemy_attack_damage,
                       c.PLAYER_FINISHED_ATTACK: self.player_finished_attack}
 
         return event_dict
@@ -91,8 +92,13 @@ class Battle(object):
         if self.level.enemy_index < len(self.level.enemy_list) - 1:
             self.level.enemy_index += 1
             self.on_notify(c.ENEMY_ATTACK)
-        else:
-            self.on_notify(c.SELECT_ACTION)
+
+
+    def display_enemy_attack_damage(self):
+        self.info_box.state = c.DISPLAY_ENEMY_ATTACK_DAMAGE
+        self.level.state = c.DISPLAY_ENEMY_ATTACK_DAMAGE
+        self.level.player_damaged(5)
+
 
     def player_attack(self):
         enemy_posx = self.arrow.rect.x + 60

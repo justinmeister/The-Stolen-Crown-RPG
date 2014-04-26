@@ -37,7 +37,8 @@ class InfoBox(object):
                         c.PLAYER_ATTACK: 'Player attacks enemy.',
                         c.RUN_AWAY: 'Run away',
                         c.ENEMY_HIT: 'Enemy hit with 20 damage.',
-                        c.ENEMY_DEAD: 'Enemy killed.'}
+                        c.ENEMY_DEAD: 'Enemy killed.',
+                        c.DISPLAY_ENEMY_ATTACK_DAMAGE: 'Player hit with 5 damage'}
 
         return state_dict
 
@@ -119,7 +120,7 @@ class InfoBox(object):
             text_surface = self.font.render(self.state_dict[self.state], True, c.NEAR_BLACK)
             text_rect = text_surface.get_rect(x=50, y=50)
             surface.blit(text_surface, text_rect)
-            if self.state == c.ENEMY_HIT or self.state == c.ENEMY_DEAD:
+            if self.state == c.ENEMY_HIT or self.state == c.ENEMY_DEAD or self.state == c.DISPLAY_ENEMY_ATTACK_DAMAGE:
                 surface.blit(self.arrow.image, self.arrow.rect)
 
         return surface
@@ -366,7 +367,13 @@ class PlayerHealth(object):
         """
         current_health = str(self.health_stats['current'])
         max_health = str(self.health_stats['maximum'])
-        health_string = "Health: " + current_health + "/" + max_health
+        if len(current_health) == 2:
+            buffer = '  '
+        elif len(current_health) == 1:
+            buffer = '    '
+        else:
+            buffer = ''
+        health_string = "Health: " + buffer + current_health + "/" + max_health
         health_surface =  self.title_font.render(health_string, True, c.NEAR_BLACK)
         health_rect = health_surface.get_rect(x=20, y=9)
 
