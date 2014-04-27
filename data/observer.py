@@ -93,12 +93,11 @@ class Battle(object):
             self.level.enemy_index += 1
             self.on_notify(c.ENEMY_ATTACK)
 
-
     def display_enemy_attack_damage(self):
         self.info_box.state = c.DISPLAY_ENEMY_ATTACK_DAMAGE
         self.level.state = c.DISPLAY_ENEMY_ATTACK_DAMAGE
+        self.level.set_timer_to_current_time()
         self.level.player_damaged(5)
-
 
     def player_attack(self):
         enemy_posx = self.arrow.rect.x + 60
@@ -121,6 +120,8 @@ class Battle(object):
         self.arrow.state = c.SELECT_ACTION
         self.arrow.index = 0
         self.level.attack_enemy()
+        self.level.set_timer_to_current_time()
+        self.level.state = c.ENEMY_HIT
         self.info_box.state = c.ENEMY_HIT
 
     def run_away(self):

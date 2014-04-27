@@ -94,7 +94,9 @@ class Battle(tools._State):
 
     def update(self, surface, keys, current_time):
         """Update the battle state"""
+        self.current_time = current_time
         self.check_input(keys)
+        self.check_for_timed_events()
         self.check_if_battle_won()
         self.enemy_group.update(current_time)
         self.player.update(keys, current_time)
@@ -126,30 +128,39 @@ class Battle(tools._State):
                     self.state = c.ENEMY_DEAD
                     self.info_box.state = c.ENEMY_DEAD
 
-                elif self.state == c.ENEMY_DEAD:
-                    if len(self.enemy_list):
-                        self.state = c.ENEMY_ATTACK
-                    else:
-                        self.state = c.BATTLE_WON
-                    self.notify(self.state)
-
                 elif self.state == c.SELECT_ITEM or self.state == c.SELECT_MAGIC:
                     if self.arrow.index == (len(self.arrow.pos_list) - 1):
                         self.state = c.SELECT_ACTION
                         self.notify(self.state)
 
-                elif self.state == c.DISPLAY_ENEMY_ATTACK_DAMAGE:
-                    if self.enemy_index == (len(self.enemy_list) - 1):
-                        self.state = c.SELECT_ACTION
-                    else:
-                        self.state = c.SWITCH_ENEMY
-                    self.notify(self.state)
-
-
             self.allow_input = False
 
         if keys[pg.K_RETURN] == False and keys[pg.K_SPACE] == False:
             self.allow_input = True
+
+    def check_for_timed_events(self):
+        """
+        Check if amount of time has passed for timed events.
+        """
+        timed_states = [c.DISPLAY_ENEMY_ATTACK_DAMAGE, c.ENEMY_HIT, c.ENEMY_DEAD]
+
+        if self.state in timed_states:
+            if (self.current_time - self.timer) > 1500:
+                if self.state == c.DISPLAY_ENEMY_ATTACK_DAMAGE:
+                    if self.enemy_index == (len(self.enemy_list) - 1):
+                        self.state = c.SELECT_ACTION
+                    else:
+                        self.state = c.SWITCH_ENEMY
+                elif self.state == c.ENEMY_HIT:
+                    self.state = c.ENEMY_DEAD
+                elif self.state == c.ENEMY_DEAD:
+                    if len(self.enemy_list):
+                        self.state = c.ENEMY_ATTACK
+                    else:
+                        self.state = c.BATTLE_WON
+
+                self.notify(self.state)
+
 
     def check_if_battle_won(self):
         """
@@ -206,5 +217,9 @@ class Battle(tools._State):
 
     def player_damaged(self, damage):
         self.game_data['player stats']['Health']['current'] -= damage
+
+    def set_timer_to_current_time(self):
+        """Set the timer to the current time."""
+        self.timer = self.current_time
 
 

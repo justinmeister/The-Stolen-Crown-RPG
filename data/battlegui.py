@@ -21,9 +21,6 @@ class InfoBox(object):
         self.state_dict = self.make_state_dict()
         self.image = self.make_image()
         self.rect = self.image.get_rect(bottom=608)
-        self.arrow = textbox.NextArrow()
-        self.arrow.rect.topleft = (380, 55)
-
 
     def make_state_dict(self):
         """
@@ -120,8 +117,6 @@ class InfoBox(object):
             text_surface = self.font.render(self.state_dict[self.state], True, c.NEAR_BLACK)
             text_rect = text_surface.get_rect(x=50, y=50)
             surface.blit(text_surface, text_rect)
-            if self.state == c.ENEMY_HIT or self.state == c.ENEMY_DEAD or self.state == c.DISPLAY_ENEMY_ATTACK_DAMAGE:
-                surface.blit(self.arrow.image, self.arrow.rect)
 
         return surface
 
