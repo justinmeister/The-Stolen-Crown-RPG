@@ -8,40 +8,62 @@ from .. components import person, attack, attackitems
 from .. import constants as c
 
 
-
 class Battle(tools._State):
     def __init__(self):
         super(Battle, self).__init__()
+        self.game_data = {}
+        self.current_time = 0.0
+        self.timer = 0.0
+        self.allow_input = False
+        self.allow_info_box_change = False
+        self.name = 'battle'
+        self.state = None
+
+        self.player = None
+        self.attack_animations = None
+        self.sword = None
+        self.enemy_index = 0
+        self.attacked_enemy = None
+        self.attacking_enemy = None
+        self.enemy_group = None
+        self.enemy_pos_list = []
+        self.enemy_list = []
+
+        self.background = None
+        self.info_box = None
+        self.arrow = None
+        self.select_box = None
+        self.player_health_box = None
+        self.select_action_state_dict = {}
+        self.next = None
+        self.observers = []
 
     def startup(self, current_time, game_data):
         """Initialize state attributes"""
         self.current_time = current_time
         self.timer = current_time
-        self.allow_input = False
-        self.allow_info_box_change = False
         self.game_data = game_data
-        self.background = self.make_background()
-        self.enemy_group, self.enemy_pos_list, self.enemy_list = self.make_enemies()
-        self.enemy_index = 0
+        self.state = c.SELECT_ACTION
+        self.next = game_data['last state']
+
         self.player = self.make_player()
         self.attack_animations = pg.sprite.Group()
+        self.sword = attackitems.Sword(self.player)
+        self.enemy_group, self.enemy_pos_list, self.enemy_list = self.make_enemies()
+        self.background = self.make_background()
         self.info_box = battlegui.InfoBox(game_data)
         self.arrow = battlegui.SelectArrow(self.enemy_pos_list,
                                            self.info_box)
         self.select_box = battlegui.SelectBox()
-        self.player_health = battlegui.PlayerHealth(self.select_box.rect,
-                                                    self.game_data)
-        self.sword = attackitems.Sword(self.player)
-        self.attacked_enemy = None
-        self.attacking_enemy = None
-        self.state = c.SELECT_ACTION
+        self.player_health_box = battlegui.PlayerHealth(self.select_box.rect,
+                                                        self.game_data)
+
         self.select_action_state_dict = self.make_selection_state_dict()
-        self.name = 'battle'
-        self.next = game_data['last state']
         self.observers = [observer.Battle(self)]
         self.player.observers.extend(self.observers)
 
-    def make_background(self):
+    @staticmethod
+    def make_background():
         """Make the blue/black background"""
         background = pg.sprite.Sprite()
         surface = pg.Surface(c.SCREEN_SIZE).convert()
@@ -52,15 +74,16 @@ class Battle(tools._State):
 
         return background_group
 
-    def make_enemies(self):
+    @staticmethod
+    def make_enemies():
         """Make the enemies for the battle. Return sprite group"""
-        pos_list  = []
+        pos_list = []
 
         for column in range(3):
             for row in range(3):
                 x = (column * 100) + 100
                 y = (row * 100) + 100
-                pos_list.append([x,y])
+                pos_list.append([x, y])
 
         enemy_group = pg.sprite.Group()
 
@@ -77,7 +100,8 @@ class Battle(tools._State):
 
         return enemy_group, pos_list[0:len(enemy_group)], enemy_list
 
-    def make_player(self):
+    @staticmethod
+    def make_player():
         """Make the sprite for the player's character"""
         player = person.Player('left', 630, 220, 'battle resting', 1)
         player.image = pg.transform.scale2x(player.image)
@@ -159,7 +183,6 @@ class Battle(tools._State):
 
                 self.notify(self.state)
 
-
     def check_if_battle_won(self):
         """
         Check if state is SELECT_ACTION and there are no enemies left.
@@ -172,8 +195,8 @@ class Battle(tools._State):
         """
         Notify observer of event.
         """
-        for observer in self.observers:
-            observer.on_notify(event)
+        for new_observer in self.observers:
+            new_observer.on_notify(event)
 
     def end_battle(self):
         """
@@ -200,7 +223,6 @@ class Battle(tools._State):
         for i, enemy in enumerate(self.enemy_list):
             enemy.index = i
 
-
     def draw_battle(self, surface):
         """Draw all elements of battle state"""
         self.background.draw(surface)
@@ -210,7 +232,7 @@ class Battle(tools._State):
         surface.blit(self.info_box.image, self.info_box.rect)
         surface.blit(self.select_box.image, self.select_box.rect)
         surface.blit(self.arrow.image, self.arrow.rect)
-        self.player_health.draw(surface)
+        self.player_health_box.draw(surface)
         self.sword.draw(surface)
 
     def player_damaged(self, damage):
@@ -219,5 +241,3 @@ class Battle(tools._State):
     def set_timer_to_current_time(self):
         """Set the timer to the current time."""
         self.timer = self.current_time
-
-
