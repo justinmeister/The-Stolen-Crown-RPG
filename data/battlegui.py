@@ -14,6 +14,7 @@ class InfoBox(object):
     """
     def __init__(self, game_data):
         self.game_data = game_data
+        self.enemy_damage = 0
         self.state = c.SELECT_ACTION
         self.title_font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
         self.title_font.set_underline(True)
@@ -33,12 +34,17 @@ class InfoBox(object):
                         c.ENEMY_ATTACK: 'Enemy attacks player!',
                         c.PLAYER_ATTACK: 'Player attacks enemy.',
                         c.RUN_AWAY: 'Run away',
-                        c.ENEMY_HIT: 'Enemy hit with 20 damage.',
+                        c.ENEMY_HIT: self.enemy_hit(),
                         c.ENEMY_DEAD: 'Enemy killed.',
                         c.DISPLAY_ENEMY_ATTACK_DAMAGE: 'Player hit with 5 damage'}
 
         return state_dict
 
+    def enemy_hit(self):
+        """
+        Return text of enemy being hit using calculated damage.
+        """
+        return "Enemy hit with {} damage.".format(self.enemy_damage)
 
     def make_item_text(self):
         """
@@ -119,6 +125,13 @@ class InfoBox(object):
             surface.blit(text_surface, text_rect)
 
         return surface
+
+    def set_enemy_damage(self, enemy_damage):
+        """
+        Set enemy damage in state dictionary.
+        """
+        self.enemy_damage = enemy_damage
+        self.state_dict[c.ENEMY_HIT] = self.enemy_hit()
 
     def update(self):
         """Updates info box"""
@@ -349,8 +362,8 @@ class PlayerHealth(object):
     Basic health meter for player.
     """
     def __init__(self, select_box_rect, game_data):
-        self.health_stats = game_data['player stats']['Health']
-        self.magic_stats = game_data['player stats']['Magic Points']
+        self.health_stats = game_data['player stats']['health']
+        self.magic_stats = game_data['player stats']['magic points']
         self.title_font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
         self.posx = select_box_rect.centerx
         self.posy = select_box_rect.y - 5

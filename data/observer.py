@@ -36,11 +36,10 @@ class Battle(object):
                       c.ENEMY_ATTACK: self.enemy_attack,
                       c.SWITCH_ENEMY: self.switch_enemy,
                       c.PLAYER_ATTACK: self.player_attack,
-                      c.ATTACK_ANIMATION: self.attack_animation,
+                      c.ATTACK_ANIMATION: self.enemy_damaged,
                       c.RUN_AWAY: self.run_away,
                       c.BATTLE_WON: self.battle_won,
-                      c.ENEMY_ATTACK_DAMAGE: self.display_enemy_attack_damage,
-                      c.PLAYER_FINISHED_ATTACK: self.player_finished_attack}
+                      c.ENEMY_ATTACK_DAMAGE: self.display_enemy_attack_damage}
 
         return event_dict
 
@@ -112,17 +111,20 @@ class Battle(object):
         self.player.enter_attack_state(enemy_to_attack)
         self.arrow.become_invisible_surface()
 
-    def attack_animation(self):
+    def enemy_damaged(self):
         """
         Make an attack animation over attacked enemy.
         """
-        self.arrow.remove_pos(self.player.attacked_enemy)
+        enemy_damage = self.player.calculate_hit()
+
+        self.info_box.set_enemy_damage(enemy_damage)
+        self.info_box.state = c.ENEMY_HIT
+
         self.arrow.state = c.SELECT_ACTION
         self.arrow.index = 0
-        self.level.attack_enemy()
+        self.level.attack_enemy(enemy_damage)
         self.level.set_timer_to_current_time()
         self.level.state = c.ENEMY_HIT
-        self.info_box.state = c.ENEMY_HIT
 
     def run_away(self):
         self.level.end_battle()
@@ -130,5 +132,3 @@ class Battle(object):
     def battle_won(self):
         self.level.end_battle()
 
-    def player_finished_attack(self):
-        pass

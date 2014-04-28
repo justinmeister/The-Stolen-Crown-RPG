@@ -95,6 +95,8 @@ class Battle(tools._State):
             enemy.rect.topleft = pos_list[i]
             enemy.image = pg.transform.scale2x(enemy.image)
             enemy.index = i
+            enemy.level = 1
+            enemy.health = enemy.level * 7
 
         enemy_list = [enemy for enemy in enemy_group]
 
@@ -205,13 +207,16 @@ class Battle(tools._State):
         self.game_data['last state'] = self.name
         self.done = True
 
-    def attack_enemy(self):
+    def attack_enemy(self, enemy_damage):
         enemy = self.player.attacked_enemy
+        enemy.health -= enemy_damage
         self.set_enemy_indices()
 
         if enemy:
-            enemy.kill()
-            self.enemy_list.pop(enemy.index)
+            if enemy.health <= 0:
+                enemy.kill()
+                self.enemy_list.pop(enemy.index)
+                self.arrow.remove_pos(self.player.attacked_enemy)
             self.enemy_index = 0
             posx = enemy.rect.x - 32
             posy = enemy.rect.y - 64
@@ -236,7 +241,7 @@ class Battle(tools._State):
         self.sword.draw(surface)
 
     def player_damaged(self, damage):
-        self.game_data['player stats']['Health']['current'] -= damage
+        self.game_data['player stats']['health']['current'] -= damage
 
     def set_timer_to_current_time(self):
         """Set the timer to the current time."""

@@ -1,3 +1,4 @@
+from __future__ import division
 import math, random
 import pygame as pg
 from .. import setup
@@ -35,6 +36,8 @@ class Person(pg.sprite.Sprite):
         self.item = None
         self.wander_box = self.make_wander_box()
         self.observers = []
+        self.level = 1
+        self.health = 0
 
     def create_spritesheet_dict(self, sheet_key):
         """Implemented by inheriting classes"""
@@ -373,6 +376,14 @@ class Person(pg.sprite.Sprite):
         """
         for observer in self.observers:
             observer.on_notify(event)
+
+    def calculate_hit(self):
+        """
+        Calculate hit strength based on attack stats.
+        """
+        max_strength = 5 + (self.level * 5)
+        min_strength = max_strength // 2
+        return random.randint(min_strength, max_strength)
 
 
 class Player(Person):

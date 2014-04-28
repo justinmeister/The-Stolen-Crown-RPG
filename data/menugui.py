@@ -146,13 +146,14 @@ class InfoBox(pg.sprite.Sprite):
     def show_player_stats(self):
         """Show the player's main stats"""
         title = 'STATS'
-        stat_list = ['Level', 'Health',
-                     'Magic Points', 'Experience to next level']
+        stat_list = ['Level', 'health',
+                     'magic points', 'experience to next level']
         surface, rect = self.make_blank_info_box(title)
 
         for i, stat in enumerate(stat_list):
-            if stat == 'Health' or stat == 'Magic Points':
-                text = (stat + ": " + str(self.player_stats[stat]['current']) +
+            if stat == 'health' or stat == 'magic points':
+                text = (stat[0].upper() + stat[1:] + ": " +
+                        str(self.player_stats[stat]['current']) +
                         " / " + str(self.player_stats[stat]['maximum']))
             else:
                 text = stat + ": " + str(self.player_stats[stat])
