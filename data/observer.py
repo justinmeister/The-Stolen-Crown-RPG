@@ -16,6 +16,8 @@ class Battle(object):
         self.arrow = level.arrow
         self.player = level.player
         self.enemies = level.enemy_group
+        self.enemy_list = level.enemy_list
+        self.enemy_index = level.enemy_index
         self.set_observer_for_enemies()
         self.event_dict = self.make_event_dict()
 
@@ -93,10 +95,14 @@ class Battle(object):
             self.on_notify(c.ENEMY_ATTACK)
 
     def display_enemy_attack_damage(self):
+        enemy = self.enemy_list[self.enemy_index]
+        player_damage = enemy.calculate_hit()
+
+        self.info_box.set_player_damage(player_damage)
         self.info_box.state = c.DISPLAY_ENEMY_ATTACK_DAMAGE
         self.level.state = c.DISPLAY_ENEMY_ATTACK_DAMAGE
         self.level.set_timer_to_current_time()
-        self.level.player_damaged(5)
+        self.level.player_damaged(player_damage)
 
     def player_attack(self):
         enemy_posx = self.arrow.rect.x + 60

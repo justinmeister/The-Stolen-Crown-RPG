@@ -15,6 +15,7 @@ class InfoBox(object):
     def __init__(self, game_data):
         self.game_data = game_data
         self.enemy_damage = 0
+        self.player_damage = 0
         self.state = c.SELECT_ACTION
         self.title_font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
         self.title_font.set_underline(True)
@@ -36,7 +37,7 @@ class InfoBox(object):
                         c.RUN_AWAY: 'Run away',
                         c.ENEMY_HIT: self.enemy_hit(),
                         c.ENEMY_DEAD: 'Enemy killed.',
-                        c.DISPLAY_ENEMY_ATTACK_DAMAGE: 'Player hit with 5 damage'}
+                        c.DISPLAY_ENEMY_ATTACK_DAMAGE: self.player_hit()}
 
         return state_dict
 
@@ -132,6 +133,16 @@ class InfoBox(object):
         """
         self.enemy_damage = enemy_damage
         self.state_dict[c.ENEMY_HIT] = self.enemy_hit()
+
+    def set_player_damage(self, player_damage):
+        """
+        Set player damage in state dictionary.
+        """
+        self.player_damage = player_damage
+        self.state_dict[c.DISPLAY_ENEMY_ATTACK_DAMAGE] = self.player_hit()
+
+    def player_hit(self):
+        return "Player hit with {} damage".format(self.player_damage)
 
     def update(self):
         """Updates info box"""
