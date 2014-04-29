@@ -4,6 +4,7 @@ Attack equipment for battles.
 import copy
 import pygame as pg
 from .. import tools, setup
+from .. import constants as c
 
 
 class Sword(object):
@@ -51,4 +52,39 @@ class Sword(object):
         """
         if self.player.state == 'attack':
             surface.blit(self.image, self.rect)
+
+
+class DamagePoints(pg.sprite.Sprite):
+    """
+    A sprite that shows how much damage an attack inflicted.
+    """
+    def __init__(self, damage, topleft_pos):
+        super(DamagePoints, self).__init__()
+        self.font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 27)
+        self.image = self.make_surface(damage)
+        self.rect = self.image.get_rect(x=topleft_pos[0]+20,
+                                        bottom=topleft_pos[1]+10)
+        self.start_posy = self.rect.y
+        self.y_vel = -1
+        self.dead = False
+
+    def make_surface(self, damage):
+        """
+        Make the surface for the sprite.
+        """
+        return self.font.render(str(damage), True, c.RED)
+
+    def update(self):
+        """
+        Update sprite position or delete if necessary.
+        """
+        self.rect.y += self.y_vel
+        if self.rect.y < (self.start_posy - 30):
+            self.kill()
+
+
+
+
+
+
 

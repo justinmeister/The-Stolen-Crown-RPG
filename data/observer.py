@@ -2,7 +2,7 @@
 Module for all game observers.
 """
 from . import constants as c
-from .components import attack
+from .components import attackitems
 from . import setup
 
 class Battle(object):
@@ -97,6 +97,9 @@ class Battle(object):
     def display_enemy_attack_damage(self):
         enemy = self.enemy_list[self.enemy_index]
         player_damage = enemy.calculate_hit()
+        self.level.damage_points.add(
+            attackitems.DamagePoints(player_damage,
+                                     self.player.rect.topright))
 
         self.info_box.set_player_damage(player_damage)
         self.info_box.state = c.DISPLAY_ENEMY_ATTACK_DAMAGE
@@ -122,6 +125,9 @@ class Battle(object):
         Make an attack animation over attacked enemy.
         """
         enemy_damage = self.player.calculate_hit()
+        self.level.damage_points.add(
+            attackitems.DamagePoints(enemy_damage,
+                                     self.player.attacked_enemy.rect.topright))
 
         self.info_box.set_enemy_damage(enemy_damage)
         self.info_box.state = c.ENEMY_HIT

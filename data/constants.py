@@ -26,6 +26,7 @@ BLACK_BLUE = (19, 15, 48)
 NEAR_BLACK_BLUE = (20, 15, 48)
 LIGHT_BLUE = (0, 153, 204)
 DARK_RED = (118, 27, 12)
+RED = (255, 0, 0)
 
 
 MAIN_FONT = 'DroidSans'

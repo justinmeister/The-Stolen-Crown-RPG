@@ -37,6 +37,7 @@ class Battle(tools._State):
         self.select_action_state_dict = {}
         self.next = None
         self.observers = []
+        self.damage_points = pg.sprite.Group()
 
     def startup(self, current_time, game_data):
         """Initialize state attributes"""
@@ -130,6 +131,7 @@ class Battle(tools._State):
         self.info_box.update()
         self.arrow.update(keys)
         self.sword.update(current_time)
+        self.damage_points.update()
 
         self.draw_battle(surface)
 
@@ -168,23 +170,34 @@ class Battle(tools._State):
         timed_states = [c.DISPLAY_ENEMY_ATTACK_DAMAGE,
                         c.ENEMY_HIT,
                         c.ENEMY_DEAD]
+        long_delay = timed_states[1:]
 
-        if self.state in timed_states:
-            if (self.current_time - self.timer) > 1200:
-                if self.state == c.DISPLAY_ENEMY_ATTACK_DAMAGE:
-                    if self.enemy_index == (len(self.enemy_list) - 1):
-                        self.state = c.SELECT_ACTION
-                    else:
-                        self.state = c.SWITCH_ENEMY
-                elif self.state == c.ENEMY_HIT:
+        if self.state in long_delay:
+            if (self.current_time - self.timer) > 600:
+                if self.state == c.ENEMY_HIT:
                     self.state = c.ENEMY_DEAD
                 elif self.state == c.ENEMY_DEAD:
                     if len(self.enemy_list):
                         self.state = c.ENEMY_ATTACK
                     else:
                         self.state = c.BATTLE_WON
-
+                self.timer = self.current_time
                 self.notify(self.state)
+
+        elif self.state == c.DISPLAY_ENEMY_ATTACK_DAMAGE:
+            if (self.current_time - self.timer) > 600:
+                if self.enemy_index == (len(self.enemy_list) - 1):
+                    self.state = c.SELECT_ACTION
+                else:
+                    self.state = c.SWITCH_ENEMY
+                self.timer = self.current_time
+                self.notify(self.state)
+
+
+
+
+
+
 
     def check_if_battle_won(self):
         """
@@ -240,6 +253,7 @@ class Battle(tools._State):
         surface.blit(self.select_box.image, self.select_box.rect)
         surface.blit(self.arrow.image, self.arrow.rect)
         self.player_health_box.draw(surface)
+        self.damage_points.draw(surface)
 
 
     def player_damaged(self, damage):
@@ -248,3 +262,5 @@ class Battle(tools._State):
     def set_timer_to_current_time(self):
         """Set the timer to the current time."""
         self.timer = self.current_time
+
+
