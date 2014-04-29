@@ -299,24 +299,20 @@ class Person(pg.sprite.Sprite):
         self.x_vel = -5
         self.state = 'attack'
 
+
     def attack(self):
         """
         Player does an attack animation.
         """
-        SLOW_BACK = 1
         FAST_FORWARD = -5
         FAST_BACK = 5
 
         self.rect.x += self.x_vel
 
-        if self.x_vel == SLOW_BACK:
-            if self.rect.x >= self.origin_pos[0] + 20:
-                self.x_vel = FAST_FORWARD
-        elif self.x_vel == FAST_FORWARD:
-            if self.rect.topleft >= self.origin_pos:
-                self.image = self.spritesheet_dict['facing left 1']
-                self.image = pg.transform.scale2x(self.image)
-            elif self.rect.x <= self.origin_pos[0] - 110:
+        if self.x_vel == FAST_FORWARD:
+            self.image = self.spritesheet_dict['facing left 1']
+            self.image = pg.transform.scale2x(self.image)
+            if self.rect.x <= self.origin_pos[0] - 110:
                 self.x_vel = FAST_BACK
                 self.notify('attack animation')
         else:

@@ -129,6 +129,7 @@ class Battle(tools._State):
         self.attack_animations.update()
         self.info_box.update()
         self.arrow.update(keys)
+        self.sword.update(current_time)
 
         self.draw_battle(surface)
 
@@ -233,12 +234,13 @@ class Battle(tools._State):
         self.background.draw(surface)
         self.enemy_group.draw(surface)
         self.attack_animations.draw(surface)
+        self.sword.draw(surface)
         surface.blit(self.player.image, self.player.rect)
         surface.blit(self.info_box.image, self.info_box.rect)
         surface.blit(self.select_box.image, self.select_box.rect)
         surface.blit(self.arrow.image, self.arrow.rect)
         self.player_health_box.draw(surface)
-        self.sword.draw(surface)
+
 
     def player_damaged(self, damage):
         self.game_data['player stats']['health']['current'] -= damage
