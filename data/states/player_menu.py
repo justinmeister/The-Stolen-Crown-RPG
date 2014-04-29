@@ -16,7 +16,6 @@ class Player_Menu(object):
         self.background = self.make_background()
         self.gui = menugui.MenuGui(level, inventory, stats)
 
-
     def make_background(self):
         """Makes the generic black/blue background"""
         background = pg.sprite.Sprite()
@@ -30,7 +29,6 @@ class Player_Menu(object):
         background.image.blit(player.image, player.rect)
 
         return background
-
 
     def make_sprite(self, key, coordx, coordy, x=40, y=25):
         """Get the image for the player"""
@@ -49,11 +47,9 @@ class Player_Menu(object):
 
         return sprite
 
-
     def update(self, surface, keys):
         self.gui.update(keys)
         self.draw(surface)
-
 
     def draw(self, surface):
         surface.blit(self.background.image, self.background.rect)

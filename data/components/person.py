@@ -377,7 +377,7 @@ class Person(pg.sprite.Sprite):
         """
         Calculate hit strength based on attack stats.
         """
-        max_strength = 5 + (self.level * 5)
+        max_strength = self.level * 5
         min_strength = max_strength // 2
         return random.randint(min_strength, max_strength)
 
@@ -421,6 +421,14 @@ class Player(Person):
                 self.begin_moving('left')
             elif self.keys[pg.K_RIGHT]:
                 self.begin_moving('right')
+
+    def calculate_hit(self):
+        """
+        Calculate hit strength based on attack stats.
+        """
+        max_strength = 5 + (self.level * 5)
+        min_strength = max_strength // 2
+        return random.randint(min_strength, max_strength)
 
 
 

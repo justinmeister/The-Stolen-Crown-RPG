@@ -152,11 +152,16 @@ class InfoBox(pg.sprite.Sprite):
 
         for i, stat in enumerate(stat_list):
             if stat == 'health' or stat == 'magic points':
-                text = (stat[0].upper() + stat[1:] + ": " +
-                        str(self.player_stats[stat]['current']) +
-                        " / " + str(self.player_stats[stat]['maximum']))
+                text = "{}{}: {} / {}".format(stat[0].upper(),
+                                              stat[1:],
+                                              str(self.player_stats[stat]['current']),
+                                              str(self.player_stats[stat]['maximum']))
+            elif stat == 'experience to next level':
+                text = "{}{}: {}".format(stat[0].upper(),
+                                         stat[1:],
+                                         self.player_stats[stat])
             else:
-                text = stat + ": " + str(self.player_stats[stat])
+                text = "{}: {}".format(stat, str(self.player_stats[stat]))
             text_image = self.font.render(text, True, c.NEAR_BLACK)
             text_rect = text_image.get_rect(x=50, y=80+(i*50))
             surface.blit(text_image, text_rect)
