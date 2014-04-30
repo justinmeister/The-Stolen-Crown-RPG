@@ -421,7 +421,7 @@ class Player(Person):
         """
         if self.damaged:
             self.image = copy.copy(self.spritesheet_dict['facing left 2'])
-            self.image = pg.transform.scale2x(self.image)
+            self.image = pg.transform.scale2x(self.image).convert_alpha()
             damage_image = copy.copy(self.image).convert_alpha()
             damage_image.fill((255, 0, 0, self.damage_alpha), special_flags=pg.BLEND_RGBA_MULT)
             self.image.blit(damage_image, (0, 0))

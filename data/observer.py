@@ -108,7 +108,8 @@ class Battle(object):
         self.level.state = c.DISPLAY_ENEMY_ATTACK_DAMAGE
         self.level.set_timer_to_current_time()
         self.level.player_damaged(player_damage)
-        self.player.damaged = True
+        if player_damage:
+            self.player.damaged = True
 
     def player_attack(self):
         enemy_posx = self.arrow.rect.x + 60
