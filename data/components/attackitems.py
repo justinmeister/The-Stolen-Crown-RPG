@@ -79,7 +79,7 @@ class DamagePoints(pg.sprite.Sprite):
         Update sprite position or delete if necessary.
         """
         self.rect.y += self.y_vel
-        if self.rect.y < (self.start_posy - 30):
+        if self.rect.y < (self.start_posy - 50):
             self.kill()
 
 

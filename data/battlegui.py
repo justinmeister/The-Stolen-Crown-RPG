@@ -4,7 +4,6 @@ GUI components for battle states.
 import pygame as pg
 from . import setup
 from . import constants as c
-from .components import textbox
 
 
 class InfoBox(object):

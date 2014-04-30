@@ -231,11 +231,11 @@ class Battle(tools._State):
                 enemy.kill()
                 self.enemy_list.pop(enemy.index)
                 self.arrow.remove_pos(self.player.attacked_enemy)
+                posx = enemy.rect.x - 32
+                posy = enemy.rect.y - 64
+                fire_sprite = attack.Fire(posx, posy)
+                self.attack_animations.add(fire_sprite)
             self.enemy_index = 0
-            posx = enemy.rect.x - 32
-            posy = enemy.rect.y - 64
-            fire_sprite = attack.Fire(posx, posy)
-            self.attack_animations.add(fire_sprite)
             self.player.attacked_enemy = None
 
     def set_enemy_indices(self):
