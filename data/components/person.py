@@ -427,7 +427,7 @@ class Player(Person):
             self.image.blit(damage_image, (0, 0))
             if self.fade_in:
                 self.damage_alpha += 25
-                if self.damage_alpha >= 255:
+                if self.damage_alpha >= 255.0:
                     self.fade_in = False
                     self.damage_alpha = 255
             elif not self.fade_in:

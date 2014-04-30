@@ -61,12 +61,17 @@ class DamagePoints(pg.sprite.Sprite):
     def __init__(self, damage, topleft_pos):
         super(DamagePoints, self).__init__()
         self.font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 27)
-        self.image = self.make_surface(damage)
-        self.rect = self.image.get_rect(x=topleft_pos[0]+20,
-                                        bottom=topleft_pos[1]+10)
+        self.text_image = self.make_surface(damage)
+        self.rect = self.text_image.get_rect(x=topleft_pos[0]+20,
+                                             bottom=topleft_pos[1]+10)
+        self.image = pg.Surface(self.rect.size).convert()
+        self.image.set_colorkey(c.BLACK)
+        self.alpha = 255
+        self.image.set_alpha(self.alpha)
+        self.image.blit(self.text_image, (0, 0))
         self.start_posy = self.rect.y
         self.y_vel = -1
-        self.dead = False
+        self.fade_out = False
 
     def make_surface(self, damage):
         """
@@ -74,17 +79,34 @@ class DamagePoints(pg.sprite.Sprite):
         """
         if damage > 0:
             text = "-{}".format(str(damage))
-            return self.font.render(text, True, c.RED)
+            surface = self.font.render(text, True, c.RED)
+            return surface
         else:
-            return self.font.render('Miss', True, c.WHITE)
+            return self.font.render('Miss', True, c.WHITE).convert_alpha()
 
     def update(self):
         """
         Update sprite position or delete if necessary.
         """
+        self.fade_animation()
         self.rect.y += self.y_vel
-        if self.rect.y < (self.start_posy - 50):
-            self.kill()
+        if self.rect.y < (self.start_posy - 29):
+            self.fade_out = True
+
+    def fade_animation(self):
+        """
+        Fade score in and out.
+        """
+        if self.fade_out:
+            self.image = pg.Surface(self.rect.size).convert()
+            self.image.set_colorkey(c.BLACK)
+            self.image.set_alpha(self.alpha)
+            self.image.blit(self.text_image, (0, 0))
+            self.alpha -= 15
+            if self.alpha <= 0:
+                self.kill()
+
+
 
 
 
