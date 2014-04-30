@@ -1,5 +1,5 @@
 from __future__ import division
-import math, random
+import math, random, copy
 import pygame as pg
 from .. import setup
 from .. import constants as c
@@ -378,7 +378,7 @@ class Person(pg.sprite.Sprite):
         Calculate hit strength based on attack stats.
         """
         max_strength = self.level * 5
-        min_strength = max_strength // 2
+        min_strength = 0
         return random.randint(min_strength, max_strength)
 
 
@@ -389,6 +389,10 @@ class Player(Person):
 
     def __init__(self, direction, x=0, y=0, state='resting', index=0):
         super(Player, self).__init__('player', x, y, direction, state, index)
+        self.damaged = False
+        self.damage_timer = 0.0
+        self.damage_alpha = 0
+        self.fade_in = True
 
     def create_vector_dict(self):
         """Return a dictionary of x and y velocities set to
@@ -402,13 +406,40 @@ class Player(Person):
 
     def update(self, keys, current_time):
         """Updates player behavior"""
+        self.current_time = current_time
+        self.damage_animation()
         self.blockers = self.set_blockers()
         self.keys = keys
-        self.current_time = current_time
         self.check_for_input()
         state_function = self.state_dict[self.state]
         state_function()
         self.location = self.get_tile_location()
+
+    def damage_animation(self):
+        """
+        Put a red overlay over sprite to indicate damage.
+        """
+        if self.damaged:
+            self.image = copy.copy(self.spritesheet_dict['facing left 2'])
+            self.image = pg.transform.scale2x(self.image)
+            damage_image = copy.copy(self.image).convert_alpha()
+            damage_image.fill((255, 0, 0, self.damage_alpha), special_flags=pg.BLEND_RGBA_MULT)
+            self.image.blit(damage_image, (0, 0))
+            if self.fade_in:
+                self.damage_alpha += 25
+                if self.damage_alpha >= 255:
+                    self.fade_in = False
+                    self.damage_alpha = 255
+            elif not self.fade_in:
+                self.damage_alpha -= 25
+                if self.damage_alpha <= 0:
+                    self.damage_alpha = 0
+                    self.damaged = False
+                    self.fade_in = True
+                    self.image = self.spritesheet_dict['facing left 2']
+                    self.image = pg.transform.scale2x(self.image)
+
+
 
     def check_for_input(self):
         """Checks for player input"""

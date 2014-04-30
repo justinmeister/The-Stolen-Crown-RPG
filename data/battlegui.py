@@ -141,7 +141,10 @@ class InfoBox(object):
         self.state_dict[c.DISPLAY_ENEMY_ATTACK_DAMAGE] = self.player_hit()
 
     def player_hit(self):
-        return "Player hit with {} damage".format(self.player_damage)
+        if self.player_damage:
+            return "Player hit with {} damage".format(self.player_damage)
+        else:
+            return "Enemy missed!"
 
     def update(self):
         """Updates info box"""

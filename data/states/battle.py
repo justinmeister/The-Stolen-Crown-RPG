@@ -1,7 +1,6 @@
 """This is the state that handles battles against
 monsters"""
-
-import random
+import random, copy
 import pygame as pg
 from .. import tools, battlegui, observer
 from .. components import person, attack, attackitems
@@ -108,7 +107,6 @@ class Battle(tools._State):
         """Make the sprite for the player's character"""
         player = person.Player('left', 630, 220, 'battle resting', 1)
         player.image = pg.transform.scale2x(player.image)
-
         return player
 
     def make_selection_state_dict(self):
@@ -192,12 +190,6 @@ class Battle(tools._State):
                     self.state = c.SWITCH_ENEMY
                 self.timer = self.current_time
                 self.notify(self.state)
-
-
-
-
-
-
 
     def check_if_battle_won(self):
         """

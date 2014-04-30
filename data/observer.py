@@ -95,6 +95,8 @@ class Battle(object):
             self.on_notify(c.ENEMY_ATTACK)
 
     def display_enemy_attack_damage(self):
+        if self.enemy_index > len(self.enemy_list) - 1:
+            self.enemy_index = 0
         enemy = self.enemy_list[self.enemy_index]
         player_damage = enemy.calculate_hit()
         self.level.damage_points.add(
@@ -106,6 +108,7 @@ class Battle(object):
         self.level.state = c.DISPLAY_ENEMY_ATTACK_DAMAGE
         self.level.set_timer_to_current_time()
         self.level.player_damaged(player_damage)
+        self.player.damaged = True
 
     def player_attack(self):
         enemy_posx = self.arrow.rect.x + 60

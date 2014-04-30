@@ -72,7 +72,11 @@ class DamagePoints(pg.sprite.Sprite):
         """
         Make the surface for the sprite.
         """
-        return self.font.render(str(damage), True, c.RED)
+        if damage > 0:
+            text = "-{}".format(str(damage))
+            return self.font.render(text, True, c.RED)
+        else:
+            return self.font.render('Miss', True, c.WHITE)
 
     def update(self):
         """
