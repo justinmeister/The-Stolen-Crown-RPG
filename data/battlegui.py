@@ -401,13 +401,19 @@ class PlayerHealth(object):
             buffer = '    '
         else:
             buffer = ''
-        health_string = "Health: " + buffer + current_health + "/" + max_health
+        health_string = "Health: {}{}/{}".format(buffer, current_health, max_health)
         health_surface =  self.title_font.render(health_string, True, c.NEAR_BLACK)
         health_rect = health_surface.get_rect(x=20, y=9)
 
         current_magic = str(self.magic_stats['current'])
+        if len(current_magic) == 2:
+            buffer = '  '
+        elif len(current_magic) == 1:
+            buffer = '    '
+        else:
+            buffer = ''
         max_magic = str(self.magic_stats['maximum'])
-        magic_string = "Magic:  " + current_magic + "/" + max_magic
+        magic_string = "Magic:  {}{}/{}".format(buffer, current_magic, max_magic)
         magic_surface = self.title_font.render(magic_string, True, c.NEAR_BLACK)
         magic_rect = magic_surface.get_rect(x=20, top=health_rect.bottom)
 

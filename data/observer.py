@@ -42,7 +42,8 @@ class Battle(object):
                       c.RUN_AWAY: self.run_away,
                       c.BATTLE_WON: self.battle_won,
                       c.ENEMY_ATTACK_DAMAGE: self.display_enemy_attack_damage,
-                      c.DRINK_HEALING_POTION: self.drink_healing_potion}
+                      c.DRINK_HEALING_POTION: self.drink_healing_potion,
+                      c.CURE_SPELL: self.cure_spell}
 
         return event_dict
 
@@ -164,6 +165,19 @@ class Battle(object):
         self.level.player_healed(30)
         self.info_box.state = c.DRINK_HEALING_POTION
 
+    def cure_spell(self):
+        """
+        Cast cure spell on player.
+        """
+        self.player.healing = True
+        self.level.set_timer_to_current_time()
+        self.level.state = c.CURE_SPELL
+        self.arrow.become_invisible_surface()
+        self.level.enemy_index = 0
+        self.level.damage_points.add(
+            attackitems.HealthPoints(50, self.player.rect.topright, False))
+        self.level.player_healed(50)
+        self.info_box.state = c.DRINK_HEALING_POTION
 
 
 

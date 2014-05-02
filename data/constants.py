@@ -33,7 +33,7 @@ GREEN = (0, 255, 0)
 MAIN_FONT = 'DroidSans'
 
 
-#STATES
+#BATTLE STATES
 
 SELECT_ACTION = 'select action'
 SELECT_ENEMY = 'select enemy'
@@ -51,6 +51,7 @@ PLAYER_FINISHED_ATTACK = 'player finished attack'
 ENEMY_ATTACK_DAMAGE = 'enemy attack damage'
 DISPLAY_ENEMY_ATTACK_DAMAGE = 'display enemy attack damage'
 DRINK_HEALING_POTION = 'drink healing potion'
+CURE_SPELL = 'cure spell'
 
 #EVENTS
 

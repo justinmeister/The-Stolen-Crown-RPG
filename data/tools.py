@@ -173,8 +173,12 @@ def create_game_data_dict():
 
     player_items = {'GOLD': dict([('quantity',600),
                                   ('value',0)]),
-                    'Healing Potion': dict([('quantity',1),
-                                            ('value',15)])}
+                    'Healing Potion': dict([('quantity',5),
+                                            ('value',15)]),
+                    'Fire Blast': dict([('value', 150),
+                                        ('quantity', 1)]),
+                    'Cure': dict([('value', 150),
+                                  ('quantity', 1)])}
 
     player_health = {'current': 100,
                      'maximum': 100}

@@ -151,12 +151,20 @@ class Battle(tools._State):
                     self.state = c.PLAYER_ATTACK
                     self.notify(self.state)
 
-                elif self.state == c.SELECT_ITEM or self.state == c.SELECT_MAGIC:
+                elif self.state == c.SELECT_ITEM:
                     if self.arrow.index == (len(self.arrow.pos_list) - 1):
                         self.state = c.SELECT_ACTION
                         self.notify(self.state)
                     elif self.info_box.item_text_list[self.arrow.index][:14] == 'Healing Potion':
                         self.state = c.DRINK_HEALING_POTION
+                        self.notify(self.state)
+
+                elif self.state == c.SELECT_MAGIC:
+                    if self.arrow.index == (len(self.arrow.pos_list) - 1):
+                        self.state = c.SELECT_ACTION
+                        self.notify(self.state)
+                    elif self.info_box.magic_text_list[self.arrow.index] == 'Cure':
+                        self.state = c.CURE_SPELL
                         self.notify(self.state)
 
             self.allow_input = False
@@ -171,7 +179,8 @@ class Battle(tools._State):
         timed_states = [c.DISPLAY_ENEMY_ATTACK_DAMAGE,
                         c.ENEMY_HIT,
                         c.ENEMY_DEAD,
-                        c.DRINK_HEALING_POTION]
+                        c.DRINK_HEALING_POTION,
+                        c.CURE_SPELL]
         long_delay = timed_states[1:]
 
         if self.state in long_delay:
@@ -183,7 +192,7 @@ class Battle(tools._State):
                         self.state = c.ENEMY_ATTACK
                     else:
                         self.state = c.BATTLE_WON
-                elif self.state == c.DRINK_HEALING_POTION:
+                elif self.state == c.DRINK_HEALING_POTION or self.state == c.CURE_SPELL:
                     self.state = c.ENEMY_ATTACK
                 self.timer = self.current_time
                 self.notify(self.state)
@@ -263,9 +272,13 @@ class Battle(tools._State):
         health['current'] += heal
         if health['current'] > health['maximum']:
             health['current'] = health['maximum']
-        self.game_data['player inventory']['Healing Potion']['quantity'] -= 1
-        if self.game_data['player inventory']['Healing Potion']['quantity'] == 0:
-            del self.game_data['player inventory']['Healing Potion']
+
+        if self.state == c.DRINK_HEALING_POTION:
+            self.game_data['player inventory']['Healing Potion']['quantity'] -= 1
+            if self.game_data['player inventory']['Healing Potion']['quantity'] == 0:
+                del self.game_data['player inventory']['Healing Potion']
+        elif self.state == c.CURE_SPELL:
+            self.game_data['player stats']['magic points']['current'] -= 25
 
     def set_timer_to_current_time(self):
         """Set the timer to the current time."""
