@@ -61,6 +61,7 @@ class Battle(tools._State):
         self.select_action_state_dict = self.make_selection_state_dict()
         self.observers = [observer.Battle(self)]
         self.player.observers.extend(self.observers)
+        self.damage_points = pg.sprite.Group()
 
     @staticmethod
     def make_background():
@@ -164,8 +165,13 @@ class Battle(tools._State):
                         self.state = c.SELECT_ACTION
                         self.notify(self.state)
                     elif self.info_box.magic_text_list[self.arrow.index] == 'Cure':
-                        self.state = c.CURE_SPELL
-                        self.notify(self.state)
+                        if self.game_data['player stats']['magic points']['current'] >= 25:
+                            self.state = c.CURE_SPELL
+                            self.notify(self.state)
+                    elif self.info_box.magic_text_list[self.arrow.index] == 'Fire Blast':
+                        if self.game_data['player stats']['magic points']['current'] >= 75:
+                            self.state = c.FIRE_SPELL
+                            self.notify(self.state)
 
             self.allow_input = False
 
@@ -180,11 +186,12 @@ class Battle(tools._State):
                         c.ENEMY_HIT,
                         c.ENEMY_DEAD,
                         c.DRINK_HEALING_POTION,
-                        c.CURE_SPELL]
+                        c.CURE_SPELL,
+                        c.FIRE_SPELL]
         long_delay = timed_states[1:]
 
         if self.state in long_delay:
-            if (self.current_time - self.timer) > 600:
+            if (self.current_time - self.timer) > 800:
                 if self.state == c.ENEMY_HIT:
                     self.state = c.ENEMY_DEAD
                 elif self.state == c.ENEMY_DEAD:
@@ -192,8 +199,13 @@ class Battle(tools._State):
                         self.state = c.ENEMY_ATTACK
                     else:
                         self.state = c.BATTLE_WON
-                elif self.state == c.DRINK_HEALING_POTION or self.state == c.CURE_SPELL:
-                    self.state = c.ENEMY_ATTACK
+                elif (self.state == c.DRINK_HEALING_POTION or
+                      self.state == c.CURE_SPELL or
+                      self.state == c.FIRE_SPELL):
+                    if len(self.enemy_list):
+                        self.state = c.ENEMY_ATTACK
+                    else:
+                        self.state = c.BATTLE_WON
                 self.timer = self.current_time
                 self.notify(self.state)
 
@@ -283,5 +295,32 @@ class Battle(tools._State):
     def set_timer_to_current_time(self):
         """Set the timer to the current time."""
         self.timer = self.current_time
+
+    def cast_fire_blast(self):
+        """
+        Cast fire blast on all enemies.
+        """
+        DAMAGE = 5
+        MAGIC_POINTS = 75
+        self.game_data['player stats']['magic points']['current'] -= MAGIC_POINTS
+        for enemy in self.enemy_list:
+            self.damage_points.add(
+                attackitems.HealthPoints(DAMAGE, enemy.rect.topright))
+            enemy.health -= DAMAGE
+            posx = enemy.rect.x - 32
+            posy = enemy.rect.y - 64
+            fire_sprite = attack.Fire(posx, posy)
+            self.attack_animations.add(fire_sprite)
+            if enemy.health <= 0:
+                enemy.kill()
+                self.arrow.remove_pos(enemy)
+        self.enemy_list = [enemy for enemy in self.enemy_list if enemy.health > 0]
+        self.enemy_index = 0
+        self.arrow.index = 0
+        self.arrow.become_invisible_surface()
+        self.arrow.state = c.SELECT_ACTION
+
+
+
 
 

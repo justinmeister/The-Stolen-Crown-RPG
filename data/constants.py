@@ -52,6 +52,7 @@ ENEMY_ATTACK_DAMAGE = 'enemy attack damage'
 DISPLAY_ENEMY_ATTACK_DAMAGE = 'display enemy attack damage'
 DRINK_HEALING_POTION = 'drink healing potion'
 CURE_SPELL = 'cure spell'
+FIRE_SPELL = 'fire spell'
 
 #EVENTS
 

@@ -43,7 +43,8 @@ class Battle(object):
                       c.BATTLE_WON: self.battle_won,
                       c.ENEMY_ATTACK_DAMAGE: self.display_enemy_attack_damage,
                       c.DRINK_HEALING_POTION: self.drink_healing_potion,
-                      c.CURE_SPELL: self.cure_spell}
+                      c.CURE_SPELL: self.cure_spell,
+                      c.FIRE_SPELL: self.fire_spell}
 
         return event_dict
 
@@ -178,6 +179,15 @@ class Battle(object):
             attackitems.HealthPoints(50, self.player.rect.topright, False))
         self.level.player_healed(50)
         self.info_box.state = c.DRINK_HEALING_POTION
+
+    def fire_spell(self):
+        """
+        Cast fire spell on all enemies.
+        """
+        self.level.cast_fire_blast()
+        self.level.state = c.FIRE_SPELL
+        self.level.set_timer_to_current_time()
+
 
 
 
