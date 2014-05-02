@@ -43,6 +43,7 @@ class Battle(tools._State):
         self.current_time = current_time
         self.timer = current_time
         self.game_data = game_data
+        self.inventory = game_data['player inventory']
         self.state = c.SELECT_ACTION
         self.next = game_data['last state']
 
@@ -185,29 +186,37 @@ class Battle(tools._State):
         timed_states = [c.DISPLAY_ENEMY_ATTACK_DAMAGE,
                         c.ENEMY_HIT,
                         c.ENEMY_DEAD,
-                        c.DRINK_HEALING_POTION,
-                        c.CURE_SPELL,
-                        c.FIRE_SPELL]
+                        c.DRINK_HEALING_POTION]
         long_delay = timed_states[1:]
 
         if self.state in long_delay:
             if (self.current_time - self.timer) > 800:
                 if self.state == c.ENEMY_HIT:
-                    self.state = c.ENEMY_DEAD
-                elif self.state == c.ENEMY_DEAD:
                     if len(self.enemy_list):
                         self.state = c.ENEMY_ATTACK
                     else:
                         self.state = c.BATTLE_WON
                 elif (self.state == c.DRINK_HEALING_POTION or
-                      self.state == c.CURE_SPELL or
-                      self.state == c.FIRE_SPELL):
+                      self.state == c.CURE_SPELL):
                     if len(self.enemy_list):
                         self.state = c.ENEMY_ATTACK
                     else:
                         self.state = c.BATTLE_WON
                 self.timer = self.current_time
                 self.notify(self.state)
+
+        elif self.state == c.FIRE_SPELL or self.state == c.CURE_SPELL:
+            if (self.current_time - self.timer) > 1500:
+                if len(self.enemy_list):
+                    self.state = c.ENEMY_ATTACK
+                else:
+                    self.state = c.BATTLE_WON
+                self.timer = self.current_time
+                self.notify(self.state)
+
+        elif self.state == c.RUN_AWAY:
+            if (self.current_time - self.timer) > 1500:
+                self.end_battle()
 
         elif self.state == c.DISPLAY_ENEMY_ATTACK_DAMAGE:
             if (self.current_time - self.timer) > 600:
@@ -278,7 +287,7 @@ class Battle(tools._State):
     def player_damaged(self, damage):
         self.game_data['player stats']['health']['current'] -= damage
 
-    def player_healed(self, heal):
+    def player_healed(self, heal, magic_points):
         health = self.game_data['player stats']['health']
 
         health['current'] += heal
@@ -290,7 +299,7 @@ class Battle(tools._State):
             if self.game_data['player inventory']['Healing Potion']['quantity'] == 0:
                 del self.game_data['player inventory']['Healing Potion']
         elif self.state == c.CURE_SPELL:
-            self.game_data['player stats']['magic points']['current'] -= 25
+            self.game_data['player stats']['magic points']['current'] -= magic_points
 
     def set_timer_to_current_time(self):
         """Set the timer to the current time."""
@@ -300,10 +309,11 @@ class Battle(tools._State):
         """
         Cast fire blast on all enemies.
         """
-        DAMAGE = 5
-        MAGIC_POINTS = 75
+        POWER = self.inventory['Fire Blast']['power']
+        MAGIC_POINTS = self.inventory['Fire Blast']['magic points']
         self.game_data['player stats']['magic points']['current'] -= MAGIC_POINTS
         for enemy in self.enemy_list:
+            DAMAGE = random.randint(POWER//2, POWER)
             self.damage_points.add(
                 attackitems.HealthPoints(DAMAGE, enemy.rect.topright))
             enemy.health -= DAMAGE
@@ -319,6 +329,25 @@ class Battle(tools._State):
         self.arrow.index = 0
         self.arrow.become_invisible_surface()
         self.arrow.state = c.SELECT_ACTION
+        self.state = c.FIRE_SPELL
+        self.set_timer_to_current_time()
+        self.info_box.state = c.FIRE_SPELL
+
+    def cast_cure(self):
+        """
+        Cast cure spell on player.
+        """
+        HEAL_AMOUNT = self.inventory['Cure']['power']
+        MAGIC_POINTS = self.inventory['Cure']['magic points']
+        self.player.healing = True
+        self.set_timer_to_current_time()
+        self.state = c.CURE_SPELL
+        self.arrow.become_invisible_surface()
+        self.enemy_index = 0
+        self.damage_points.add(
+            attackitems.HealthPoints(HEAL_AMOUNT, self.player.rect.topright, False))
+        self.player_healed(HEAL_AMOUNT, MAGIC_POINTS)
+        self.info_box.state = c.DRINK_HEALING_POTION
 
 
 

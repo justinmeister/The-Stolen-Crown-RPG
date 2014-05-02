@@ -234,11 +234,15 @@ class MagicShop(Shop):
         item1 = {'type': 'Cure',
                  'price': 150,
                  'quantity': 1,
+                 'magic points': 25,
+                 'power': 50,
                  'dialogue': cure_dialogue}
 
         item2 = {'type': 'Fire Blast',
                 'price': 150,
                 'quantity': 1,
+                'magic points': 75,
+                'power': 10,
                 'dialogue': fire_dialogue}
 
         return [item1, item2]

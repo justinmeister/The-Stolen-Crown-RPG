@@ -85,7 +85,8 @@ class Person(pg.sprite.Sprite):
                       'automoving': self.auto_moving,
                       'battle resting': self.battle_resting,
                       'attack': self.attack,
-                      'enemy attack': self.enemy_attack}
+                      'enemy attack': self.enemy_attack,
+                      c.RUN_AWAY: self.run_away}
 
         return state_dict
 
@@ -380,6 +381,19 @@ class Person(pg.sprite.Sprite):
         max_strength = self.level * 5
         min_strength = 0
         return random.randint(min_strength, max_strength)
+
+    def run_away(self):
+        """
+        Run away from battle state.
+        """
+        X_VEL = 5
+        self.rect.x += X_VEL
+        self.direction = 'right'
+        self.small_image_list = self.animation_dict[self.direction]
+        self.image_list = []
+        for image in self.small_image_list:
+            self.image_list.append(pg.transform.scale2x(image))
+        self.animation()
 
 
 class Player(Person):

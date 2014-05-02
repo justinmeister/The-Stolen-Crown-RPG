@@ -39,11 +39,12 @@ class InfoBox(object):
                         c.SELECT_ENEMY: 'Select an enemy.',
                         c.ENEMY_ATTACK: 'Enemy attacks player!',
                         c.PLAYER_ATTACK: 'Player attacks enemy.',
-                        c.RUN_AWAY: 'Run away',
+                        c.RUN_AWAY: 'RUN AWAY!!!',
                         c.ENEMY_HIT: self.enemy_hit(),
                         c.ENEMY_DEAD: 'Enemy killed.',
                         c.DISPLAY_ENEMY_ATTACK_DAMAGE: self.player_hit(),
-                        c.DRINK_HEALING_POTION: 'Player healed.'}
+                        c.DRINK_HEALING_POTION: 'Player healed.',
+                        c.FIRE_SPELL: 'FIRE BLAST!'}
 
         return state_dict
 

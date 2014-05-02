@@ -276,10 +276,10 @@ class Gui(object):
             self.player_inventory['GOLD']['quantity'] += item['price']
             self.state = 'reject'
         else:
-            if (item['type'] in self.player_inventory
-                and self.name == 'Magic Shop'):
-                    self.state = 'hasitem'
-                    self.player_inventory['GOLD']['quantity'] += item['price']
+            if (item['type'] in self.player_inventory and
+                        self.name == c.MAGIC_SHOP):
+                self.state = 'hasitem'
+                self.player_inventory['GOLD']['quantity'] += item['price']
             else:
                 self.state = 'accept'
                 self.add_player_item(item)
@@ -290,6 +290,7 @@ class Gui(object):
         item_type = item['type']
         quantity = item['quantity']
         value = item['price']
+        magic_list = ['Cure', 'Fire Blast']
         player_items = self.level.game_data['player inventory']
         player_health = self.level.game_data['player stats']['health']
         player_magic = self.level.game_data['player stats']['magic points']
@@ -297,7 +298,11 @@ class Gui(object):
         item_to_add = {'quantity': quantity,
                        'value': value}
 
-        if item_type in player_items:
+        if item_type in magic_list:
+            item_to_add = {'magic points': item['magic points'],
+                           'power': item['power']}
+            player_items[item_type] = item_to_add
+        elif item_type in player_items:
             player_items[item_type]['quantity'] += quantity
         elif quantity > 0:
             player_items[item_type] = item_to_add

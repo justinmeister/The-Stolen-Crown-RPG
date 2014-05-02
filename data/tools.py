@@ -175,10 +175,10 @@ def create_game_data_dict():
                                   ('value',0)]),
                     'Healing Potion': dict([('quantity',5),
                                             ('value',15)]),
-                    'Fire Blast': dict([('value', 150),
-                                        ('quantity', 1)]),
-                    'Cure': dict([('value', 150),
-                                  ('quantity', 1)])}
+                    'Fire Blast': dict([('magic points', 75),
+                                        ('power', 10)]),
+                    'Cure': dict([('magic points', 25),
+                                  ('power', 50)])}
 
     player_health = {'current': 100,
                      'maximum': 100}

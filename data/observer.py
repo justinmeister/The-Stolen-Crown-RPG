@@ -145,7 +145,11 @@ class Battle(object):
         self.level.state = c.ENEMY_HIT
 
     def run_away(self):
-        self.level.end_battle()
+        self.info_box.state = c.RUN_AWAY
+        self.level.set_timer_to_current_time()
+        self.arrow.become_invisible_surface()
+        self.player.state = c.RUN_AWAY
+
 
     def battle_won(self):
         self.level.end_battle()
@@ -170,23 +174,17 @@ class Battle(object):
         """
         Cast cure spell on player.
         """
-        self.player.healing = True
-        self.level.set_timer_to_current_time()
-        self.level.state = c.CURE_SPELL
-        self.arrow.become_invisible_surface()
-        self.level.enemy_index = 0
-        self.level.damage_points.add(
-            attackitems.HealthPoints(50, self.player.rect.topright, False))
-        self.level.player_healed(50)
-        self.info_box.state = c.DRINK_HEALING_POTION
+        self.level.cast_cure()
+
 
     def fire_spell(self):
         """
         Cast fire spell on all enemies.
         """
         self.level.cast_fire_blast()
-        self.level.state = c.FIRE_SPELL
-        self.level.set_timer_to_current_time()
+
+
+
 
 
 
