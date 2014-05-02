@@ -44,7 +44,8 @@ class InfoBox(object):
                         c.ENEMY_DEAD: 'Enemy killed.',
                         c.DISPLAY_ENEMY_ATTACK_DAMAGE: self.player_hit(),
                         c.DRINK_HEALING_POTION: 'Player healed.',
-                        c.FIRE_SPELL: 'FIRE BLAST!'}
+                        c.FIRE_SPELL: 'FIRE BLAST!',
+                        c.BATTLE_WON: 'Battle won!'}
 
         return state_dict
 

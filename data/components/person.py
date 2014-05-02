@@ -86,7 +86,8 @@ class Person(pg.sprite.Sprite):
                       'battle resting': self.battle_resting,
                       'attack': self.attack,
                       'enemy attack': self.enemy_attack,
-                      c.RUN_AWAY: self.run_away}
+                      c.RUN_AWAY: self.run_away,
+                      c.VICTORY_DANCE: self.victory_dance}
 
         return state_dict
 
@@ -394,6 +395,17 @@ class Person(pg.sprite.Sprite):
         for image in self.small_image_list:
             self.image_list.append(pg.transform.scale2x(image))
         self.animation()
+
+    def victory_dance(self):
+        """
+        Post Victory Dance.
+        """
+        self.small_image_list = self.animation_dict[self.direction]
+        self.image_list = []
+        for image in self.small_image_list:
+            self.image_list.append(pg.transform.scale2x(image))
+        self.animation(500)
+
 
 
 class Player(Person):

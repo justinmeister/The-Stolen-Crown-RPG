@@ -150,9 +150,11 @@ class Battle(object):
         self.arrow.become_invisible_surface()
         self.player.state = c.RUN_AWAY
 
-
     def battle_won(self):
-        self.level.end_battle()
+        self.info_box.state = c.BATTLE_WON
+        self.level.set_timer_to_current_time()
+        self.player.state = c.VICTORY_DANCE
+
 
     def drink_healing_potion(self):
         """

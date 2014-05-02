@@ -214,7 +214,7 @@ class Battle(tools._State):
                 self.timer = self.current_time
                 self.notify(self.state)
 
-        elif self.state == c.RUN_AWAY:
+        elif self.state == c.RUN_AWAY or self.state == c.BATTLE_WON:
             if (self.current_time - self.timer) > 1500:
                 self.end_battle()
 
@@ -287,7 +287,7 @@ class Battle(tools._State):
     def player_damaged(self, damage):
         self.game_data['player stats']['health']['current'] -= damage
 
-    def player_healed(self, heal, magic_points):
+    def player_healed(self, heal, magic_points=0):
         health = self.game_data['player stats']['health']
 
         health['current'] += heal
