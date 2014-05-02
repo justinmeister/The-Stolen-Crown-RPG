@@ -41,7 +41,8 @@ class Battle(object):
                       c.ATTACK_ANIMATION: self.enemy_damaged,
                       c.RUN_AWAY: self.run_away,
                       c.BATTLE_WON: self.battle_won,
-                      c.ENEMY_ATTACK_DAMAGE: self.display_enemy_attack_damage}
+                      c.ENEMY_ATTACK_DAMAGE: self.display_enemy_attack_damage,
+                      c.DRINK_HEALING_POTION: self.drink_healing_potion}
 
         return event_dict
 
@@ -100,9 +101,8 @@ class Battle(object):
         enemy = self.enemy_list[self.enemy_index]
         player_damage = enemy.calculate_hit()
         self.level.damage_points.add(
-            attackitems.DamagePoints(player_damage,
+            attackitems.HealthPoints(player_damage,
                                      self.player.rect.topright))
-
         self.info_box.set_player_damage(player_damage)
         self.info_box.state = c.DISPLAY_ENEMY_ATTACK_DAMAGE
         self.level.state = c.DISPLAY_ENEMY_ATTACK_DAMAGE
@@ -130,7 +130,7 @@ class Battle(object):
         """
         enemy_damage = self.player.calculate_hit()
         self.level.damage_points.add(
-            attackitems.DamagePoints(enemy_damage,
+            attackitems.HealthPoints(enemy_damage,
                                      self.player.attacked_enemy.rect.topright))
 
         self.info_box.set_enemy_damage(enemy_damage)
@@ -147,4 +147,23 @@ class Battle(object):
 
     def battle_won(self):
         self.level.end_battle()
+
+    def drink_healing_potion(self):
+        """
+        Give player a healing potion.
+        """
+        self.player.healing = True
+        self.level.set_timer_to_current_time()
+        self.level.state = c.DRINK_HEALING_POTION
+        self.arrow.become_invisible_surface()
+        self.level.enemy_index = 0
+        self.level.damage_points.add(
+            attackitems.HealthPoints(30,
+                                     self.player.rect.topright,
+                                     False))
+        self.level.player_healed(30)
+        self.info_box.state = c.DRINK_HEALING_POTION
+
+
+
 

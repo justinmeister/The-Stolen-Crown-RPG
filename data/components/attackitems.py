@@ -54,14 +54,15 @@ class Sword(object):
             surface.blit(self.image, self.rect)
 
 
-class DamagePoints(pg.sprite.Sprite):
+class HealthPoints(pg.sprite.Sprite):
     """
     A sprite that shows how much damage an attack inflicted.
     """
-    def __init__(self, damage, topleft_pos):
-        super(DamagePoints, self).__init__()
+    def __init__(self, points, topleft_pos, damage=True):
+        super(HealthPoints, self).__init__()
+        self.damage = damage
         self.font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 27)
-        self.text_image = self.make_surface(damage)
+        self.text_image = self.make_surface(points)
         self.rect = self.text_image.get_rect(x=topleft_pos[0]+20,
                                              bottom=topleft_pos[1]+10)
         self.image = pg.Surface(self.rect.size).convert()
@@ -73,16 +74,21 @@ class DamagePoints(pg.sprite.Sprite):
         self.y_vel = -1
         self.fade_out = False
 
-    def make_surface(self, damage):
+    def make_surface(self, points):
         """
         Make the surface for the sprite.
         """
-        if damage > 0:
-            text = "-{}".format(str(damage))
-            surface = self.font.render(text, True, c.RED)
-            return surface
+        if self.damage:
+            if points > 0:
+                text = "-{}".format(str(points))
+                surface = self.font.render(text, True, c.RED)
+                return surface
+            else:
+                return self.font.render('Miss', True, c.WHITE).convert_alpha()
         else:
-            return self.font.render('Miss', True, c.WHITE).convert_alpha()
+            text = "+{}".format(str(points))
+            surface = self.font.render(text, True, c.GREEN)
+            return surface
 
     def update(self):
         """

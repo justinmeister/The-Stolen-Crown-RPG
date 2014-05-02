@@ -1,10 +1,14 @@
 """
 GUI components for battle states.
 """
+import sys
 import pygame as pg
 from . import setup
 from . import constants as c
 
+#Python 2/3 compatibility.
+if sys.version_info[0] == 2:
+    range = xrange
 
 class InfoBox(object):
     """
@@ -22,6 +26,8 @@ class InfoBox(object):
         self.state_dict = self.make_state_dict()
         self.image = self.make_image()
         self.rect = self.image.get_rect(bottom=608)
+        self.item_text_list = self.make_item_text()[1:]
+        self.magic_text_list = self.make_magic_text()[1:]
 
     def make_state_dict(self):
         """
@@ -36,7 +42,8 @@ class InfoBox(object):
                         c.RUN_AWAY: 'Run away',
                         c.ENEMY_HIT: self.enemy_hit(),
                         c.ENEMY_DEAD: 'Enemy killed.',
-                        c.DISPLAY_ENEMY_ATTACK_DAMAGE: self.player_hit()}
+                        c.DISPLAY_ENEMY_ATTACK_DAMAGE: self.player_hit(),
+                        c.DRINK_HEALING_POTION: 'Player healed.'}
 
         return state_dict
 

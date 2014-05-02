@@ -390,8 +390,9 @@ class Player(Person):
     def __init__(self, direction, x=0, y=0, state='resting', index=0):
         super(Player, self).__init__('player', x, y, direction, state, index)
         self.damaged = False
-        self.damage_timer = 0.0
+        self.healing = False
         self.damage_alpha = 0
+        self.healing_alpha = 0
         self.fade_in = True
 
     def create_vector_dict(self):
@@ -408,6 +409,7 @@ class Player(Person):
         """Updates player behavior"""
         self.current_time = current_time
         self.damage_animation()
+        self.healing_animation()
         self.blockers = self.set_blockers()
         self.keys = keys
         self.check_for_input()
@@ -427,7 +429,7 @@ class Player(Person):
             self.image.blit(damage_image, (0, 0))
             if self.fade_in:
                 self.damage_alpha += 25
-                if self.damage_alpha >= 255.0:
+                if self.damage_alpha >= 255:
                     self.fade_in = False
                     self.damage_alpha = 255
             elif not self.fade_in:
@@ -435,6 +437,30 @@ class Player(Person):
                 if self.damage_alpha <= 0:
                     self.damage_alpha = 0
                     self.damaged = False
+                    self.fade_in = True
+                    self.image = self.spritesheet_dict['facing left 2']
+                    self.image = pg.transform.scale2x(self.image)
+
+    def healing_animation(self):
+        """
+        Put a green overlay over sprite to indicate healing.
+        """
+        if self.healing:
+            self.image = copy.copy(self.spritesheet_dict['facing left 2'])
+            self.image = pg.transform.scale2x(self.image).convert_alpha()
+            healing_image = copy.copy(self.image).convert_alpha()
+            healing_image.fill((0, 255, 0, self.healing_alpha), special_flags=pg.BLEND_RGBA_MULT)
+            self.image.blit(healing_image, (0, 0))
+            if self.fade_in:
+                self.healing_alpha += 25
+                if self.healing_alpha >= 255:
+                    self.fade_in = False
+                    self.healing_alpha = 255
+            elif not self.fade_in:
+                self.healing_alpha -= 25
+                if self.healing_alpha <= 0:
+                    self.healing_alpha = 0
+                    self.healing = False
                     self.fade_in = True
                     self.image = self.spritesheet_dict['facing left 2']
                     self.image = pg.transform.scale2x(self.image)
