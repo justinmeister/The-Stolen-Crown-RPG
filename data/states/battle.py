@@ -46,6 +46,7 @@ class Battle(tools._State):
         self.inventory = game_data['player inventory']
         self.state = c.SELECT_ACTION
         self.next = game_data['last state']
+        self.run_away = False
 
         self.player = self.make_player()
         self.attack_animations = pg.sprite.Group()
@@ -214,14 +215,17 @@ class Battle(tools._State):
                 self.timer = self.current_time
                 self.notify(self.state)
 
-        elif self.state == c.RUN_AWAY or self.state == c.BATTLE_WON:
+        elif self.state == c.FLEE or self.state == c.BATTLE_WON:
             if (self.current_time - self.timer) > 1500:
                 self.end_battle()
 
         elif self.state == c.DISPLAY_ENEMY_ATTACK_DAMAGE:
             if (self.current_time - self.timer) > 600:
                 if self.enemy_index == (len(self.enemy_list) - 1):
-                    self.state = c.SELECT_ACTION
+                    if self.run_away:
+                        self.state = c.FLEE
+                    else:
+                        self.state = c.SELECT_ACTION
                 else:
                     self.state = c.SWITCH_ENEMY
                 self.timer = self.current_time
@@ -255,6 +259,7 @@ class Battle(tools._State):
         self.set_enemy_indices()
 
         if enemy:
+            enemy.enter_knock_back_state()
             if enemy.health <= 0:
                 enemy.kill()
                 self.enemy_list.pop(enemy.index)
@@ -324,6 +329,8 @@ class Battle(tools._State):
             if enemy.health <= 0:
                 enemy.kill()
                 self.arrow.remove_pos(enemy)
+            else:
+                enemy.enter_knock_back_state()
         self.enemy_list = [enemy for enemy in self.enemy_list if enemy.health > 0]
         self.enemy_index = 0
         self.arrow.index = 0

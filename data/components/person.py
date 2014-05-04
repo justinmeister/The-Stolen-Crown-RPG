@@ -87,7 +87,8 @@ class Person(pg.sprite.Sprite):
                       'attack': self.attack,
                       'enemy attack': self.enemy_attack,
                       c.RUN_AWAY: self.run_away,
-                      c.VICTORY_DANCE: self.victory_dance}
+                      c.VICTORY_DANCE: self.victory_dance,
+                      c.KNOCK_BACK: self.knock_back}
 
         return state_dict
 
@@ -406,6 +407,41 @@ class Person(pg.sprite.Sprite):
             self.image_list.append(pg.transform.scale2x(image))
         self.animation(500)
 
+    def knock_back(self):
+        """
+        Knock back when hit.
+        """
+        FORWARD_VEL = -2
+
+        self.rect.x += self.x_vel
+
+        if self.name == 'player':
+            if self.rect.x >= (self.origin_pos[0] + 10):
+                self.x_vel = FORWARD_VEL
+            elif self.rect.x <= self.origin_pos[0]:
+                self.rect.x = self.origin_pos[0]
+                self.state = 'battle resting'
+                self.x_vel = 0
+        else:
+            if self.rect.x <= (self.origin_pos[0] - 10):
+                self.x_vel = 2
+            elif self.rect.x >= self.origin_pos[0]:
+                self.rect.x = self.origin_pos[0]
+                self.state = 'battle resting'
+                self.x_vel = 0
+
+
+    def enter_knock_back_state(self):
+        """
+        Set values for entry to knock back state.
+        """
+        if self.name == 'player':
+            self.x_vel = 4
+        else:
+            self.x_vel = -4
+
+        self.state = c.KNOCK_BACK
+        self.origin_pos = self.rect.topleft
 
 
 class Player(Person):

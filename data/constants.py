@@ -54,6 +54,8 @@ DRINK_HEALING_POTION = 'drink healing potion'
 CURE_SPELL = 'cure spell'
 FIRE_SPELL = 'fire spell'
 VICTORY_DANCE = 'victory dance'
+KNOCK_BACK = 'knock back'
+FLEE = 'flee'
 
 #EVENTS
 

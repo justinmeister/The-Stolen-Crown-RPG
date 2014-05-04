@@ -39,9 +39,10 @@ class Battle(object):
                       c.SWITCH_ENEMY: self.switch_enemy,
                       c.PLAYER_ATTACK: self.player_attack,
                       c.ATTACK_ANIMATION: self.enemy_damaged,
-                      c.RUN_AWAY: self.run_away,
+                      c.RUN_AWAY: self.try_to_run_away,
+                      c.FLEE: self.flee,
                       c.BATTLE_WON: self.battle_won,
-                      c.ENEMY_ATTACK_DAMAGE: self.display_enemy_attack_damage,
+                      c.ENEMY_ATTACK_DAMAGE: self.player_damaged,
                       c.DRINK_HEALING_POTION: self.drink_healing_potion,
                       c.CURE_SPELL: self.cure_spell,
                       c.FIRE_SPELL: self.fire_spell}
@@ -97,7 +98,7 @@ class Battle(object):
             self.level.enemy_index += 1
             self.on_notify(c.ENEMY_ATTACK)
 
-    def display_enemy_attack_damage(self):
+    def player_damaged(self):
         if self.enemy_index > len(self.enemy_list) - 1:
             self.enemy_index = 0
         enemy = self.enemy_list[self.enemy_index]
@@ -112,6 +113,7 @@ class Battle(object):
         self.level.player_damaged(player_damage)
         if player_damage:
             self.player.damaged = True
+            self.player.enter_knock_back_state()
 
     def player_attack(self):
         enemy_posx = self.arrow.rect.x + 60
@@ -144,11 +146,27 @@ class Battle(object):
         self.level.set_timer_to_current_time()
         self.level.state = c.ENEMY_HIT
 
-    def run_away(self):
+
+    def try_to_run_away(self):
+        """
+        Sets a flag in the battle state indicating a desire to run.
+        Allows enemies to get one last hit in.
+        """
+        self.level.run_away = True
+        self.level.state = c.ENEMY_ATTACK
+        self.arrow.become_invisible_surface()
+        self.level.enemy_index = 0
+        self.on_notify(c.ENEMY_ATTACK)
+
+    def flee(self):
+        """
+        Actually run away after enemies get there chance to attack.
+        """
         self.info_box.state = c.RUN_AWAY
         self.level.set_timer_to_current_time()
         self.arrow.become_invisible_surface()
         self.player.state = c.RUN_AWAY
+
 
     def battle_won(self):
         self.info_box.state = c.BATTLE_WON
