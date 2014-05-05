@@ -168,5 +168,12 @@
     <property name="state" value="brotherhouse"/>
    </properties>
   </object>
+  <object name="start point" gid="123" x="80" y="128">
+   <properties>
+    <property name="state" value="dungeon"/>
+   </properties>
+  </object>
+  <object name="portal" type="dungeon" gid="139" x="80" y="112"/>
+  <object name="portal" type="dungeon" gid="139" x="64" y="112"/>
  </objectgroup>
 </map>

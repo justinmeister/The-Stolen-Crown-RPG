@@ -31,7 +31,7 @@ class LevelState(tools._State):
         self.state = 'normal'
         self.switch_to_battle = False
         self.allow_input = False
-        self.cut_off_bottom_map = ['castle', 'town']
+        self.cut_off_bottom_map = ['castle', 'town', 'dungeon']
         self.renderer = tilerender.Renderer(self.tmx_map)
         self.map_image = self.renderer.make_2x_map()
 

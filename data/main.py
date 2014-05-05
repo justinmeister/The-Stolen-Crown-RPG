@@ -17,6 +17,7 @@ PLAYER_MENU = 'player menu'
 OVERWORLD = 'overworld'
 BROTHER_HOUSE = 'brotherhouse'
 BATTLE = 'battle'
+DUNGEON = 'dungeon'
 
 
 def main():
@@ -33,7 +34,8 @@ def main():
                   WEAPON_SHOP: shop.WeaponShop(),
                   MAGIC_SHOP: shop.MagicShop(),
                   POTION_SHOP: shop.PotionShop(),
-                  BATTLE: battle.Battle()
+                  BATTLE: battle.Battle(),
+                  DUNGEON: levels.LevelState(DUNGEON, True)
                   }
 
     run_it.setup_states(state_dict, c.MAIN_MENU)
