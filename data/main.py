@@ -18,6 +18,9 @@ OVERWORLD = 'overworld'
 BROTHER_HOUSE = 'brotherhouse'
 BATTLE = 'battle'
 DUNGEON = 'dungeon'
+DUNGEON2 = 'dungeon2'
+DUNGEON3 = 'dungeon3'
+DUNGEON4 = 'dungeon4'
 
 
 def main():
@@ -35,7 +38,10 @@ def main():
                   MAGIC_SHOP: shop.MagicShop(),
                   POTION_SHOP: shop.PotionShop(),
                   BATTLE: battle.Battle(),
-                  DUNGEON: levels.LevelState(DUNGEON, True)
+                  DUNGEON: levels.LevelState(DUNGEON, True),
+                  DUNGEON2: levels.LevelState(DUNGEON2, True),
+                  DUNGEON3: levels.LevelState(DUNGEON3, True),
+                  DUNGEON4: levels.LevelState(DUNGEON4, True)
                   }
 
     run_it.setup_states(state_dict, c.MAIN_MENU)

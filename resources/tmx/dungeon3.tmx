@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="25" height="25" tilewidth="16" tileheight="16" backgroundcolor="#130f30">
+ <tileset firstgid="1" name="tileset2" tilewidth="16" tileheight="16">
+  <image source="../graphics/tileset2.png" width="160" height="180"/>
+ </tileset>
+ <tileset firstgid="111" name="tileset3" tilewidth="16" tileheight="16">
+  <image source="../graphics/tileset3.png" width="176" height="192"/>
+ </tileset>
+ <tileset firstgid="243" name="castledoor" tilewidth="16" tileheight="16">
+  <image source="../graphics/castledoor.png" width="32" height="48"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="25" height="25">
+  <data encoding="base64" compression="zlib">
+   eJztz80KgkAYheG5wmgpLaN9plaklT94F1r2cw+51ivzXYwwiAuhiSi+Aw8z3+pwlPpu1nCxgQcfAbbYYY/Dmx0hIhxxwhkxEqTIkP9IR4NWvzPMjbu11PFCrV8HC+OuLXWYO/oO2THeITumd8iO6R3/uGOJlfrsjj42dxQoccEVFW6444Gn/kskw3Q16m94
+  </data>
+ </layer>
+ <objectgroup name="Object Layer 1" width="25" height="25" visible="0">
+  <object name="portal" type="dungeon2" gid="89" x="176" y="304"/>
+  <object name="portal" type="dungeon4" gid="89" x="192" y="304"/>
+  <object name="start point" gid="73" x="176" y="288">
+   <properties>
+    <property name="state" value="dungeon2"/>
+   </properties>
+  </object>
+  <object name="start point" gid="73" x="192" y="288">
+   <properties>
+    <property name="state" value="dungeon4"/>
+   </properties>
+  </object>
+  <object name="blocker" gid="70" x="256" y="144"/>
+  <object name="blocker" gid="70" x="224" y="320"/>
+  <object name="blocker" gid="70" x="160" y="64"/>
+  <object name="blocker" gid="70" x="256" y="304"/>
+  <object name="blocker" gid="70" x="256" y="240"/>
+  <object name="blocker" gid="70" x="256" y="176"/>
+  <object name="blocker" gid="70" x="256" y="192"/>
+  <object name="blocker" gid="70" x="240" y="320"/>
+  <object name="blocker" gid="70" x="256" y="224"/>
+  <object name="blocker" gid="70" x="256" y="256"/>
+  <object name="blocker" gid="70" x="256" y="272"/>
+  <object name="blocker" gid="70" x="256" y="288"/>
+  <object name="blocker" gid="70" x="256" y="208"/>
+  <object name="blocker" gid="70" x="208" y="320"/>
+  <object name="blocker" gid="70" x="224" y="64"/>
+  <object name="blocker" gid="70" x="208" y="64"/>
+  <object name="blocker" gid="70" x="256" y="80"/>
+  <object name="blocker" gid="70" x="256" y="96"/>
+  <object name="blocker" gid="70" x="240" y="64"/>
+  <object name="blocker" gid="70" x="192" y="320"/>
+  <object name="blocker" gid="70" x="176" y="320"/>
+  <object name="blocker" gid="70" x="256" y="112"/>
+  <object name="blocker" gid="70" x="256" y="128"/>
+  <object name="blocker" gid="70" x="256" y="160"/>
+  <object name="blocker" gid="70" x="112" y="208"/>
+  <object name="blocker" gid="70" x="112" y="240"/>
+  <object name="blocker" gid="70" x="112" y="272"/>
+  <object name="blocker" gid="70" x="144" y="320"/>
+  <object name="blocker" gid="70" x="160" y="320"/>
+  <object name="blocker" gid="70" x="128" y="320"/>
+  <object name="blocker" gid="70" x="112" y="288"/>
+  <object name="blocker" gid="70" x="112" y="224"/>
+  <object name="blocker" gid="70" x="112" y="176"/>
+  <object name="blocker" gid="70" x="112" y="192"/>
+  <object name="blocker" gid="70" x="112" y="144"/>
+  <object name="blocker" gid="70" x="112" y="128"/>
+  <object name="blocker" gid="70" x="112" y="160"/>
+  <object name="blocker" gid="70" x="112" y="256"/>
+  <object name="blocker" gid="70" x="112" y="304"/>
+  <object name="blocker" gid="70" x="128" y="64"/>
+  <object name="blocker" gid="70" x="112" y="80"/>
+  <object name="blocker" gid="70" x="144" y="64"/>
+  <object name="blocker" gid="70" x="112" y="112"/>
+  <object name="blocker" gid="70" x="112" y="96"/>
+ </objectgroup>
+ <layer name="Tile Layer 2" width="25" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBhc4DMQf6GxHV+B+BuN7fgOxD9obMcoGAWjYBSMglEwCkYuAACy2gXC
+  </data>
+ </layer>
+</map>
