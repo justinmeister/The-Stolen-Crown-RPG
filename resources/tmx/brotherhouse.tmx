@@ -86,6 +86,7 @@
   </object>
   <object name="start point" gid="123" x="192" y="224">
    <properties>
+    <property name="direction" value="up"/>
     <property name="state" value="overworld"/>
    </properties>
   </object>

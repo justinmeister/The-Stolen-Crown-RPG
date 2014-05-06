@@ -6,7 +6,7 @@ This class inherits from the generic state class
 found in the tools.py module.
 """
 
-import copy
+import copy, random
 import pygame as pg
 from .. import tools, collision
 from .. components import person, textbox, portal
@@ -38,9 +38,7 @@ class LevelState(tools._State):
         self.viewport = self.make_viewport(self.map_image)
         self.level_surface = self.make_level_surface(self.map_image)
         self.level_rect = self.level_surface.get_rect()
-        self.player = None
         self.portals = None
-        self.player = person.Player(game_data['last direction'])
         self.player = self.make_player()
         self.blockers = self.make_blockers()
         self.sprites = self.make_sprites()
@@ -79,10 +77,11 @@ class LevelState(tools._State):
         """
         Make the player and sets location.
         """
-        player = person.Player(self.game_data['last direction'])
         last_state = self.game_data['last state']
 
+
         if last_state == 'battle':
+            player = person.Player(self.game_data['last direction'])
             player.rect.x = self.game_data['last location'][0] * 32
             player.rect.y = self.game_data['last location'][1] * 32
 
@@ -93,6 +92,7 @@ class LevelState(tools._State):
                     if last_state == properties['state']:
                         posx = properties['x'] * 2
                         posy = (properties['y'] * 2) - 32
+                        player = person.Player(properties['direction'])
                         player.rect.x = posx
                         player.rect.y = posy
 

@@ -14,6 +14,7 @@
  <objectgroup name="Object Layer 1" width="25" height="27">
   <object name="start point" gid="73" x="192" y="416">
    <properties>
+    <property name="direction" value="up"/>
     <property name="state" value="overworld"/>
    </properties>
   </object>
@@ -108,12 +109,14 @@
   <object name="portal" type="dungeon2" gid="89" x="48" y="96"/>
   <object name="start point" gid="73" x="48" y="112">
    <properties>
+    <property name="direction" value="down"/>
     <property name="state" value="dungeon2"/>
    </properties>
   </object>
   <object name="portal" type="dungeon4" gid="89" x="336" y="96"/>
   <object name="start point" gid="73" x="336" y="112">
    <properties>
+    <property name="direction" value="down"/>
     <property name="state" value="dungeon4"/>
    </properties>
   </object>

@@ -171,7 +171,7 @@ class Battle(tools._State):
                             self.state = c.CURE_SPELL
                             self.notify(self.state)
                     elif self.info_box.magic_text_list[self.arrow.index] == 'Fire Blast':
-                        if self.game_data['player stats']['magic points']['current'] >= 75:
+                        if self.game_data['player stats']['magic points']['current'] >= 25:
                             self.state = c.FIRE_SPELL
                             self.notify(self.state)
 
@@ -251,6 +251,7 @@ class Battle(tools._State):
         End battle and flip back to previous state.
         """
         self.game_data['last state'] = self.name
+        self.game_data['battle counter'] = random.randint(50, 255)
         self.done = True
 
     def attack_enemy(self, enemy_damage):

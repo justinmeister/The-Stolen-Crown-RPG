@@ -14,16 +14,18 @@
    eJztz80KgkAYheG5wmgpLaN9plaklT94F1r2cw+51ivzXYwwiAuhiSi+Aw8z3+pwlPpu1nCxgQcfAbbYYY/Dmx0hIhxxwhkxEqTIkP9IR4NWvzPMjbu11PFCrV8HC+OuLXWYO/oO2THeITumd8iO6R3/uGOJlfrsjj42dxQoccEVFW6444Gn/kskw3Q16m94
   </data>
  </layer>
- <objectgroup name="Object Layer 1" width="25" height="25" visible="0">
+ <objectgroup name="Object Layer 1" width="25" height="25">
   <object name="portal" type="dungeon2" gid="89" x="176" y="304"/>
   <object name="portal" type="dungeon4" gid="89" x="192" y="304"/>
   <object name="start point" gid="73" x="176" y="288">
    <properties>
+    <property name="direction" value="up"/>
     <property name="state" value="dungeon2"/>
    </properties>
   </object>
   <object name="start point" gid="73" x="192" y="288">
    <properties>
+    <property name="direction" value="up"/>
     <property name="state" value="dungeon4"/>
    </properties>
   </object>

@@ -1,6 +1,6 @@
 __author__ = 'justinarmstrong'
 
-import os
+import os, random
 import pygame as pg
 from . import constants as c
 
@@ -175,7 +175,7 @@ def create_game_data_dict():
                                   ('value',0)]),
                     'Healing Potion': dict([('quantity',5),
                                             ('value',15)]),
-                    'Fire Blast': dict([('magic points', 75),
+                    'Fire Blast': dict([('magic points', 25),
                                         ('power', 10)]),
                     'Cure': dict([('magic points', 25),
                                   ('power', 50)])}
@@ -202,7 +202,8 @@ def create_game_data_dict():
                  'old man item': {'ELIXIR': dict([('value',1000),
                                                   ('quantity',1)])},
                  'player inventory': player_items,
-                 'player stats': player_stats
+                 'player stats': player_stats,
+                 'battle counter': random.randint(50, 255)
     }
 
     return data_dict

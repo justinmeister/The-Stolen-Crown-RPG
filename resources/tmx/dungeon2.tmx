@@ -8,16 +8,17 @@
  </tileset>
  <layer name="Tile Layer 1" width="25" height="25">
   <data encoding="base64" compression="zlib">
-   eJzdlFsKACAIBL3/gTxfvyIimrtRCUGQzvSQRP4LdYPBUJc3cVheZw8dR3YOtiPK3eGzalBvyOBXGAh+xkLyPXPae7c4/JzhYJ0j4rN7qrKG4CM8rL9kctfV2lMOKeRlDsuZ7AVd+0IsUh5T5Q==
+   eJzdlEEOABAMBPv/B3H2M1dppFm6K2jipJ1RGmb/RXFLwSguL+MYeStnWHFEfagds9wdvqqG9YYKPsJg8CMWk++Z2dm7xVEPOFR9zPjqmUL2GHyGR/WXZO4arT3lMCAvcjTAoe7j1eh1OlVd
   </data>
  </layer>
  <objectgroup name="Object Layer 1" width="25" height="25">
-  <object name="start point" gid="73" x="208" y="240">
+  <object name="start point" gid="73" x="64" y="80">
    <properties>
+    <property name="direction" value="down"/>
     <property name="state" value="dungeon"/>
    </properties>
   </object>
-  <object name="portal" type="dungeon" gid="89" x="208" y="224"/>
+  <object name="portal" type="dungeon" gid="89" x="64" y="64"/>
   <object name="blocker" gid="70" x="256" y="224"/>
   <object name="blocker" gid="70" x="256" y="192"/>
   <object name="blocker" gid="70" x="256" y="208"/>
@@ -125,7 +126,15 @@
   <object name="portal" type="dungeon3" gid="89" x="352" y="64"/>
   <object name="start point" gid="73" x="352" y="80">
    <properties>
+    <property name="direction" value="down"/>
     <property name="state" value="dungeon3"/>
+   </properties>
+  </object>
+  <object name="portal" type="dungeon4" gid="89" x="80" y="352"/>
+  <object name="start point" gid="73" x="80" y="368">
+   <properties>
+    <property name="direction" value="down"/>
+    <property name="state" value="dungeon4"/>
    </properties>
   </object>
  </objectgroup>

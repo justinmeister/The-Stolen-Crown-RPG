@@ -46,6 +46,7 @@
  <objectgroup name="Object Layer 1" width="25" height="51">
   <object name="start point" gid="123" x="176" y="800">
    <properties>
+    <property name="direction" value="up"/>
     <property name="state" value="overworld"/>
    </properties>
   </object>
@@ -231,31 +232,37 @@
   <object name="portal" type="magic shop" gid="139" x="352" y="368"/>
   <object name="start point" gid="123" x="320" y="688">
    <properties>
+    <property name="direction" value="down"/>
     <property name="state" value="Inn"/>
    </properties>
   </object>
   <object name="start point" gid="123" x="64" y="704">
    <properties>
+    <property name="direction" value="down"/>
     <property name="state" value="house"/>
    </properties>
   </object>
   <object name="start point" gid="123" x="352" y="384">
    <properties>
+    <property name="direction" value="down"/>
     <property name="state" value="magic shop"/>
    </properties>
   </object>
   <object name="start point" gid="123" x="288" y="384">
    <properties>
+    <property name="direction" value="down"/>
     <property name="state" value="potion shop"/>
    </properties>
   </object>
   <object name="start point" gid="123" x="96" y="384">
    <properties>
+    <property name="direction" value="down"/>
     <property name="state" value="armor shop"/>
    </properties>
   </object>
   <object name="start point" gid="123" x="32" y="384">
    <properties>
+    <property name="direction" value="down"/>
     <property name="state" value="weapon shop"/>
    </properties>
   </object>
@@ -389,11 +396,13 @@
   <object name="portal" type="castle" gid="139" x="192" y="112"/>
   <object name="start point" gid="123" x="192" y="128">
    <properties>
+    <property name="direction" value="down"/>
     <property name="state" value="castle"/>
    </properties>
   </object>
   <object name="start point" gid="123" x="176" y="128">
    <properties>
+    <property name="direction" value="down"/>
     <property name="state" value="castle"/>
    </properties>
   </object>

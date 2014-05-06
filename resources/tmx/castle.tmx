@@ -19,6 +19,7 @@
  <objectgroup name="Object Layer 1" width="25" height="27">
   <object name="start point" gid="73" x="192" y="416">
    <properties>
+    <property name="direction" value="up"/>
     <property name="state" value="town"/>
    </properties>
   </object>

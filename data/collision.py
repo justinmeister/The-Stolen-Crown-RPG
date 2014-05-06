@@ -95,10 +95,11 @@ class CollisionHandler(object):
         """
         Switch scene to battle 1/5 times if battles are allowed.
         """
-        random_number = random.randint(0, 15)
+        if self.level.allow_battles:
+            self.level.game_data['battle counter'] -= 5
 
-        if random_number == 0:
-            self.level.switch_to_battle = True
+            if self.level.game_data['battle counter'] <= 0:
+                self.level.switch_to_battle = True
 
 
 
