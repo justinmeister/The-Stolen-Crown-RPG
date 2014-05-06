@@ -137,5 +137,21 @@
     <property name="state" value="dungeon4"/>
    </properties>
   </object>
+  <object name="sprite" type="treasurechest" gid="51" x="352" y="64">
+   <properties>
+    <property name="dialogue length" value="1"/>
+    <property name="dialogue0" value="You found a Healing Potion."/>
+    <property name="id" value="3"/>
+    <property name="item" value="Healing Potion"/>
+   </properties>
+  </object>
+  <object name="sprite" type="treasurechest" gid="51" x="208" y="224">
+   <properties>
+    <property name="dialogue length" value="1"/>
+    <property name="dialogue0" value="You found a Healing Potion."/>
+    <property name="id" value="2"/>
+    <property name="item" value="Healing Potion"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

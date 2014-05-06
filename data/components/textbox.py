@@ -86,8 +86,8 @@ class ItemBox(DialogueBox):
         image.blit(self.bground, (0, 0))
 
         if self.item:
-            type = list(self.item.keys())[0]
-            total = str(self.item[type]['quantity'])
+            type = 'Healing Potion'
+            total = str(1)
             dialogue = 'You received ' + total + ' ' + type + '.'
             self.dialogue_list = [dialogue]
             self.item = None
@@ -126,6 +126,9 @@ class TextHandler(object):
                         self.check_for_dialogue(sprite)
 
         if self.textbox:
+            if self.talking_sprite.name == 'treasurechest':
+                self.open_chest(self.talking_sprite)
+
             self.textbox.update(keys, current_time)
 
             if self.textbox.done:
@@ -138,9 +141,9 @@ class TextHandler(object):
                     elif self.textbox.name == 'infobox':
                         self.textbox = ItemBox(dialogue, index)
                 elif self.talking_sprite.item:
-                    item = self.check_for_item()
-                    self.textbox = ItemBox(None, item)
+                    self.check_for_item()
                 else:
+                    self.talking_sprite = None
                     self.level.state = 'normal'
                     self.textbox = None
                     self.last_textbox_timer = current_time
@@ -180,27 +183,33 @@ class TextHandler(object):
     def check_for_item(self):
         """Checks if sprite has an item to give to the player"""
         item = self.talking_sprite.item
-        type = list(item.keys())[0]
-        quantity = item[type]['quantity']
-        value = item[type]['value']
 
         if item:
-            if type in self.game_data['player inventory']:
-                self.game_data['player inventory'][type]['quantity'] += item[type]['quantity']
+            if item in self.game_data['player inventory']:
+                self.game_data['player inventory'][item]['quantity'] += 1
             else:
-                self.game_data['player inventory'][type] = {'quantity': quantity,
-                                                            'value': value}
+                self.add_new_item_to_inventory(item)
 
+            self.update_game_items_info(self.talking_sprite.id)
             self.talking_sprite.item = None
 
             if self.talking_sprite.name == 'king':
                 self.game_data['king item'] = None
             elif self.talking_sprite.name == 'oldmanbrother':
                 self.game_data['old man item'] = None
+            elif self.talking_sprite.name == 'treasurechest':
+                self.talking_sprite.dialogue = ['Empty.']
 
-        return item
+    def add_new_item_to_inventory(self, item):
+        inventory = self.game_data['player inventory']
+        if item == 'Healing Potion':
+            inventory[item] = dict([('quantity',5),
+                                    ('value',15)])
+        else:
+            pass
 
-
+    def update_game_items_info(self, id):
+        self.game_data['treasure{}'.format(id)] = False
 
     def reset_sprite_direction(self):
         """Reset sprite to default direction"""
@@ -225,4 +234,8 @@ class TextHandler(object):
             textbox = None
 
         return textbox
+
+    def open_chest(self, sprite):
+        if sprite.name == 'treasurechest':
+            sprite.index = 1
 

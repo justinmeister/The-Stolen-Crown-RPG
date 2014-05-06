@@ -581,3 +581,45 @@ class Well(pg.sprite.Sprite):
         pass
 
 
+class Chest(Person):
+    """
+    Treasure chest that contains items to collect.
+    """
+    def __init__(self, x, y, id):
+        super(Chest, self).__init__('treasurechest', x, y)
+        self.spritesheet_dict = self.make_image_dict()
+        self.image_list = self.make_image_list()
+        self.image = self.image_list[self.index]
+        self.rect = self.image.get_rect(x=x, y=y)
+        self.id = id
+
+    def make_image_dict(self):
+        """
+        Make a dictionary for the sprite's images.
+        """
+        sprite_sheet = setup.GFX['treasurechest']
+        image_dict = {'closed': self.get_image(0, 0, 32, 32, sprite_sheet),
+                      'opened': self.get_image(32, 0, 32, 32, sprite_sheet)}
+
+        return image_dict
+
+    def make_image_list(self):
+        """
+        Make the list of two images for the chest.
+        """
+        image_list = [self.spritesheet_dict['closed'],
+                      self.spritesheet_dict['opened']]
+
+        return image_list
+
+    def update(self, current_time, *args):
+        """Implemented by inheriting classes"""
+        self.blockers = self.set_blockers()
+        self.current_time = current_time
+        state_function = self.state_dict[self.state]
+        state_function()
+        self.location = self.get_tile_location()
+
+
+
+

@@ -203,7 +203,12 @@ def create_game_data_dict():
                                                   ('quantity',1)])},
                  'player inventory': player_items,
                  'player stats': player_stats,
-                 'battle counter': random.randint(50, 255)
+                 'battle counter': random.randint(50, 255),
+                 'treasure1': True,
+                 'treasure2': True,
+                 'treasure3': True,
+                 'treasure4': True,
+                 'treasure5': True
     }
 
     return data_dict

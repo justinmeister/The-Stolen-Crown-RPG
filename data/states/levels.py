@@ -6,13 +6,14 @@ This class inherits from the generic state class
 found in the tools.py module.
 """
 
-import copy, random
+import copy
 import pygame as pg
 from .. import tools, collision
 from .. components import person, textbox, portal
 from . import player_menu
 from .. import tilerender
 from .. import setup
+
 
 
 class LevelState(tools._State):
@@ -133,6 +134,17 @@ class LevelState(tools._State):
                 else:
                     index = 0
 
+                if 'item' in properties:
+                    item = properties['item']
+                else:
+                    item = None
+
+                if 'id' in properties:
+                    id = properties['id']
+                else:
+                    id = None
+
+
                 x = properties['x'] * 2
                 y = ((properties['y']) * 2) - 32
 
@@ -151,10 +163,13 @@ class LevelState(tools._State):
                                'soldier': person.Person('soldier',
                                                         x, y, direction,
                                                         'resting', index),
-                               'king': person.Person('king', x, y, direction)}
+                               'king': person.Person('king', x, y, direction),
+                               'treasurechest': person.Chest(x, y, id)}
 
                 sprite = sprite_dict[properties['type']]
+                sprite.item = item
                 self.assign_dialogue(sprite, properties)
+                self.check_for_opened_chest(sprite)
                 sprites.add(sprite)
 
         return sprites
@@ -167,6 +182,13 @@ class LevelState(tools._State):
         for i in range(int(property_dict['dialogue length'])):
             dialogue_list.append(property_dict['dialogue'+str(i)])
             sprite.dialogue = dialogue_list
+
+    def check_for_opened_chest(self, sprite):
+        if sprite.name == 'treasurechest':
+            if not self.game_data['treasure{}'.format(sprite.id)]:
+                sprite.dialogue = ['Empty.']
+                sprite.item = None
+                sprite.index = 1
 
     def make_state_dict(self):
         """

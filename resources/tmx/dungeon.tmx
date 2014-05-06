@@ -120,6 +120,14 @@
     <property name="state" value="dungeon4"/>
    </properties>
   </object>
+  <object name="sprite" type="treasurechest" gid="51" x="192" y="96">
+   <properties>
+    <property name="dialogue length" value="1"/>
+    <property name="dialogue0" value="You found a Healing Potion"/>
+    <property name="id" value="1"/>
+    <property name="item" value="Healing Potion"/>
+   </properties>
+  </object>
  </objectgroup>
  <layer name="Tile Layer 2" width="25" height="27">
   <data encoding="base64" compression="zlib">
