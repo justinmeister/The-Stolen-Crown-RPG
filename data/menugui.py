@@ -11,12 +11,13 @@ from . import tools
 
 class SmallArrow(pg.sprite.Sprite):
     """Small arrow for menu"""
-    def __init__(self):
+    def __init__(self, info_box):
         super(SmallArrow, self).__init__()
         self.image = setup.GFX['smallarrow']
         self.rect = self.image.get_rect()
         self.state = 'selectmenu'
         self.state_dict = self.make_state_dict()
+        self.slots = info_box.slots
         self.pos_list = []
 
 
@@ -53,12 +54,14 @@ class SmallArrow(pg.sprite.Sprite):
 
     def make_item_menu_pos_list(self):
         """Make the list of arrow positions in the item submenu"""
-        pos_list = [(310, 173),
-                    (310, 223),
-                    (310, 323),
-                    (310, 373),
-                    (310, 478),
-                    (310, 528)]
+        pos_list = [(300, 173),
+                    (300, 223),
+                    (300, 323),
+                    (300, 373),
+                    (300, 478),
+                    (300, 528),
+                    (535, 478),
+                    (535, 528)]
 
         return pos_list
 
@@ -128,7 +131,7 @@ class InfoBox(pg.sprite.Sprite):
         self.possible_weapons = ['Long Sword', 'Rapier']
         self.possible_magic = ['Fire Blast', 'Cure']
         self.quantity_items = ['Healing Potion', 'ELIXIR', 'Ether Potion']
-        self.slots = [None for i in range(6)]
+        self.slots = {}
         self.state = 'stats'
         self.state_dict = self.make_state_dict()
         self.print_slots = True
@@ -184,17 +187,17 @@ class InfoBox(pg.sprite.Sprite):
             elif item in self.possible_potions:
                 potions.append(item)
 
-        self.assign_slots(weapons, armor, potions)
+        self.assign_slots(weapons, 85)
+        self.assign_slots(armor, 235)
+        self.assign_slots(potions, 390)
 
         surface, rect = self.make_blank_info_box(title)
 
-        surface = self.blit_item_list(surface, weapons, 85)
-        surface = self.blit_item_list(surface, armor, 235)
-        surface = self.blit_item_list(surface, potions, 390)
+        self.blit_item_lists(surface)
 
-        self.sword['rect'].topleft = 50, 80
-        self.shield['rect'].topleft = 50, 230
-        self.potion['rect'].topleft = 50, 385
+        self.sword['rect'].topleft = 40, 80
+        self.shield['rect'].topleft = 40, 230
+        self.potion['rect'].topleft = 40, 385
         surface.blit(self.sword['surface'], self.sword['rect'])
         surface.blit(self.shield['surface'], self.shield['rect'])
         surface.blit(self.potion['surface'], self.potion['rect'])
@@ -203,49 +206,37 @@ class InfoBox(pg.sprite.Sprite):
         self.rect = rect
 
 
-    def assign_slots(self, weapons, armor, potions):
+    def assign_slots(self, item_list, starty):
         """Assign each item to a slot in the menu"""
-        if len(weapons) == 2:
-            self.slots[0] = weapons[1]
-        elif len(weapons) == 3:
-            self.slots[0] = weapons[1]
-            self.slots[1] = weapons[2]
-
-        if len(armor) == 2:
-            self.slots[2] = armor[1]
-        elif len(armor) == 3:
-            self.slots[2] = armor[1]
-            self.slots[3] = armor[2]
-
-        if len(potions) == 2:
-            self.slots[4] = potions[1]
-        elif len(potions) == 3:
-            self.slots[4] = potions[1]
-            self.slots[5] = potions[2]
+        if len(item_list) > 3:
+            for i, item in enumerate(item_list[:3]):
+                posx = 80
+                posy = starty + (i * 50)
+                self.slots[(posx, posy)] = item
+            for i, item in enumerate(item_list[3:]):
+                posx = 315
+                posy = (starty + 50) + (i * 5)
+                self.slots[(posx, posy)] = item
+        else:
+            for i, item in enumerate(item_list):
+                posx = 80
+                posy = starty + (i * 50)
+                self.slots[(posx, posy)] = item
 
 
-
-
-    def blit_item_list(self, surface, item_list, starty):
+    def blit_item_lists(self, surface):
         """Blit item list to info box surface"""
-        for i, item in enumerate(item_list):
-            if item in self.quantity_items:
-                text = item + ": " + str(self.inventory[item]['quantity'])
-                text_image = self.font.render(text, True, c.NEAR_BLACK)
-                text_rect = text_image.get_rect(x=90, y=starty+(i*50))
-                surface.blit(text_image, text_rect)
-            elif i == 0:
-                text = item
-                text_image = self.big_font.render(text, True, c.NEAR_BLACK)
-                text_rect = text_image.get_rect(x=90, y=starty)
-                surface.blit(text_image, text_rect)
+        for coord in self.slots:
+            item = self.slots[coord]
+            if item in self.inventory:
+                text = "{}: {}".format(self.slots[coord],
+                                       self.inventory[item]['quantity'])
             else:
-                text = item
-                text_image = self.font.render(text, True, c.NEAR_BLACK)
-                text_rect = text_image.get_rect(x=90, y=starty+(i*50))
-                surface.blit(text_image, text_rect)
+                text = "{}".format(self.slots[coord])
+            text_image = self.font.render(text, True, c.NEAR_BLACK)
+            text_rect = text_image.get_rect(topleft=coord)
+            surface.blit(text_image, text_rect)
 
-        return surface
 
 
     def show_magic(self):
@@ -333,7 +324,7 @@ class MenuGui(object):
         self.info_box = InfoBox(inventory, stats)
         self.gold_box = GoldBox(inventory)
         self.selection_box = SelectionBox()
-        self.arrow = SmallArrow()
+        self.arrow = SmallArrow(self.info_box)
         self.arrow_index = 0
         self.allow_input = False
         self.state = 'stats'
