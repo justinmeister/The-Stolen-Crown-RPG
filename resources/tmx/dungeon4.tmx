@@ -142,9 +142,9 @@
   <object name="sprite" type="treasurechest" gid="51" x="192" y="208">
    <properties>
     <property name="dialogue length" value="1"/>
-    <property name="dialogue0" value="You found a Healing Potion"/>
+    <property name="dialogue0" value="You found an Ether Potion."/>
     <property name="id" value="4"/>
-    <property name="item" value="Healing Potion"/>
+    <property name="item" value="Ether Potion"/>
    </properties>
   </object>
   <object name="sprite" type="treasurechest" gid="51" x="192" y="368">

@@ -161,7 +161,9 @@ class Battle(tools._State):
                     elif self.info_box.item_text_list[self.arrow.index][:14] == 'Healing Potion':
                         self.state = c.DRINK_HEALING_POTION
                         self.notify(self.state)
-
+                    elif self.info_box.item_text_list[self.arrow.index][:5] == 'Ether':
+                        self.state = c.DRINK_ETHER_POTION
+                        self.notify(self.state)
                 elif self.state == c.SELECT_MAGIC:
                     if self.arrow.index == (len(self.arrow.pos_list) - 1):
                         self.state = c.SELECT_ACTION
@@ -187,7 +189,8 @@ class Battle(tools._State):
         timed_states = [c.DISPLAY_ENEMY_ATTACK_DAMAGE,
                         c.ENEMY_HIT,
                         c.ENEMY_DEAD,
-                        c.DRINK_HEALING_POTION]
+                        c.DRINK_HEALING_POTION,
+                        c.DRINK_ETHER_POTION]
         long_delay = timed_states[1:]
 
         if self.state in long_delay:
@@ -198,7 +201,8 @@ class Battle(tools._State):
                     else:
                         self.state = c.BATTLE_WON
                 elif (self.state == c.DRINK_HEALING_POTION or
-                      self.state == c.CURE_SPELL):
+                      self.state == c.CURE_SPELL or
+                      self.state == c.DRINK_ETHER_POTION):
                     if len(self.enemy_list):
                         self.state = c.ENEMY_ATTACK
                     else:
@@ -294,6 +298,9 @@ class Battle(tools._State):
         self.game_data['player stats']['health']['current'] -= damage
 
     def player_healed(self, heal, magic_points=0):
+        """
+        Add health from potion to game data.
+        """
         health = self.game_data['player stats']['health']
 
         health['current'] += heal
@@ -306,6 +313,19 @@ class Battle(tools._State):
                 del self.game_data['player inventory']['Healing Potion']
         elif self.state == c.CURE_SPELL:
             self.game_data['player stats']['magic points']['current'] -= magic_points
+
+    def magic_boost(self, magic_points):
+        """
+        Add magic from ether to game data.
+        """
+        magic = self.game_data['player stats']['magic points']
+        magic['current'] += magic_points
+        if magic['current'] > magic['maximum']:
+            magic['current'] = magic['maximum']
+
+        self.game_data['player inventory']['Ether Potion']['quantity'] -= 1
+        if not self.game_data['player inventory']['Ether Potion']['quantity']:
+            del self.game_data['player inventory']['Ether Potion']
 
     def set_timer_to_current_time(self):
         """Set the timer to the current time."""
@@ -355,6 +375,39 @@ class Battle(tools._State):
         self.damage_points.add(
             attackitems.HealthPoints(HEAL_AMOUNT, self.player.rect.topright, False))
         self.player_healed(HEAL_AMOUNT, MAGIC_POINTS)
+        self.info_box.state = c.DRINK_HEALING_POTION
+
+    def drink_ether(self):
+        """
+        Drink ether potion.
+        """
+        self.player.healing = True
+        self.set_timer_to_current_time()
+        self.state = c.DRINK_ETHER_POTION
+        self.arrow.become_invisible_surface()
+        self.enemy_index = 0
+        self.damage_points.add(
+            attackitems.HealthPoints(30,
+                                     self.player.rect.topright,
+                                     False,
+                                     True))
+        self.magic_boost(30)
+        self.info_box.state = c.DRINK_ETHER_POTION
+
+    def drink_healing_potion(self):
+        """
+        Drink Healing Potion.
+        """
+        self.player.healing = True
+        self.set_timer_to_current_time()
+        self.state = c.DRINK_HEALING_POTION
+        self.arrow.become_invisible_surface()
+        self.enemy_index = 0
+        self.damage_points.add(
+            attackitems.HealthPoints(30,
+                                     self.player.rect.topright,
+                                     False))
+        self.player_healed(30)
         self.info_box.state = c.DRINK_HEALING_POTION
 
 

@@ -58,8 +58,9 @@ class HealthPoints(pg.sprite.Sprite):
     """
     A sprite that shows how much damage an attack inflicted.
     """
-    def __init__(self, points, topleft_pos, damage=True):
+    def __init__(self, points, topleft_pos, damage=True, ether=False):
         super(HealthPoints, self).__init__()
+        self.ether = ether
         self.damage = damage
         self.font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 27)
         self.text_image = self.make_surface(points)
@@ -87,7 +88,11 @@ class HealthPoints(pg.sprite.Sprite):
                 return self.font.render('Miss', True, c.WHITE).convert_alpha()
         else:
             text = "+{}".format(str(points))
-            surface = self.font.render(text, True, c.GREEN)
+            if self.ether:
+                surface = self.font.render(text, True, c.PINK)
+            else:
+                surface = self.font.render(text, True, c.GREEN)
+
             return surface
 
     def update(self):

@@ -44,6 +44,7 @@ class InfoBox(object):
                         c.ENEMY_DEAD: 'Enemy killed.',
                         c.DISPLAY_ENEMY_ATTACK_DAMAGE: self.player_hit(),
                         c.DRINK_HEALING_POTION: 'Player healed.',
+                        c.DRINK_ETHER_POTION: 'Magic Points Increased.',
                         c.FIRE_SPELL: 'FIRE BLAST!',
                         c.BATTLE_WON: 'Battle won!'}
 
@@ -60,7 +61,7 @@ class InfoBox(object):
         Make the text for when the player selects items.
         """
         inventory = self.game_data['player inventory']
-        allowed_item_list = ['Healing Potion']
+        allowed_item_list = ['Healing Potion', 'Ether Potion']
         title = 'SELECT ITEM'
         item_text_list = [title]
 

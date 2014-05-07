@@ -123,11 +123,11 @@ class InfoBox(pg.sprite.Sprite):
         self.sword = self.get_tile(48, 0, setup.GFX['shopsigns'], 16, 16, 2)
         self.shield = self.get_tile(32, 0, setup.GFX['shopsigns'], 16, 16, 2)
         self.potion = self.get_tile(16, 0, setup.GFX['shopsigns'], 16, 16, 2)
-        self.possible_potions = ['Healing Potion', 'ELIXIR']
+        self.possible_potions = ['Healing Potion', 'ELIXIR', 'Ether Potion']
         self.possible_armor = ['Wooden Shield', 'Chain Mail']
         self.possible_weapons = ['Long Sword', 'Rapier']
         self.possible_magic = ['Fire Blast', 'Cure']
-        self.quantity_items = ['Healing Potion', 'ELIXIR']
+        self.quantity_items = ['Healing Potion', 'ELIXIR', 'Ether Potion']
         self.slots = [None for i in range(6)]
         self.state = 'stats'
         self.state_dict = self.make_state_dict()

@@ -266,6 +266,7 @@ class PotionShop(Shop):
     def make_purchasable_items(self):
         """Make list of items to be chosen"""
         healing_dialogue = 'Healing Potion (15 gold)'
+        ether_dialogue = 'Ether Potion (15 gold)'
 
 
         item = {'type': 'Healing Potion',
@@ -273,5 +274,10 @@ class PotionShop(Shop):
                 'quantity': 1,
                 'dialogue': healing_dialogue}
 
-        return [item]
+        item2 = {'type': 'Ether Potion',
+                 'price': 15,
+                 'quantity': 1,
+                 'dialogue': ether_dialogue}
+
+        return [item, item2]
 

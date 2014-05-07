@@ -44,6 +44,7 @@ class Battle(object):
                       c.BATTLE_WON: self.battle_won,
                       c.ENEMY_ATTACK_DAMAGE: self.player_damaged,
                       c.DRINK_HEALING_POTION: self.drink_healing_potion,
+                      c.DRINK_ETHER_POTION: self.drink_ether_potion,
                       c.CURE_SPELL: self.cure_spell,
                       c.FIRE_SPELL: self.fire_spell}
 
@@ -178,17 +179,13 @@ class Battle(object):
         """
         Give player a healing potion.
         """
-        self.player.healing = True
-        self.level.set_timer_to_current_time()
-        self.level.state = c.DRINK_HEALING_POTION
-        self.arrow.become_invisible_surface()
-        self.level.enemy_index = 0
-        self.level.damage_points.add(
-            attackitems.HealthPoints(30,
-                                     self.player.rect.topright,
-                                     False))
-        self.level.player_healed(30)
-        self.info_box.state = c.DRINK_HEALING_POTION
+        self.level.drink_healing_potion()
+
+    def drink_ether_potion(self):
+        """
+        Give player a ether potion.
+        """
+        self.level.drink_ether()
 
     def cure_spell(self):
         """

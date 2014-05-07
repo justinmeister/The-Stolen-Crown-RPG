@@ -28,6 +28,7 @@ LIGHT_BLUE = 0, 153, 204
 DARK_RED = 118, 27, 12
 RED = 255, 0, 0
 GREEN = 0, 255, 0
+PINK = 208, 32, 144
 
 
 MAIN_FONT = 'DroidSans'
@@ -51,6 +52,7 @@ PLAYER_FINISHED_ATTACK = 'player finished attack'
 ENEMY_ATTACK_DAMAGE = 'enemy attack damage'
 DISPLAY_ENEMY_ATTACK_DAMAGE = 'display enemy attack damage'
 DRINK_HEALING_POTION = 'drink healing potion'
+DRINK_ETHER_POTION = 'drink ether potion'
 CURE_SPELL = 'cure spell'
 FIRE_SPELL = 'fire spell'
 VICTORY_DANCE = 'victory dance'
