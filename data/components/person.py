@@ -11,6 +11,7 @@ class Person(pg.sprite.Sprite):
 
     def __init__(self, sheet_key, x, y, direction='down', state='resting', index=0):
         super(Person, self).__init__()
+        self.alpha = 255
         self.name = sheet_key
         self.get_image = setup.tools.get_image
         self.spritesheet_dict = self.create_spritesheet_dict(sheet_key)
@@ -38,6 +39,7 @@ class Person(pg.sprite.Sprite):
         self.observers = []
         self.level = 1
         self.health = 0
+        self.death_image = pg.transform.scale2x(self.image)
 
     def create_spritesheet_dict(self, sheet_key):
         """Implemented by inheriting classes"""
@@ -88,7 +90,8 @@ class Person(pg.sprite.Sprite):
                       'enemy attack': self.enemy_attack,
                       c.RUN_AWAY: self.run_away,
                       c.VICTORY_DANCE: self.victory_dance,
-                      c.KNOCK_BACK: self.knock_back}
+                      c.KNOCK_BACK: self.knock_back,
+                      c.FADE_DEATH: self.fade_death}
 
         return state_dict
 
@@ -429,6 +432,19 @@ class Person(pg.sprite.Sprite):
                 self.rect.x = self.origin_pos[0]
                 self.state = 'battle resting'
                 self.x_vel = 0
+
+    def fade_death(self):
+        """
+        Make character become transparent in death.
+        """
+        self.image = pg.Surface((64, 64)).convert()
+        self.image.set_colorkey(c.BLACK)
+        self.image.set_alpha(self.alpha)
+        self.image.blit(self.death_image, (0, 0))
+        self.alpha -= 8
+        if self.alpha <= 0:
+            self.kill()
+            self.notify(c.ENEMY_DEAD)
 
 
     def enter_knock_back_state(self):

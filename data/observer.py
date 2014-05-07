@@ -36,6 +36,7 @@ class Battle(object):
                       c.SELECT_ENEMY: self.select_enemy,
                       c.SELECT_MAGIC: self.select_magic,
                       c.ENEMY_ATTACK: self.enemy_attack,
+                      c.ENEMY_DEAD: self.enemy_dead,
                       c.SWITCH_ENEMY: self.switch_enemy,
                       c.PLAYER_ATTACK: self.player_attack,
                       c.ATTACK_ANIMATION: self.enemy_damaged,
@@ -193,12 +194,19 @@ class Battle(object):
         """
         self.level.cast_cure()
 
-
     def fire_spell(self):
         """
         Cast fire spell on all enemies.
         """
         self.level.cast_fire_blast()
+
+    def enemy_dead(self):
+        """
+        Eliminate all traces of enemy.
+        """
+        self.player.attacked_enemy = None
+
+
 
 
 

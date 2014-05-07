@@ -58,6 +58,7 @@ FIRE_SPELL = 'fire spell'
 VICTORY_DANCE = 'victory dance'
 KNOCK_BACK = 'knock back'
 FLEE = 'flee'
+FADE_DEATH = 'fade death'
 
 #EVENTS
 

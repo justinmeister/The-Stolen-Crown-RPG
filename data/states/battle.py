@@ -194,7 +194,7 @@ class Battle(tools._State):
         long_delay = timed_states[1:]
 
         if self.state in long_delay:
-            if (self.current_time - self.timer) > 800:
+            if (self.current_time - self.timer) > 1000:
                 if self.state == c.ENEMY_HIT:
                     if len(self.enemy_list):
                         self.state = c.ENEMY_ATTACK
@@ -266,15 +266,11 @@ class Battle(tools._State):
         if enemy:
             enemy.enter_knock_back_state()
             if enemy.health <= 0:
-                enemy.kill()
                 self.enemy_list.pop(enemy.index)
+                enemy.state = c.FADE_DEATH
+                self.notify(c.FADE_DEATH)
                 self.arrow.remove_pos(self.player.attacked_enemy)
-                posx = enemy.rect.x - 32
-                posy = enemy.rect.y - 64
-                fire_sprite = attack.Fire(posx, posy)
-                self.attack_animations.add(fire_sprite)
             self.enemy_index = 0
-            self.player.attacked_enemy = None
 
     def set_enemy_indices(self):
         for i, enemy in enumerate(self.enemy_list):
