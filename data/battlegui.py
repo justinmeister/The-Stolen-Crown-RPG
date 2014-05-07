@@ -65,8 +65,8 @@ class InfoBox(object):
         title = 'SELECT ITEM'
         item_text_list = [title]
 
-        for item in inventory:
-            if item in allowed_item_list:
+        for item in allowed_item_list:
+            if item in inventory:
                 text = item + ": " + str(inventory[item]['quantity'])
                 item_text_list.append(text)
 

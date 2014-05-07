@@ -190,7 +190,7 @@ class TextHandler(object):
             else:
                 self.add_new_item_to_inventory(item)
 
-            self.update_game_items_info(self.talking_sprite.id)
+            self.update_game_items_info(self.talking_sprite)
             self.talking_sprite.item = None
 
             if self.talking_sprite.name == 'king':
@@ -202,14 +202,20 @@ class TextHandler(object):
 
     def add_new_item_to_inventory(self, item):
         inventory = self.game_data['player inventory']
-        if item == 'Healing Potion':
-            inventory[item] = dict([('quantity',5),
+        potions = ['Healing Potion', 'Ether Potion']
+        if item in potions:
+            inventory[item] = dict([('quantity',1),
                                     ('value',15)])
+        elif item == 'ELIXIR':
+            inventory[item] = dict([('quantity',1)])
         else:
             pass
 
-    def update_game_items_info(self, id):
-        self.game_data['treasure{}'.format(id)] = False
+    def update_game_items_info(self, sprite):
+        if sprite.name == 'treasurechest':
+            self.game_data['treasure{}'.format(sprite.id)] = False
+        elif sprite.name == 'oldmanbrother':
+            self.game_data['brother elixir'] = False
 
     def reset_sprite_direction(self):
         """Reset sprite to default direction"""

@@ -82,6 +82,7 @@
     <property name="dialogue0" value="My brother is sick?!?"/>
     <property name="dialogue1" value="I haven't seen him in years.  I had no idea he was not well."/>
     <property name="dialogue2" value="Quick, take this ELIXIR to him immediately."/>
+    <property name="item" value="ELIXIR"/>
    </properties>
   </object>
   <object name="start point" gid="123" x="192" y="224">
