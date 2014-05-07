@@ -187,6 +187,7 @@ class InfoBox(pg.sprite.Sprite):
             elif item in self.possible_potions:
                 potions.append(item)
 
+        self.slots = {}
         self.assign_slots(weapons, 85)
         self.assign_slots(armor, 235)
         self.assign_slots(potions, 390)
@@ -319,6 +320,7 @@ class SelectionBox(pg.sprite.Sprite):
 class MenuGui(object):
     def __init__(self, level, inventory, stats):
         self.level = level
+        self.game_data = self.level.game_data
         self.inventory = inventory
         self.stats = stats
         self.info_box = InfoBox(inventory, stats)
@@ -365,7 +367,8 @@ class MenuGui(object):
                         self.level.state = 'normal'
                         self.arrow_index = 0
                         self.info_box.state = 'stats'
-
+                elif self.arrow.state == 'itemsubmenu':
+                    self.select_item()
 
                 self.allow_input = False
             elif keys[pg.K_RETURN]:
@@ -373,6 +376,7 @@ class MenuGui(object):
                 self.info_box.state = 'stats'
                 self.allow_input = False
                 self.arrow_index = 0
+                self.arrow.state = 'selectmenu'
 
         if (not keys[pg.K_DOWN]
                 and not keys[pg.K_UP]
@@ -380,6 +384,36 @@ class MenuGui(object):
                 and not keys[pg.K_SPACE]):
             self.allow_input = True
 
+    def select_item(self):
+        """
+        Select item from item menu.
+        """
+        health = self.game_data['player stats']['health']
+        posx = self.arrow.rect.x - 220
+        posy = self.arrow.rect.y - 38
+
+        if (posx, posy) in self.info_box.slots:
+            if self.info_box.slots[(posx, posy)][:7] == 'Healing':
+                potion = 'Healing Potion'
+                stat = self.game_data['player stats']['health']
+                value = 30
+                self.drink_potion(potion, stat, value)
+            elif self.info_box.slots[(posx, posy)][:5] == 'Ether':
+                potion = 'Ether Potion'
+                stat = self.game_data['player stats']['magic points']
+                value = 30
+                self.drink_potion(potion, stat, value)
+
+    def drink_potion(self, potion, stat, value):
+        """
+        Drink potion and change player stats.
+        """
+        self.inventory[potion]['quantity'] -= 1
+        stat['current'] += value
+        if stat['current'] > stat['maximum']:
+            stat['current'] = stat['maximum']
+        if not self.inventory[potion]['quantity']:
+            del self.inventory[potion]
 
     def update(self, keys):
         self.info_box.update()
