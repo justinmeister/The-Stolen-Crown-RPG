@@ -177,8 +177,6 @@ def create_game_data_dict():
                                             ('value',15)]),
                     'Ether Potion': dict([('quantity',5),
                                           ('value', 15)]),
-                    'Fire Blast': dict([('magic points', 25),
-                                        ('power', 10)]),
                     'Cure': dict([('magic points', 25),
                                   ('power', 50)])}
 
@@ -210,7 +208,11 @@ def create_game_data_dict():
                  'treasure2': True,
                  'treasure3': True,
                  'treasure4': True,
-                 'treasure5': True
+                 'treasure5': True,
+                 'brother quest complete': False,
+                 'has brother elixir': False,
+                 'elixir received': False,
+                 'old man gift': ''
     }
 
     return data_dict

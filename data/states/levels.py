@@ -30,6 +30,7 @@ class LevelState(tools._State):
         self.game_data = game_data
         self.current_time = current_time
         self.state = 'normal'
+        self.reset_dialogue = ()
         self.switch_to_battle = False
         self.allow_input = False
         self.cut_off_bottom_map = ['castle', 'town', 'dungeon']
@@ -167,7 +168,14 @@ class LevelState(tools._State):
                                'treasurechest': person.Chest(x, y, id)}
 
                 sprite = sprite_dict[properties['type']]
-                sprite.item = item
+                if sprite.name == 'oldman':
+                    if self.game_data['old man gift']:
+                        sprite.item = self.game_data['old man gift']
+                        self.game_data['old man gift'] = {}
+                    else:
+                        sprite.item = item
+                else:
+                    sprite.item = item
                 self.assign_dialogue(sprite, properties)
                 self.check_for_opened_chest(sprite)
                 sprites.add(sprite)
@@ -182,6 +190,31 @@ class LevelState(tools._State):
         for i in range(int(property_dict['dialogue length'])):
             dialogue_list.append(property_dict['dialogue'+str(i)])
             sprite.dialogue = dialogue_list
+
+        if sprite.name == 'oldman':
+            if self.game_data['has brother elixir']:
+                if self.game_data['elixir received']:
+                    sprite.dialogue = ['My good health is thanks to you.',
+                                       'I will be forever in your debt.']
+                else:
+                    sprite.dialogue = ['Thank you for reaching my brother.',
+                                       'This ELIXIR will cure my ailment.',
+                                       'As a reward, I will teach you a magic spell.',
+                                       'Use it wisely.',
+                                       'You learned FIRE BLAST.']
+                    del self.game_data['player inventory']['ELIXIR']
+                    self.game_data['elixir received'] = True
+                    dialogue = ['My good health is thanks to you.',
+                                'I will be forever in your debt.']
+                    self.reset_dialogue = sprite, dialogue
+        elif sprite.name == 'oldmanbrother':
+            if self.game_data['has brother elixir']:
+                if self.game_data['elixir received']:
+                    sprite.dialogue = ['I am glad my brother is doing well.',
+                                       'You have wise and generous spirit.']
+                else:
+                    sprite.dialogue = ['Hurry! There is precious little time.']
+
 
     def check_for_opened_chest(self, sprite):
         if sprite.name == 'treasurechest':

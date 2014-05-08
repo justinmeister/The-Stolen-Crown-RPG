@@ -143,6 +143,7 @@ class TextHandler(object):
                 elif self.talking_sprite.item:
                     self.check_for_item()
                 else:
+                    self.dialogue_reset()
                     self.talking_sprite = None
                     self.level.state = 'normal'
                     self.textbox = None
@@ -186,19 +187,22 @@ class TextHandler(object):
 
         if item:
             if item in self.game_data['player inventory']:
-                self.game_data['player inventory'][item]['quantity'] += 1
+                if 'quantity' in self.game_data['player inventory'][item]:
+                    self.game_data['player inventory'][item]['quantity'] += 1
             else:
                 self.add_new_item_to_inventory(item)
 
             self.update_game_items_info(self.talking_sprite)
             self.talking_sprite.item = None
 
-            if self.talking_sprite.name == 'king':
-                self.game_data['king item'] = None
-            elif self.talking_sprite.name == 'oldmanbrother':
-                self.game_data['old man item'] = None
-            elif self.talking_sprite.name == 'treasurechest':
+            if self.talking_sprite.name == 'treasurechest':
                 self.talking_sprite.dialogue = ['Empty.']
+
+            if item == 'ELIXIR':
+                self.game_data['has brother elixir'] = True
+                self.game_data['old man gift'] = 'Fire Blast'
+                dialogue = ['Hurry! There is precious little time.']
+                self.level.reset_dialogue = self.talking_sprite, dialogue
 
     def add_new_item_to_inventory(self, item):
         inventory = self.game_data['player inventory']
@@ -208,6 +212,9 @@ class TextHandler(object):
                                     ('value',15)])
         elif item == 'ELIXIR':
             inventory[item] = dict([('quantity',1)])
+        elif item == 'Fire Blast':
+            inventory[item] = dict([('magic points', 25),
+                                    ('power', 10)])
         else:
             pass
 
@@ -244,4 +251,14 @@ class TextHandler(object):
     def open_chest(self, sprite):
         if sprite.name == 'treasurechest':
             sprite.index = 1
+
+    def dialogue_reset(self):
+        """
+        Reset dialogue if necessary.
+        """
+        if self.level.reset_dialogue:
+            sprite = self.level.reset_dialogue[0]
+            dialogue = self.level.reset_dialogue[1]
+            sprite.dialogue = dialogue
+            self.level.reset_dialogue = ()
 
