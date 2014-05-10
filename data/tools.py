@@ -212,7 +212,9 @@ def create_game_data_dict():
                  'brother quest complete': False,
                  'has brother elixir': False,
                  'elixir received': False,
-                 'old man gift': ''
+                 'old man gift': '',
+                 'battle type': '',
+                 'crown quest': False
     }
 
     return data_dict

@@ -43,7 +43,7 @@ def main():
                   DUNGEON2: levels.LevelState(DUNGEON2, True),
                   DUNGEON3: levels.LevelState(DUNGEON3, True),
                   DUNGEON4: levels.LevelState(DUNGEON4, True),
-                  DUNGEON5: levels.LevelState(DUNGEON5)
+                  DUNGEON5: levels.LevelState(DUNGEON5, True)
                   }
 
     run_it.setup_states(state_dict, c.MAIN_MENU)

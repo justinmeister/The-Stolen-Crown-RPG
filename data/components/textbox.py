@@ -142,6 +142,15 @@ class TextHandler(object):
                         self.textbox = ItemBox(dialogue, index)
                 elif self.talking_sprite.item:
                     self.check_for_item()
+                elif self.talking_sprite.battle:
+                    self.game_data['battle type'] = self.talking_sprite.battle
+                    self.dialogue_reset()
+                    self.talking_sprite = None
+                    self.level.state = 'normal'
+                    self.level.switch_to_battle = True
+                    self.textbox = None
+                    self.last_textbox_timer = current_time
+                    self.reset_sprite_direction()
                 else:
                     self.dialogue_reset()
                     self.talking_sprite = None

@@ -42,6 +42,7 @@ class Battle(tools._State):
         """Initialize state attributes"""
         self.current_time = current_time
         self.timer = current_time
+        self.allow_input = False
         self.game_data = game_data
         self.inventory = game_data['player inventory']
         self.state = c.SELECT_ACTION
@@ -77,8 +78,7 @@ class Battle(tools._State):
 
         return background_group
 
-    @staticmethod
-    def make_enemies():
+    def make_enemies(self):
         """Make the enemies for the battle. Return sprite group"""
         pos_list = []
 
@@ -90,9 +90,14 @@ class Battle(tools._State):
 
         enemy_group = pg.sprite.Group()
 
-        for enemy in range(random.randint(1, 6)):
-            enemy_group.add(person.Person('devil', 0, 0,
-                                          'down', 'battle resting'))
+        if self.game_data['battle type']:
+            enemy = person.Person('evilwizard', 0, 0,
+                                  'down', 'battle resting')
+            enemy_group.add(enemy)
+        else:
+            for enemy in range(random.randint(1, 6)):
+                enemy_group.add(person.Person('devil', 0, 0,
+                                              'down', 'battle resting'))
 
         for i, enemy in enumerate(enemy_group):
             enemy.rect.topleft = pos_list[i]
@@ -254,8 +259,11 @@ class Battle(tools._State):
         """
         End battle and flip back to previous state.
         """
+        if self.game_data['battle type'] == 'evilwizard':
+            self.game_data['crown quest'] = True
         self.game_data['last state'] = self.name
         self.game_data['battle counter'] = random.randint(50, 255)
+        self.game_data['battle type'] = None
         self.done = True
 
     def attack_enemy(self, enemy_damage):

@@ -145,6 +145,11 @@ class LevelState(tools._State):
                 else:
                     id = None
 
+                if 'battle' in properties:
+                    battle = properties['battle']
+                else:
+                    battle = None
+
 
                 x = properties['x'] * 2
                 y = ((properties['y']) * 2) - 32
@@ -165,6 +170,7 @@ class LevelState(tools._State):
                                                         x, y, direction,
                                                         'resting', index),
                                'king': person.Person('king', x, y, direction),
+                               'evilwizard': person.Person('evilwizard', x, y, direction),
                                'treasurechest': person.Chest(x, y, id)}
 
                 sprite = sprite_dict[properties['type']]
@@ -176,9 +182,13 @@ class LevelState(tools._State):
                         sprite.item = item
                 else:
                     sprite.item = item
+                sprite.battle = battle
                 self.assign_dialogue(sprite, properties)
                 self.check_for_opened_chest(sprite)
-                sprites.add(sprite)
+                if sprite.name == 'evilwizard' and self.game_data['crown quest']:
+                    pass
+                else:
+                    sprites.add(sprite)
 
         return sprites
 

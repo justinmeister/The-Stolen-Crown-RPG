@@ -16,6 +16,11 @@ HOUSE = 'house'
 OVERWORLD = 'overworld'
 BROTHER_HOUSE = 'brother_house'
 BATTLE = 'battle'
+DUNGEON = 'dungeon'
+DUNGEON2 = 'dungeon2'
+DUNGEON3 = 'dungeon3'
+DUNGEON4 = 'dungeon4'
+DUNGEON5 = 'dungeon5'
 
 ##Colors
 

@@ -40,6 +40,7 @@ class Person(pg.sprite.Sprite):
         self.level = 1
         self.health = 0
         self.death_image = pg.transform.scale2x(self.image)
+        self.battle = None
 
     def create_spritesheet_dict(self, sheet_key):
         """Implemented by inheriting classes"""
@@ -113,8 +114,6 @@ class Person(pg.sprite.Sprite):
         state_function = self.state_dict[self.state]
         state_function()
         self.location = self.get_tile_location()
-
-
 
     def set_blockers(self):
         """Sets blockers to prevent collision with other sprites"""
@@ -472,6 +471,7 @@ class Player(Person):
         self.damage_alpha = 0
         self.healing_alpha = 0
         self.fade_in = True
+
 
     def create_vector_dict(self):
         """Return a dictionary of x and y velocities set to

@@ -28,8 +28,9 @@
   </data>
  </layer>
  <objectgroup name="Object Layer 1" width="25" height="19">
-  <object name="sprite" type="oldmanbrother" gid="65" x="192" y="160">
+  <object name="sprite" type="evilwizard" gid="65" x="192" y="160">
    <properties>
+    <property name="battle" value="evilwizard"/>
     <property name="dialogue length" value="1"/>
     <property name="dialogue0" value="You will never have this crown!"/>
    </properties>
