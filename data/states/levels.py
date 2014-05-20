@@ -202,6 +202,9 @@ class LevelState(tools._State):
             sprite.dialogue = dialogue_list
 
         if sprite.name == 'oldman':
+            quest_in_process_dialogue = ['Hurry to the NorthEast Shores!',
+                                         'I do not have much time left.']
+
             if self.game_data['has brother elixir']:
                 if self.game_data['elixir received']:
                     sprite.dialogue = ['My good health is thanks to you.',
@@ -217,13 +220,40 @@ class LevelState(tools._State):
                     dialogue = ['My good health is thanks to you.',
                                 'I will be forever in your debt.']
                     self.reset_dialogue = sprite, dialogue
+
+            elif self.game_data['talked to sick brother']:
+                sprite.dialogue = quest_in_process_dialogue
+
+            elif not self.game_data['talked to sick brother']:
+                self.game_data['talked to sick brother'] = True
+                self.reset_dialogue = (sprite, quest_in_process_dialogue)
         elif sprite.name == 'oldmanbrother':
             if self.game_data['has brother elixir']:
                 if self.game_data['elixir received']:
                     sprite.dialogue = ['I am glad my brother is doing well.',
-                                       'You have wise and generous spirit.']
+                                       'You have a wise and generous spirit.']
                 else:
                     sprite.dialogue = ['Hurry! There is precious little time.']
+            elif self.game_data['talked to sick brother']:
+                sprite.dialogue = ['My brother is sick?!?',
+                                   'I have not seen him in years.  I had no idea he was not well.',
+                                   'Quick, take this ELIXIR to him immediately.']
+        elif sprite.name == 'king':
+            retrieved_crown_dialogue = ['My crown! You recovered my stolen crown!!!',
+                                        'I can not believe what I see before my eyes.',
+                                        'You are truly a brave and noble warrior.',
+                                        'Henceforth, I name thee Grand Protector of this Town!',
+                                        'Go forth and be recognized.',
+                                        'You are the greatest warrior this world has ever known.']
+            thank_you_dialogue = ['Thank you for retrieving my crown.',
+                                  'My kingdom is forever in you debt.']
+
+            if self.game_data['crown quest'] and not self.game_data['delivered crown']:
+                sprite.dialogue = retrieved_crown_dialogue
+                self.game_data['delivered crown'] = True
+                self.reset_dialogue = (sprite, thank_you_dialogue)
+            elif self.game_data['delivered crown']:
+                sprite.dialogue = thank_you_dialogue
 
 
     def check_for_opened_chest(self, sprite):

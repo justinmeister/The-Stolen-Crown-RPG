@@ -151,6 +151,12 @@ class TextHandler(object):
                     self.textbox = None
                     self.last_textbox_timer = current_time
                     self.reset_sprite_direction()
+                elif self.talking_sprite.name == 'oldmanbrother' and \
+                        self.game_data['talked to sick brother'] and \
+                        not self.game_data['has brother elixir']:
+                    self.talking_sprite.item = 'ELIXIR'
+                    self.game_data['has brother elixir'] = True
+                    self.check_for_item()
                 else:
                     self.dialogue_reset()
                     self.talking_sprite = None

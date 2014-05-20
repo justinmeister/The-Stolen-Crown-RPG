@@ -78,11 +78,11 @@
   <object name="blocker" gid="120" x="256" y="112"/>
   <object name="sprite" type="oldmanbrother" gid="115" x="128" y="128">
    <properties>
-    <property name="dialogue length" value="3"/>
-    <property name="dialogue0" value="My brother is sick?!?"/>
-    <property name="dialogue1" value="I haven't seen him in years.  I had no idea he was not well."/>
-    <property name="dialogue2" value="Quick, take this ELIXIR to him immediately."/>
-    <property name="item" value="ELIXIR"/>
+    <property name="dialogue length" value="4"/>
+    <property name="dialogue0" value="Welcome to the NorthEast shores."/>
+    <property name="dialogue1" value="I spend my days in peaceful solitude brewing potions."/>
+    <property name="dialogue2" value="I have a brother in the town to the south who is quite the wizard."/>
+    <property name="dialogue3" value="You should tell him I said hello."/>
    </properties>
   </object>
   <object name="start point" gid="123" x="192" y="224">

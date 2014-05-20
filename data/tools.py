@@ -210,11 +210,14 @@ def create_game_data_dict():
                  'treasure4': True,
                  'treasure5': True,
                  'brother quest complete': False,
+                 'talked to sick brother': False,
                  'has brother elixir': False,
                  'elixir received': False,
                  'old man gift': '',
                  'battle type': '',
-                 'crown quest': False
+                 'crown quest': False,
+                 'delivered crown': False,
+                 'brother item': 'ELIXIR'
     }
 
     return data_dict

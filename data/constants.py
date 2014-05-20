@@ -1,8 +1,8 @@
-"""Constants used throughout the game"""
+#Constants used throughout the game
 
 SCREEN_SIZE = (800, 608)
 
-##GAME STATES"""
+##GAME STATES
 
 TOWN = 'town'
 MAIN_MENU = 'main menu'
