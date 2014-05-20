@@ -15,7 +15,7 @@ class InfoBox(object):
     Info box that describes attack damage and other battle
     related information.
     """
-    def __init__(self, game_data):
+    def __init__(self, game_data, experience):
         self.game_data = game_data
         self.enemy_damage = 0
         self.player_damage = 0
@@ -23,6 +23,7 @@ class InfoBox(object):
         self.title_font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
         self.title_font.set_underline(True)
         self.font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 18)
+        self.experience_points = experience
         self.state_dict = self.make_state_dict()
         self.image = self.make_image()
         self.rect = self.image.get_rect(bottom=608)
@@ -46,7 +47,9 @@ class InfoBox(object):
                         c.DRINK_HEALING_POTION: 'Player healed.',
                         c.DRINK_ETHER_POTION: 'Magic Points Increased.',
                         c.FIRE_SPELL: 'FIRE BLAST!',
-                        c.BATTLE_WON: 'Battle won!'}
+                        c.BATTLE_WON: 'Battle won!',
+                        c.SHOW_EXPERIENCE: self.show_experience(),
+                        c.LEVEL_UP: self.level_up()}
 
         return state_dict
 
@@ -159,6 +162,22 @@ class InfoBox(object):
     def update(self):
         """Updates info box"""
         self.image = self.make_image()
+
+    def show_experience(self):
+        """
+        Show how much experience the player earned.
+        """
+        return "You earned {} experience points this battle!".format(self.experience_points)
+
+    def level_up(self):
+        """
+        Return message indicating a level up for player.
+        """
+        return "You leveled up to Level {}!".format(self.game_data['player stats']['Level'])
+
+    def reset_level_up_message(self):
+        self.state_dict[c.LEVEL_UP] = self.level_up()
+
 
 
 class SelectBox(object):

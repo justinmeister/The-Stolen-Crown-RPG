@@ -47,7 +47,9 @@ class Battle(object):
                       c.DRINK_HEALING_POTION: self.drink_healing_potion,
                       c.DRINK_ETHER_POTION: self.drink_ether_potion,
                       c.CURE_SPELL: self.cure_spell,
-                      c.FIRE_SPELL: self.fire_spell}
+                      c.FIRE_SPELL: self.fire_spell,
+                      c.SHOW_EXPERIENCE: self.show_experience,
+                      c.LEVEL_UP: self.level_up}
 
         return event_dict
 
@@ -205,6 +207,21 @@ class Battle(object):
         Eliminate all traces of enemy.
         """
         self.player.attacked_enemy = None
+
+    def show_experience(self):
+        """
+        Show the experience the player gained that battle.
+        """
+        self.info_box.state = c.SHOW_EXPERIENCE
+        self.level.set_timer_to_current_time()
+
+    def level_up(self):
+        """
+        Display message that the player leveled up.
+        """
+        self.info_box.reset_level_up_message()
+        self.info_box.state = c.LEVEL_UP
+        self.level.set_timer_to_current_time()
 
 
 

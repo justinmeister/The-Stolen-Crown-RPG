@@ -40,8 +40,8 @@ class Control(object):
         previous, self.state_name = self.state_name, self.state.next
         persist = self.state.cleanup()
         self.state = self.state_dict[self.state_name]
-        self.state.startup(self.current_time, persist)
         self.state.previous = previous
+        self.state.startup(self.current_time, persist)
 
     def event_loop(self):
         self.events = pg.event.get()
@@ -188,7 +188,7 @@ def create_game_data_dict():
 
     player_stats = {'health': player_health,
                     'Level': 1,
-                    'experience to next level': 100,
+                    'experience to next level': 20,
                     'magic points': player_magic,
                     'attack points': 10,
                     'Defense Points': 10}

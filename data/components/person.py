@@ -37,7 +37,6 @@ class Person(pg.sprite.Sprite):
         self.item = None
         self.wander_box = self.make_wander_box()
         self.observers = []
-        self.level = 1
         self.health = 0
         self.death_image = pg.transform.scale2x(self.image)
         self.battle = None
@@ -464,13 +463,21 @@ class Player(Person):
     User controlled character.
     """
 
-    def __init__(self, direction, x=0, y=0, state='resting', index=0):
+    def __init__(self, direction, game_data, x=0, y=0, state='resting', index=0):
         super(Player, self).__init__('player', x, y, direction, state, index)
         self.damaged = False
         self.healing = False
         self.damage_alpha = 0
         self.healing_alpha = 0
         self.fade_in = True
+        self.game_data = game_data
+
+    @property
+    def level(self):
+        """
+        Make level property equal to player level in game_data.
+        """
+        return self.game_data['player stats']['Level']
 
 
     def create_vector_dict(self):
@@ -562,39 +569,18 @@ class Player(Person):
         Calculate hit strength based on attack stats.
         """
         max_strength = 5 + (self.level * 5)
+        print max_strength
         min_strength = max_strength // 2
         return random.randint(min_strength, max_strength)
 
 
-
-
-class Well(pg.sprite.Sprite):
-    """Talking well"""
-    def __init__(self, x, y):
-        super(Well, self).__init__()
-        self.image = pg.Surface((32, 32))
-        self.image.set_colorkey((0,0,0))
-        self.rect = self.image.get_rect(left=x, top=y)
-        self.location = self.get_location()
-        self.dialogue = ["I'm a well!"]
-        self.blockers = [self.rect]
-        self.x_vel = self.y_vel = 0
-        self.state = 'resting'
-        self.direction = 'down'
-        self.default_direction = self.direction
-        self.item = None
-        self.wander_box = []
-
-    def get_location(self):
-        """Get tile location"""
-        x = self.rect.x / 32
-        y = self.rect.y / 32
-
-        return [x, y]
-
-    def begin_auto_resting(self):
-        """Placeholder"""
-        pass
+class Enemy(Person):
+    """
+    Enemy sprite.
+    """
+    def __init__(self, sheet_key, x, y, direction='down', state='resting', index=0):
+        super(Enemy, self).__init__(sheet_key, x, y, direction, state, index)
+        self.level = 1
 
 
 class Chest(Person):

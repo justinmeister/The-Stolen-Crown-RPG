@@ -27,6 +27,7 @@ class Battle(tools._State):
         self.enemy_group = None
         self.enemy_pos_list = []
         self.enemy_list = []
+        self.experience_points = 0
 
         self.background = None
         self.info_box = None
@@ -53,8 +54,9 @@ class Battle(tools._State):
         self.attack_animations = pg.sprite.Group()
         self.sword = attackitems.Sword(self.player)
         self.enemy_group, self.enemy_pos_list, self.enemy_list = self.make_enemies()
+        self.experience_points = self.get_experience_points()
         self.background = self.make_background()
-        self.info_box = battlegui.InfoBox(game_data)
+        self.info_box = battlegui.InfoBox(game_data, self.experience_points)
         self.arrow = battlegui.SelectArrow(self.enemy_pos_list,
                                            self.info_box)
         self.select_box = battlegui.SelectBox()
@@ -65,6 +67,33 @@ class Battle(tools._State):
         self.observers = [observer.Battle(self)]
         self.player.observers.extend(self.observers)
         self.damage_points = pg.sprite.Group()
+
+    def make_enemy_level_dict(self):
+        new_dict = {c.OVERWORLD: 1,
+                    c.DUNGEON: 2,
+                    c.DUNGEON2: 2,
+                    c.DUNGEON3: 3,
+                    c.DUNGEON4: 2}
+
+        return new_dict
+
+    def set_enemy_level(self, enemy_list):
+        dungeon_level_dict = self.make_enemy_level_dict()
+
+        for enemy in enemy_list:
+            enemy.level = dungeon_level_dict[self.previous]
+
+    def get_experience_points(self):
+        """
+        Calculate experience points based on number of enemies
+        and their levels.
+        """
+        experience_total = 0
+
+        for enemy in self.enemy_list:
+            experience_total += (random.randint(5,10)*enemy.level)
+
+        return experience_total
 
     @staticmethod
     def make_background():
@@ -91,29 +120,28 @@ class Battle(tools._State):
         enemy_group = pg.sprite.Group()
 
         if self.game_data['battle type']:
-            enemy = person.Person('evilwizard', 0, 0,
+            enemy = person.Enemy('evilwizard', 0, 0,
                                   'down', 'battle resting')
             enemy_group.add(enemy)
         else:
             for enemy in range(random.randint(1, 6)):
-                enemy_group.add(person.Person('devil', 0, 0,
+                enemy_group.add(person.Enemy('devil', 0, 0,
                                               'down', 'battle resting'))
 
         for i, enemy in enumerate(enemy_group):
             enemy.rect.topleft = pos_list[i]
             enemy.image = pg.transform.scale2x(enemy.image)
             enemy.index = i
-            enemy.level = 1
+            enemy.level = self.make_enemy_level_dict()[self.previous]
             enemy.health = enemy.level * 7
 
         enemy_list = [enemy for enemy in enemy_group]
 
         return enemy_group, pos_list[0:len(enemy_group)], enemy_list
 
-    @staticmethod
-    def make_player():
+    def make_player(self):
         """Make the sprite for the player's character"""
-        player = person.Player('left', 630, 220, 'battle resting', 1)
+        player = person.Player('left', self.game_data, 630, 220, 'battle resting', 1)
         player.image = pg.transform.scale2x(player.image)
         return player
 
@@ -224,9 +252,28 @@ class Battle(tools._State):
                 self.timer = self.current_time
                 self.notify(self.state)
 
-        elif self.state == c.FLEE or self.state == c.BATTLE_WON:
+        elif self.state == c.FLEE:
             if (self.current_time - self.timer) > 1500:
                 self.end_battle()
+
+        elif self.state == c.BATTLE_WON:
+            if (self.current_time - self.timer) > 1800:
+                self.state = c.SHOW_EXPERIENCE
+                self.notify(self.state)
+
+        elif self.state == c.SHOW_EXPERIENCE:
+            if (self.current_time - self.timer) > 2200:
+                player_stats = self.game_data['player stats']
+                player_stats['experience to next level'] -= self.experience_points
+                if player_stats['experience to next level'] <= 0:
+                    player_stats['Level'] += 1
+                    player_stats['health']['maximum'] += int(player_stats['health']['maximum']*.25)
+                    player_stats['magic points']['maximum'] += int(player_stats['magic points']['maximum']*.20)
+                    new_experience = int((player_stats['Level'] * 100) * .75)
+                    player_stats['experience to next level'] = new_experience
+                    self.notify(c.LEVEL_UP)
+                else:
+                    self.end_battle()
 
         elif self.state == c.DISPLAY_ENEMY_ATTACK_DAMAGE:
             if (self.current_time - self.timer) > 600:

@@ -83,7 +83,7 @@ class LevelState(tools._State):
 
 
         if last_state == 'battle':
-            player = person.Player(self.game_data['last direction'])
+            player = person.Player(self.game_data['last direction'], self.game_data)
             player.rect.x = self.game_data['last location'][0] * 32
             player.rect.y = self.game_data['last location'][1] * 32
 
@@ -94,7 +94,8 @@ class LevelState(tools._State):
                     if last_state == properties['state']:
                         posx = properties['x'] * 2
                         posy = (properties['y'] * 2) - 32
-                        player = person.Player(properties['direction'])
+                        player = person.Player(properties['direction'],
+                                               self.game_data)
                         player.rect.x = posx
                         player.rect.y = posy
 
