@@ -179,7 +179,10 @@ def create_game_data_dict():
                                           ('value', 15)]),
                     'Cure': dict([('magic points', 25),
                                   ('power', 50)]),
-                    'equipped weapon': None,
+                    'Rapier': dict([('quantity', 1),
+                                    ('value', 50),
+                                    ('power', 10)]),
+                    'equipped weapon': 'Rapier',
                     'equipped armor': []}
 
     player_health = {'current': 100,

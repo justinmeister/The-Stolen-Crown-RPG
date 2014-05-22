@@ -568,8 +568,12 @@ class Player(Person):
         """
         Calculate hit strength based on attack stats.
         """
-        max_strength = 5 + (self.level * 5)
-        print max_strength
+        weapon = self.game_data['player inventory']['equipped weapon']
+        if not weapon:
+            weapon_power = 0
+        else:
+            weapon_power = self.game_data['player inventory'][weapon]['power']
+        max_strength = weapon_power + (self.level * 5)
         min_strength = max_strength // 2
         return random.randint(min_strength, max_strength)
 

@@ -46,7 +46,8 @@ class Battle(tools._State):
                     c.DUNGEON: 2,
                     c.DUNGEON2: 2,
                     c.DUNGEON3: 3,
-                    c.DUNGEON4: 2}
+                    c.DUNGEON4: 2,
+                    c.DUNGEON5: 5}
 
         return new_dict
 
@@ -223,6 +224,10 @@ class Battle(tools._State):
         elif self.state == c.BATTLE_WON:
             if (self.current_time - self.timer) > 1800:
                 self.enter_show_experience_state()
+
+        elif self.state == c.LEVEL_UP:
+            if (self.current_time - self.timer) > 2200:
+                self.end_battle()
 
         elif self.state == c.SHOW_EXPERIENCE:
             if (self.current_time - self.timer) > 2200:

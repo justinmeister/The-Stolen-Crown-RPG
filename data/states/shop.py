@@ -140,6 +140,7 @@ class Inn(Shop):
         item = {'type': 'room',
                 'price': 30,
                 'quantity': 0,
+                'power': None,
                 'dialogue': dialogue}
 
         return [item]
@@ -169,11 +170,13 @@ class WeaponShop(Shop):
         item2 = {'type': 'Long Sword',
                 'price': 100,
                 'quantity': 1,
+                'power': 10,
                 'dialogue': longsword_dialogue}
 
         item1 = {'type': 'Rapier',
                  'price': 50,
                  'quantity': 1,
+                 'power': 5,
                  'dialogue': rapier_dialogue}
 
         return [item1, item2]
@@ -202,11 +205,13 @@ class ArmorShop(Shop):
         item = {'type': 'Chain Mail',
                 'price': 50,
                 'quantity': 1,
+                'power': 1,
                 'dialogue': chainmail_dialogue}
 
         item2 = {'type': 'Wooden Shield',
                  'price': 75,
                  'quantity': 1,
+                 'power': 1,
                  'dialogue': shield_dialogue}
 
         return [item, item2]

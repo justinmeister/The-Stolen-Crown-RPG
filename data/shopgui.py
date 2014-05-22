@@ -20,6 +20,8 @@ class Gui(object):
         self.name = level.name
         self.state = 'dialogue'
         self.no_selling = ['Inn', 'Magic Shop']
+        self.weapon_list = ['Long Sword', 'Rapier']
+        self.armor_list = ['Chain Mail', 'Wooden Shield']
         self.font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
         self.index = 0
         self.timer = 0.0
@@ -149,7 +151,9 @@ class Gui(object):
                       'hasitem': self.has_item,
                       'buysell': self.buy_sell,
                       'sell': self.sell_items,
-                      'cantsell': self.cant_sell}
+                      'cantsell': self.cant_sell,
+                      'cantsellequippedweapon': self.cant_sell_equipped_weapon,
+                      'cantsellequippedarmor': self.cant_sell_equipped_armor}
 
         return state_dict
 
@@ -277,7 +281,7 @@ class Gui(object):
             self.state = 'reject'
         else:
             if (item['type'] in self.player_inventory and
-                        self.name == c.MAGIC_SHOP):
+                        not self.name == c.POTION_SHOP):
                 self.state = 'hasitem'
                 self.player_inventory['GOLD']['quantity'] += item['price']
             else:
@@ -290,13 +294,15 @@ class Gui(object):
         item_type = item['type']
         quantity = item['quantity']
         value = item['price']
+        power = item['power']
         magic_list = ['Cure', 'Fire Blast']
         player_items = self.level.game_data['player inventory']
         player_health = self.level.game_data['player stats']['health']
         player_magic = self.level.game_data['player stats']['magic points']
 
         item_to_add = {'quantity': quantity,
-                       'value': value}
+                       'value': value,
+                       'power': power}
 
         if item_type in magic_list:
             item_to_add = {'magic points': item['magic points'],
@@ -340,15 +346,36 @@ class Gui(object):
 
 
     def sell_item_from_inventory(self):
-        """Allow player to sell item to shop"""
+        """
+        Allow player to sell item to shop.
+        """
         item_price = self.item_to_be_sold['price']
         item_name = self.item_to_be_sold['type']
-        self.player_inventory['gold'] += (item_price / 2)
+
+        if item_name in self.weapon_list:
+            if item_name == self.game_data['player inventory']['equipped weapon']:
+                self.state = 'cantsellequippedweapon'
+            else:
+                self.sell_inventory_data_adjust(item_price, item_name)
+
+        elif item_name in self.armor_list:
+            if item_name in self.game_data['player inventory']['equipped armor']:
+                self.state = 'cantsellequippedarmor'
+            else:
+                self.sell_inventory_data_adjust(item_price, item_name)
+
+    def sell_inventory_data_adjust(self, item_price, item_name):
+        """
+        Add gold and subtract item during sale.
+        """
+        self.player_inventory['GOLD']['quantity'] += (item_price / 2)
         self.state = 'acceptsell'
         if self.player_inventory[item_name]['quantity'] > 1:
             self.player_inventory[item_name]['quantity'] -= 1
         else:
             del self.player_inventory[self.item_to_be_sold['type']]
+
+
 
 
     def reject_insufficient_gold(self, keys, current_time):
@@ -499,7 +526,7 @@ class Gui(object):
                 self.state = 'confirmsell'
                 self.allow_input = False
                 for item in self.items:
-                    if item['type'] == choices[1]:
+                    if item['type'] == item_list[1]:
                         self.item_to_be_sold = item
             else:
                 self.state = 'buysell'
@@ -522,6 +549,35 @@ class Gui(object):
 
         if not keys[pg.K_SPACE]:
             self.allow_input = True
+
+    def cant_sell_equipped_weapon(self, keys, *args):
+        """
+        Do not sell weapon the player has equipped.
+        """
+        dialogue = ["You can't sell an equipped weapon."]
+        self.dialogue_box = self.make_dialogue_box(dialogue, 0)
+
+        if keys[pg.K_SPACE] and self.allow_input:
+            self.state = 'buysell'
+            self.allow_input = False
+
+        if not keys[pg.K_SPACE]:
+            self.allow_input = True
+
+    def cant_sell_equipped_armor(self, keys, *args):
+        """
+        Do not sell armor the player has equipped.
+        """
+        dialogue = ["You can't sell equipped armor."]
+        self.dialogue_box = self.make_dialogue_box(dialogue, 0)
+
+        if keys[pg.K_SPACE] and self.allow_input:
+            self.state = 'buysell'
+            self.allow_input = False
+
+        if not keys[pg.K_SPACE]:
+            self.allow_input = True
+
 
 
     def update(self, keys, current_time):
