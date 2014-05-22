@@ -178,7 +178,9 @@ def create_game_data_dict():
                     'Ether Potion': dict([('quantity',5),
                                           ('value', 15)]),
                     'Cure': dict([('magic points', 25),
-                                  ('power', 50)])}
+                                  ('power', 50)]),
+                    'equipped weapon': None,
+                    'equipped armor': []}
 
     player_health = {'current': 100,
                      'maximum': 100}

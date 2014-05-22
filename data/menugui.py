@@ -181,8 +181,12 @@ class InfoBox(pg.sprite.Sprite):
         armor = ['ARMOR']
         for i, item in enumerate(self.inventory):
             if item in self.possible_weapons:
+                if item == self.inventory['equipped weapon']:
+                    item += " (E)"
                 weapons.append(item)
             elif item in self.possible_armor:
+                if item in self.inventory['equipped armor']:
+                    item += " (E)"
                 armor.append(item)
             elif item in self.possible_potions:
                 potions.append(item)
@@ -207,7 +211,7 @@ class InfoBox(pg.sprite.Sprite):
         self.rect = rect
 
 
-    def assign_slots(self, item_list, starty):
+    def assign_slots(self, item_list, starty, weapon_or_armor=False):
         """Assign each item to a slot in the menu"""
         if len(item_list) > 3:
             for i, item in enumerate(item_list[:3]):
@@ -229,7 +233,8 @@ class InfoBox(pg.sprite.Sprite):
         """Blit item list to info box surface"""
         for coord in self.slots:
             item = self.slots[coord]
-            if item in self.inventory:
+
+            if item in self.possible_potions:
                 text = "{}: {}".format(self.slots[coord],
                                        self.inventory[item]['quantity'])
             else:
@@ -403,6 +408,20 @@ class MenuGui(object):
                 stat = self.game_data['player stats']['magic points']
                 value = 30
                 self.drink_potion(potion, stat, value)
+            elif self.info_box.slots[(posx, posy)][:10] == 'Long Sword':
+                self.inventory['equipped weapon'] = 'Long Sword'
+            elif self.info_box.slots[(posx, posy)][:6] == 'Rapier':
+                self.inventory['equipped weapon'] = 'Rapier'
+            elif self.info_box.slots[(posx, posy)][:13] == 'Wooden Shield':
+                if 'Wooden Shield' in self.inventory['equipped armor']:
+                    self.inventory['equipped armor'].remove('Wooden Shield')
+                else:
+                    self.inventory['equipped armor'].append('Wooden Shield')
+            elif self.info_box.slots[(posx, posy)][:10] == 'Chain Mail':
+                if 'Chain Mail' in self.inventory['equipped armor']:
+                    self.inventory['equipped armor'].remove('Chain Mail')
+                else:
+                    self.inventory['equipped armor'].append('Chain Mail')
 
     def drink_potion(self, potion, stat, value):
         """
