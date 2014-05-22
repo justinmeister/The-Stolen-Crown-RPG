@@ -318,7 +318,7 @@ class Person(pg.sprite.Sprite):
             self.image = pg.transform.scale2x(self.image)
             if self.rect.x <= self.origin_pos[0] - 110:
                 self.x_vel = FAST_BACK
-                self.notify('attack animation')
+                self.notify(c.ENEMY_DAMAGED)
         else:
             if self.rect.x >= self.origin_pos[0]:
                 self.rect.x = self.origin_pos[0]
@@ -351,7 +351,7 @@ class Person(pg.sprite.Sprite):
             self.x_vel = 0
             self.state = 'battle resting'
             self.rect.x = STARTX
-            self.notify(c.ENEMY_ATTACK_DAMAGE)
+            self.notify(c.PLAYER_DAMAGED)
 
         elif self.x_vel == FAST_LEFT:
             if self.rect.x <= (STARTX - 15):

@@ -41,9 +41,9 @@ class InfoBox(object):
                         c.ENEMY_ATTACK: 'Enemy attacks player!',
                         c.PLAYER_ATTACK: 'Player attacks enemy.',
                         c.RUN_AWAY: 'RUN AWAY!!!',
-                        c.ENEMY_HIT: self.enemy_hit(),
+                        c.ENEMY_DAMAGED: self.enemy_damaged(),
                         c.ENEMY_DEAD: 'Enemy killed.',
-                        c.DISPLAY_ENEMY_ATTACK_DAMAGE: self.player_hit(),
+                        c.PLAYER_DAMAGED: self.player_hit(),
                         c.DRINK_HEALING_POTION: 'Player healed.',
                         c.DRINK_ETHER_POTION: 'Magic Points Increased.',
                         c.FIRE_SPELL: 'FIRE BLAST!',
@@ -53,7 +53,7 @@ class InfoBox(object):
 
         return state_dict
 
-    def enemy_hit(self):
+    def enemy_damaged(self):
         """
         Return text of enemy being hit using calculated damage.
         """
@@ -144,14 +144,14 @@ class InfoBox(object):
         Set enemy damage in state dictionary.
         """
         self.enemy_damage = enemy_damage
-        self.state_dict[c.ENEMY_HIT] = self.enemy_hit()
+        self.state_dict[c.ENEMY_DAMAGED] = self.enemy_damaged()
 
     def set_player_damage(self, player_damage):
         """
         Set player damage in state dictionary.
         """
         self.player_damage = player_damage
-        self.state_dict[c.DISPLAY_ENEMY_ATTACK_DAMAGE] = self.player_hit()
+        self.state_dict[c.PLAYER_DAMAGED] = self.player_hit()
 
     def player_hit(self):
         if self.player_damage:
