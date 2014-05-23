@@ -526,7 +526,8 @@ class Battle(tools._State):
         if self.enemy_index > len(self.enemy_list) - 1:
             self.enemy_index = 0
         enemy = self.enemy_list[self.enemy_index]
-        player_damage = enemy.calculate_hit()
+        player_damage = enemy.calculate_hit(self.inventory['equipped armor'],
+                                            self.inventory)
         self.damage_points.add(
             attackitems.HealthPoints(player_damage,
                                      self.player.rect.topright))

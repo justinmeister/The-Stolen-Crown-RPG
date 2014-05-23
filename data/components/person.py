@@ -377,11 +377,14 @@ class Person(pg.sprite.Sprite):
         for observer in self.observers:
             observer.on_notify(event)
 
-    def calculate_hit(self):
+    def calculate_hit(self, armor_list, inventory):
         """
         Calculate hit strength based on attack stats.
         """
-        max_strength = self.level * 5
+        armor_power = 0
+        for armor in armor_list:
+            armor_power += inventory[armor]['power']
+        max_strength = max(1, (self.level * 5) - armor_power)
         min_strength = 0
         return random.randint(min_strength, max_strength)
 

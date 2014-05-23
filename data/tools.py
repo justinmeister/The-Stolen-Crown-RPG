@@ -181,7 +181,7 @@ def create_game_data_dict():
                                   ('power', 50)]),
                     'Rapier': dict([('quantity', 1),
                                     ('value', 50),
-                                    ('power', 10)]),
+                                    ('power', 5)]),
                     'equipped weapon': 'Rapier',
                     'equipped armor': []}
 
