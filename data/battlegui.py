@@ -242,7 +242,8 @@ class SelectArrow(object):
         state_dict = {'select action': self.select_action,
                       'select enemy': self.select_enemy,
                       'select item': self.select_item,
-                      'select magic': self.select_magic}
+                      'select magic': self.select_magic,
+                      'invisible': self.become_invisible_surface}
 
         return state_dict
 
@@ -352,11 +353,11 @@ class SelectArrow(object):
         return pos_list
 
 
-    def become_invisible_surface(self):
+    def become_invisible_surface(self, *args):
         """
         Make image attribute an invisible surface.
         """
-        self.image = pg.Surface((32, 32))
+        self.image = pg.Surface(self.rect.size)
         self.image.set_colorkey(c.BLACK)
 
     def become_select_item_state(self):
@@ -383,6 +384,7 @@ class SelectArrow(object):
         """
         Update arrow position.
         """
+        self.image = setup.GFX['smallarrow']
         state_function = self.state_dict[self.state]
         state_function(keys)
 

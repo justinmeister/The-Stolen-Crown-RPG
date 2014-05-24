@@ -588,6 +588,7 @@ class Enemy(Person):
     def __init__(self, sheet_key, x, y, direction='down', state='resting', index=0):
         super(Enemy, self).__init__(sheet_key, x, y, direction, state, index)
         self.level = 1
+        self.type = 'enemy'
 
 
 class Chest(Person):

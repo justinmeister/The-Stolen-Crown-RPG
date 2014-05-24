@@ -40,6 +40,23 @@ class Battle(tools._State):
         self.observers = [observer.Battle(self)]
         self.player.observers.extend(self.observers)
         self.damage_points = pg.sprite.Group()
+        self.player_actions = []
+        self.player_action_dict = self.make_player_action_dict()
+        self.player_level = self.game_data['player stats']['Level']
+        self.enemies_to_attack = []
+        self.action_selected = False
+
+    def make_player_action_dict(self):
+        """
+        Make the dict to execute player actions.
+        """
+        action_dict = {c.PLAYER_ATTACK: self.enter_player_attack_state,
+                       c.CURE_SPELL: self.cast_cure,
+                       c.FIRE_SPELL: self.cast_fire_blast,
+                       c.DRINK_HEALING_POTION: self.enter_drink_healing_potion_state,
+                       c.DRINK_ETHER_POTION: self.enter_drink_ether_potion_state}
+
+        return action_dict
 
     def make_enemy_level_dict(self):
         new_dict = {c.OVERWORLD: 1,
@@ -140,6 +157,7 @@ class Battle(tools._State):
         self.arrow.update(keys)
         self.sword.update(current_time)
         self.damage_points.update()
+        self.execute_player_actions()
 
         self.draw_battle(surface)
 
@@ -158,24 +176,30 @@ class Battle(tools._State):
                     enter_state_function()
 
                 elif self.state == c.SELECT_ENEMY:
-                    self.enter_player_attack_state()
+                    self.player_actions.append(c.PLAYER_ATTACK)
+                    self.enemies_to_attack.append(self.get_enemy_to_attack())
+                    self.action_selected = True
 
                 elif self.state == c.SELECT_ITEM:
                     if self.arrow.index == (len(self.arrow.pos_list) - 1):
                         self.enter_select_action_state()
                     elif self.info_box.item_text_list[self.arrow.index][:14] == 'Healing Potion':
-                        self.enter_drink_healing_potion_state()
+                        self.player_actions.append(c.DRINK_HEALING_POTION)
+                        self.action_selected = True
                     elif self.info_box.item_text_list[self.arrow.index][:5] == 'Ether':
-                        self.enter_drink_ether_potion_state()
+                        self.player_actions.append(c.DRINK_ETHER_POTION)
+                        self.action_selected = True
                 elif self.state == c.SELECT_MAGIC:
                     if self.arrow.index == (len(self.arrow.pos_list) - 1):
                         self.enter_select_action_state()
                     elif self.info_box.magic_text_list[self.arrow.index] == 'Cure':
                         if self.game_data['player stats']['magic points']['current'] >= 25:
-                            self.cast_cure()
+                            self.player_actions.append(c.CURE_SPELL)
+                            self.action_selected = True
                     elif self.info_box.magic_text_list[self.arrow.index] == 'Fire Blast':
                         if self.game_data['player stats']['magic points']['current'] >= 25:
-                            self.cast_fire_blast()
+                            self.player_actions.append(c.FIRE_SPELL)
+                            self.action_selected = True
 
             self.allow_input = False
 
@@ -196,25 +220,37 @@ class Battle(tools._State):
         if self.state in long_delay:
             if (self.current_time - self.timer) > 1000:
                 if self.state == c.ENEMY_DAMAGED:
-                    if len(self.enemy_list):
-                        self.enter_enemy_attack_state()
+                    if self.player_actions:
+                        self.player_action_dict[self.player_actions[0]]()
+                        self.player_actions.pop(0)
                     else:
-                        self.enter_battle_won_state()
+                        if len(self.enemy_list):
+                            self.enter_enemy_attack_state()
+                        else:
+                            self.enter_battle_won_state()
                 elif (self.state == c.DRINK_HEALING_POTION or
                       self.state == c.CURE_SPELL or
                       self.state == c.DRINK_ETHER_POTION):
-                    if len(self.enemy_list):
-                        self.enter_enemy_attack_state()
+                    if self.player_actions:
+                        self.player_action_dict[self.player_actions[0]]()
+                        self.player_actions.pop(0)
                     else:
-                        self.enter_battle_won_state()
+                        if len(self.enemy_list):
+                            self.enter_enemy_attack_state()
+                        else:
+                            self.enter_battle_won_state()
                 self.timer = self.current_time
 
         elif self.state == c.FIRE_SPELL or self.state == c.CURE_SPELL:
             if (self.current_time - self.timer) > 1500:
-                if len(self.enemy_list):
-                    self.enter_enemy_attack_state()
+                if self.player_actions:
+                    self.player_action_dict[self.player_actions[0]]()
+                    self.player_actions.pop(0)
                 else:
-                    self.enter_battle_won_state()
+                    if len(self.enemy_list):
+                        self.enter_enemy_attack_state()
+                    else:
+                        self.enter_battle_won_state()
                 self.timer = self.current_time
 
         elif self.state == c.RUN_AWAY:
@@ -372,8 +408,7 @@ class Battle(tools._State):
         self.enemy_list = [enemy for enemy in self.enemy_list if enemy.health > 0]
         self.enemy_index = 0
         self.arrow.index = 0
-        self.arrow.become_invisible_surface()
-        self.arrow.state = c.SELECT_ACTION
+        self.arrow.state = 'invisible'
         self.set_timer_to_current_time()
 
     def cast_cure(self):
@@ -385,7 +420,7 @@ class Battle(tools._State):
         MAGIC_POINTS = self.inventory['Cure']['magic points']
         self.player.healing = True
         self.set_timer_to_current_time()
-        self.arrow.become_invisible_surface()
+        self.arrow.state = 'invisible'
         self.enemy_index = 0
         self.damage_points.add(
             attackitems.HealthPoints(HEAL_AMOUNT, self.player.rect.topright, False))
@@ -399,7 +434,7 @@ class Battle(tools._State):
         self.state = self.info_box.state = c.DRINK_ETHER_POTION
         self.player.healing = True
         self.set_timer_to_current_time()
-        self.arrow.become_invisible_surface()
+        self.arrow.state = 'invisible'
         self.enemy_index = 0
         self.damage_points.add(
             attackitems.HealthPoints(30,
@@ -414,7 +449,7 @@ class Battle(tools._State):
         """
         self.state = self.info_box.state = c.DRINK_HEALING_POTION
         self.player.healing = True
-        self.arrow.become_invisible_surface()
+        self.arrow.state = 'invisible'
         self.enemy_index = 0
         self.damage_points.add(
             attackitems.HealthPoints(30,
@@ -449,7 +484,7 @@ class Battle(tools._State):
         Transition battle into the run away state.
         """
         self.run_away = True
-        self.arrow.become_invisible_surface()
+        self.arrow.state = 'invisible'
         self.enemy_index = 0
         self.enter_enemy_attack_state()
 
@@ -466,6 +501,20 @@ class Battle(tools._State):
         Transition battle into the Player attack state.
         """
         self.state = c.PLAYER_ATTACK
+        enemy_to_attack = self.enemies_to_attack.pop(0)
+        if enemy_to_attack in self.enemy_list:
+            self.player.enter_attack_state(enemy_to_attack)
+        else:
+            if self.enemy_list:
+                self.player.enter_attack_state(self.enemy_list[0])
+            else:
+                self.enter_battle_won_state()
+        self.arrow.state = 'invisible'
+
+    def get_enemy_to_attack(self):
+        """
+        Get enemy for player to attack by arrow position.
+        """
         enemy_posx = self.arrow.rect.x + 60
         enemy_posy = self.arrow.rect.y - 20
         enemy_pos = (enemy_posx, enemy_posy)
@@ -475,8 +524,8 @@ class Battle(tools._State):
             if enemy.rect.topleft == enemy_pos:
                 enemy_to_attack = enemy
 
-        self.player.enter_attack_state(enemy_to_attack)
-        self.arrow.become_invisible_surface()
+        return enemy_to_attack
+
 
     def enter_drink_healing_potion_state(self):
         """
@@ -485,7 +534,7 @@ class Battle(tools._State):
         self.state = self.info_box.state = c.DRINK_HEALING_POTION
         self.player.healing = True
         self.set_timer_to_current_time()
-        self.arrow.become_invisible_surface()
+        self.arrow.state = 'invisible'
         self.enemy_index = 0
         self.damage_points.add(
             attackitems.HealthPoints(30,
@@ -499,7 +548,7 @@ class Battle(tools._State):
         """
         self.state = self.info_box.state = c.DRINK_ETHER_POTION
         self.player.healing = True
-        self.arrow.become_invisible_surface()
+        self.arrow.state = 'invisible'
         self.enemy_index = 0
         self.damage_points.add(
             attackitems.HealthPoints(30,
@@ -516,7 +565,6 @@ class Battle(tools._State):
         self.state = self.info_box.state = c.SELECT_ACTION
         self.arrow.index = 0
         self.arrow.state = self.state
-        self.arrow.image = setup.GFX['smallarrow']
 
     def enter_player_damaged_state(self):
         """
@@ -550,7 +598,6 @@ class Battle(tools._State):
 
         self.info_box.set_enemy_damage(enemy_damage)
 
-        self.arrow.state = c.SELECT_ACTION
         self.arrow.index = 0
         self.attack_enemy(enemy_damage)
         self.set_timer_to_current_time()
@@ -568,7 +615,7 @@ class Battle(tools._State):
         Transition battle into the run away state.
         """
         self.state = self.info_box.state = c.RUN_AWAY
-        self.arrow.become_invisible_surface()
+        self.arrow.state = 'invisible'
         self.player.state = c.RUN_AWAY
         self.set_timer_to_current_time()
 
@@ -594,6 +641,29 @@ class Battle(tools._State):
         self.state = self.info_box.state = c.LEVEL_UP
         self.info_box.reset_level_up_message()
         self.set_timer_to_current_time()
+
+    def execute_player_actions(self):
+        """
+        Execute the player actions.
+        """
+        if self.player_level < 3:
+            if self.player_actions:
+                enter_state = self.player_action_dict[self.player_actions[0]]
+                enter_state()
+                self.player_actions.pop(0)
+        else:
+            if len(self.player_actions) == 2:
+                enter_state = self.player_action_dict[self.player_actions[0]]
+                enter_state()
+                self.player_actions.pop(0)
+                self.action_selected = False
+            else:
+                if self.action_selected:
+                    self.enter_select_action_state()
+                    self.action_selected = False
+
+
+
 
 
 
