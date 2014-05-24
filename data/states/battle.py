@@ -194,11 +194,11 @@ class Battle(tools._State):
                     if self.arrow.index == (len(self.arrow.pos_list) - 1):
                         self.enter_select_action_state()
                     elif self.info_box.magic_text_list[self.arrow.index] == 'Cure':
-                        if self.game_data['player stats']['magic points']['current'] >= 25:
+                        if self.game_data['player stats']['magic']['current'] >= 25:
                             self.player_actions.append(c.CURE_SPELL)
                             self.action_selected = True
                     elif self.info_box.magic_text_list[self.arrow.index] == 'Fire Blast':
-                        if self.game_data['player stats']['magic points']['current'] >= 25:
+                        if self.game_data['player stats']['magic']['current'] >= 25:
                             self.player_actions.append(c.FIRE_SPELL)
                             self.action_selected = True
 
@@ -280,7 +280,7 @@ class Battle(tools._State):
                 if player_stats['experience to next level'] <= 0:
                     player_stats['Level'] += 1
                     player_stats['health']['maximum'] += int(player_stats['health']['maximum']*.25)
-                    player_stats['magic points']['maximum'] += int(player_stats['magic points']['maximum']*.20)
+                    player_stats['magic']['maximum'] += int(player_stats['magic']['maximum']*.20)
                     new_experience = int((player_stats['Level'] * 100) * .75)
                     player_stats['experience to next level'] = new_experience
                     self.enter_level_up_state()
@@ -373,13 +373,13 @@ class Battle(tools._State):
             if self.game_data['player inventory']['Healing Potion']['quantity'] == 0:
                 del self.game_data['player inventory']['Healing Potion']
         elif self.state == c.CURE_SPELL:
-            self.game_data['player stats']['magic points']['current'] -= magic_points
+            self.game_data['player stats']['magic']['current'] -= magic_points
 
     def magic_boost(self, magic_points):
         """
         Add magic from ether to game data.
         """
-        magic = self.game_data['player stats']['magic points']
+        magic = self.game_data['player stats']['magic']
         magic['current'] += magic_points
         if magic['current'] > magic['maximum']:
             magic['current'] = magic['maximum']
@@ -398,8 +398,8 @@ class Battle(tools._State):
         """
         self.state = self.info_box.state = c.FIRE_SPELL
         POWER = self.inventory['Fire Blast']['power']
-        MAGIC_POINTS = self.inventory['Fire Blast']['magic points']
-        self.game_data['player stats']['magic points']['current'] -= MAGIC_POINTS
+        MAGIC_POINTS = self.inventory['Fire Blast']['magic']
+        self.game_data['player stats']['magic']['current'] -= MAGIC_POINTS
         for enemy in self.enemy_list:
             DAMAGE = random.randint(POWER//2, POWER)
             self.damage_points.add(

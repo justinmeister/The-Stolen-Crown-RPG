@@ -408,7 +408,7 @@ class PlayerHealth(object):
     """
     def __init__(self, select_box_rect, game_data):
         self.health_stats = game_data['player stats']['health']
-        self.magic_stats = game_data['player stats']['magic points']
+        self.magic_stats = game_data['player stats']['magic']
         self.title_font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
         self.posx = select_box_rect.centerx
         self.posy = select_box_rect.y - 5

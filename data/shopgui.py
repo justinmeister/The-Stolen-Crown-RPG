@@ -298,7 +298,7 @@ class Gui(object):
         magic_list = ['Cure', 'Fire Blast']
         player_items = self.level.game_data['player inventory']
         player_health = self.level.game_data['player stats']['health']
-        player_magic = self.level.game_data['player stats']['magic points']
+        player_magic = self.level.game_data['player stats']['magic']
 
         item_to_add = {'quantity': quantity,
                        'value': value,

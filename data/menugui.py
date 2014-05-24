@@ -20,7 +20,6 @@ class SmallArrow(pg.sprite.Sprite):
         self.slots = info_box.slots
         self.pos_list = []
 
-
     def make_state_dict(self):
         """Make state dictionary"""
         state_dict = {'selectmenu': self.navigate_select_menu,
@@ -29,12 +28,10 @@ class SmallArrow(pg.sprite.Sprite):
 
         return state_dict
 
-
     def navigate_select_menu(self, pos_index):
         """Nav the select menu"""
         self.pos_list = self.make_select_menu_pos_list()
         self.rect.topleft = self.pos_list[pos_index]
-
 
     def navigate_item_submenu(self, pos_index):
         """Nav the item submenu"""
@@ -60,7 +57,7 @@ class SmallArrow(pg.sprite.Sprite):
         pos_list = []
 
         for i in range(4):
-            pos = (35, 356 + (i * 50))
+            pos = (35, 452 + (i * 50))
             pos_list.append(pos)
 
         return pos_list
@@ -78,52 +75,68 @@ class SmallArrow(pg.sprite.Sprite):
 
         return pos_list
 
-
     def update(self, pos_index):
         """Update arrow position"""
         state_function = self.state_dict[self.state]
         state_function(pos_index)
 
-
     def draw(self, surface):
         """Draw to surface"""
         surface.blit(self.image, self.rect)
 
 
-
 class GoldBox(pg.sprite.Sprite):
-    def __init__(self, inventory):
-        self.inventory = inventory
+    def __init__(self, game_data):
+        self.inventory = game_data['player inventory']
+        self.game_data = game_data
+        self.health = game_data['player stats']['health']
+        self.stats = self.game_data['player stats']
         self.font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
+        self.small_font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 18)
         self.image, self.rect = self.make_image()
 
     def make_image(self):
-        """Make the surface for the gold box"""
-        image = setup.GFX['goldbox2']
-        rect = image.get_rect(left=10, top=234)
+        """
+        Make the surface for the gold box.
+        """
+        stat_list = ['GOLD', 'health', 'magic'] 
+        magic_health_list  = ['health', 'magic']
+        image = setup.GFX['goldbox']
+        rect = image.get_rect(left=10, top=244)
 
         surface = pg.Surface(rect.size)
         surface.set_colorkey(c.BLACK)
         surface.blit(image, (0, 0))
 
-        text = "Gold: " + str(self.inventory['GOLD']['quantity'])
-        text_render = self.font.render(text, True, c.NEAR_BLACK)
-        text_rect = text_render.get_rect(centerx=130,
-                                         centery=35)
-        surface.blit(text_render, text_rect)
-
+        for i, stat in enumerate(stat_list):
+            first_letter = stat[0].upper()
+            rest_of_letters = stat[1:]
+            if stat in magic_health_list:
+                current = self.stats[stat]['current']
+                max = self.stats[stat]['maximum']
+                text = "{}{}: {}/{}".format(first_letter, rest_of_letters, current, max)
+            elif stat == 'GOLD':
+                text = "{}: {}".format(stat, self.inventory[stat]['quantity'])
+            render = self.small_font.render(text, True, c.NEAR_BLACK)
+            x = 16
+            y = 25 + (i*30)
+            text_rect = render.get_rect(x=x,
+                                        centery=y)
+            surface.blit(render, text_rect)
+        
         return surface, rect
 
-
     def update(self):
-        """Update gold"""
+        """
+        Update gold.
+        """
         self.image, self.rect = self.make_image()
 
-
     def draw(self, surface):
-        """Draw to surface"""
+        """
+        Draw to surface.
+        """
         surface.blit(self.image, self.rect)
-
 
 
 class InfoBox(pg.sprite.Sprite):
@@ -145,7 +158,7 @@ class InfoBox(pg.sprite.Sprite):
         self.possible_magic = ['Fire Blast', 'Cure']
         self.quantity_items = ['Healing Potion', 'ELIXIR', 'Ether Potion']
         self.slots = {}
-        self.state = 'stats'
+        self.state = 'items'
         self.state_dict = self.make_state_dict()
         self.print_slots = True
 
@@ -163,11 +176,11 @@ class InfoBox(pg.sprite.Sprite):
         """Show the player's main stats"""
         title = 'STATS'
         stat_list = ['Level', 'health',
-                     'magic points', 'experience to next level']
+                     'magic', 'experience to next level']
         surface, rect = self.make_blank_info_box(title)
 
         for i, stat in enumerate(stat_list):
-            if stat == 'health' or stat == 'magic points':
+            if stat == 'health' or stat == 'magic':
                 text = "{}{}: {} / {}".format(stat[0].upper(),
                                               stat[1:],
                                               str(self.player_stats[stat]['current']),
@@ -321,9 +334,9 @@ class SelectionBox(pg.sprite.Sprite):
 
 
     def make_image(self):
-        choices = ['Stats', 'Items', 'Magic', 'Exit']
-        image = setup.GFX['selectionbox']
-        rect = image.get_rect(left=10, top=330)
+        choices = ['Items', 'Magic']
+        image = setup.GFX['goldbox']
+        rect = image.get_rect(left=10, top=425)
 
         surface = pg.Surface(rect.size)
         surface.set_colorkey(c.BLACK)
@@ -335,7 +348,6 @@ class SelectionBox(pg.sprite.Sprite):
             surface.blit(choice_image, choice_rect)
 
         return surface, rect
-
 
     def draw(self, surface):
         """Draw to surface"""
@@ -351,12 +363,11 @@ class MenuGui(object):
         self.inventory = inventory
         self.stats = stats
         self.info_box = InfoBox(inventory, stats)
-        self.gold_box = GoldBox(inventory)
+        self.gold_box = GoldBox(self.game_data)
         self.selection_box = SelectionBox()
         self.arrow = SmallArrow(self.info_box)
         self.arrow_index = 0
         self.allow_input = False
-        self.state = 'stats'
 
 
     def check_for_input(self, keys):
@@ -386,18 +397,9 @@ class MenuGui(object):
             elif keys[pg.K_SPACE]:
                 if self.arrow.state == 'selectmenu':
                     if self.arrow_index == 0:
-                        self.info_box.state = 'stats'
-
-                    elif self.arrow_index == 1:
                         self.info_box.state = 'items'
-
-                    elif self.arrow_index == 2:
+                    elif self.arrow_index == 1:
                         self.info_box.state = 'magic'
-
-                    elif self.arrow_index == 3:
-                        self.level.state = 'normal'
-                        self.arrow_index = 0
-                        self.info_box.state = 'stats'
                 elif self.arrow.state == 'itemsubmenu':
                     self.select_item()
                 elif self.arrow.state == 'magicsubmenu':
@@ -406,7 +408,7 @@ class MenuGui(object):
                 self.allow_input = False
             elif keys[pg.K_RETURN]:
                 self.level.state = 'normal'
-                self.info_box.state = 'stats'
+                self.info_box.state = 'items'
                 self.allow_input = False
                 self.arrow_index = 0
                 self.arrow.state = 'selectmenu'
@@ -432,7 +434,7 @@ class MenuGui(object):
                 self.drink_potion(potion, health, value)
             elif self.info_box.slots[(posx, posy)][:5] == 'Ether':
                 potion = 'Ether Potion'
-                stat = self.game_data['player stats']['magic points']
+                stat = self.game_data['player stats']['magic']
                 value = 30
                 self.drink_potion(potion, stat, value)
             elif self.info_box.slots[(posx, posy)][:10] == 'Long Sword':
@@ -455,7 +457,7 @@ class MenuGui(object):
         Select spell from magic menu.
         """
         health = self.game_data['player stats']['health']
-        magic = self.game_data['player stats']['magic points']
+        magic = self.game_data['player stats']['magic']
         posx = self.arrow.rect.x - 190
         posy = self.arrow.rect.y - 39
 
@@ -468,10 +470,10 @@ class MenuGui(object):
         Use cure spell to heal player.
         """
         health = self.game_data['player stats']['health']
-        magic = self.game_data['player stats']['magic points']
+        magic = self.game_data['player stats']['magic']
         inventory = self.game_data['player inventory']
 
-        if magic['current'] > inventory['Cure']['magic points']:
+        if magic['current'] >= inventory['Cure']['magic points']:
             magic['current'] -= inventory['Cure']['magic points']
             health['current'] += inventory['Cure']['power']
             if health['current'] > health['maximum']:

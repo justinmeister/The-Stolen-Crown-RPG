@@ -194,7 +194,7 @@ def create_game_data_dict():
     player_stats = {'health': player_health,
                     'Level': 2,
                     'experience to next level': 20,
-                    'magic points': player_magic,
+                    'magic': player_magic,
                     'attack points': 10,
                     'Defense Points': 10}
 
