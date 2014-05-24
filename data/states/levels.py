@@ -247,7 +247,7 @@ class LevelState(tools._State):
                                         'Go forth and be recognized.',
                                         'You are the greatest warrior this world has ever known.']
             thank_you_dialogue = ['Thank you for retrieving my crown.',
-                                  'My kingdom is forever in you debt.']
+                                  'My kingdom is forever in your debt.']
 
             if self.game_data['crown quest'] and not self.game_data['delivered crown']:
                 sprite.dialogue = retrieved_crown_dialogue

@@ -65,6 +65,7 @@ FLEE = 'flee'
 FADE_DEATH = 'fade death'
 SHOW_EXPERIENCE = 'show experience'
 LEVEL_UP = 'level up'
+TWO_ACTIONS = 'two actions'
 
 #EVENTS
 

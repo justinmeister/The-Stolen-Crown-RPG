@@ -39,7 +39,7 @@ class InfoBox(object):
                         c.SELECT_ITEM: 'Select an item.',
                         c.SELECT_ENEMY: 'Select an enemy.',
                         c.ENEMY_ATTACK: 'Enemy attacks player!',
-                        c.PLAYER_ATTACK: 'Player attacks enemy.',
+                        c.PLAYER_ATTACK: 'Player attacks enemy! ',
                         c.RUN_AWAY: 'RUN AWAY!!!',
                         c.ENEMY_DAMAGED: self.enemy_damaged(),
                         c.ENEMY_DEAD: 'Enemy killed.',
@@ -49,7 +49,8 @@ class InfoBox(object):
                         c.FIRE_SPELL: 'FIRE BLAST!',
                         c.BATTLE_WON: 'Battle won!',
                         c.SHOW_EXPERIENCE: self.show_experience(),
-                        c.LEVEL_UP: self.level_up()}
+                        c.LEVEL_UP: self.level_up(),
+                        c.TWO_ACTIONS: 'Two actions per turn mode is now available.'}
 
         return state_dict
 

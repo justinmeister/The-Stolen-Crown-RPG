@@ -24,7 +24,8 @@ class SmallArrow(pg.sprite.Sprite):
     def make_state_dict(self):
         """Make state dictionary"""
         state_dict = {'selectmenu': self.navigate_select_menu,
-                      'itemsubmenu': self.navigate_item_submenu}
+                      'itemsubmenu': self.navigate_item_submenu,
+                      'magicsubmenu': self.navigate_magic_submenu}
 
         return state_dict
 
@@ -40,6 +41,19 @@ class SmallArrow(pg.sprite.Sprite):
         self.pos_list = self.make_item_menu_pos_list()
         self.rect.topleft = self.pos_list[pos_index]
 
+    def navigate_magic_submenu(self, pos_index):
+        """Nav the magic submenu"""
+        self.pos_list = self.make_magic_menu_pos_list()
+        self.rect.topleft = self.pos_list[pos_index]
+
+    def make_magic_menu_pos_list(self):
+        """
+        Make the list of possible arrow positions for magic submenu.
+        """
+        pos_list = [(310, 119),
+                    (310, 169)]
+
+        return pos_list
 
     def make_select_menu_pos_list(self):
         """Make the list of possible arrow positions"""
@@ -50,7 +64,6 @@ class SmallArrow(pg.sprite.Sprite):
             pos_list.append(pos)
 
         return pos_list
-
 
     def make_item_menu_pos_list(self):
         """Make the list of arrow positions in the item submenu"""
@@ -228,6 +241,14 @@ class InfoBox(pg.sprite.Sprite):
                 posy = starty + (i * 50)
                 self.slots[(posx, posy)] = item
 
+    def assign_magic_slots(self, magic_list, starty):
+        """
+        Assign each magic spell to a slot in the menu.
+        """
+        for i, spell in enumerate(magic_list):
+            posx = 120
+            posy = starty + (i * 50)
+            self.slots[(posx, posy)] = spell
 
     def blit_item_lists(self, surface):
         """Blit item list to info box surface"""
@@ -243,8 +264,6 @@ class InfoBox(pg.sprite.Sprite):
             text_rect = text_image.get_rect(topleft=coord)
             surface.blit(text_image, text_rect)
 
-
-
     def show_magic(self):
         """Show list of magic spells the player knows"""
         title = 'MAGIC'
@@ -254,11 +273,14 @@ class InfoBox(pg.sprite.Sprite):
                 item_list.append(item)
                 item_list = sorted(item_list)
 
+        self.slots = {}
+        self.assign_magic_slots(item_list, 80)
+
         surface, rect = self.make_blank_info_box(title)
 
         for i, item in enumerate(item_list):
             text_image = self.font.render(item, True, c.NEAR_BLACK)
-            text_rect = text_image.get_rect(x=50, y=80+(i*50))
+            text_rect = text_image.get_rect(x=100, y=80+(i*50))
             surface.blit(text_image, text_rect)
 
         self.image = surface
@@ -353,6 +375,10 @@ class MenuGui(object):
                     if not self.arrow.state == 'itemsubmenu':
                         self.arrow_index = 0
                     self.arrow.state = 'itemsubmenu'
+                elif self.info_box.state == 'magic':
+                    if not self.arrow.state == 'magicsubmenu':
+                        self.arrow_index = 0
+                    self.arrow.state = 'magicsubmenu'
 
             elif keys[pg.K_LEFT]:
                 self.arrow.state = 'selectmenu'
@@ -374,6 +400,8 @@ class MenuGui(object):
                         self.info_box.state = 'stats'
                 elif self.arrow.state == 'itemsubmenu':
                     self.select_item()
+                elif self.arrow.state == 'magicsubmenu':
+                    self.select_magic()
 
                 self.allow_input = False
             elif keys[pg.K_RETURN]:
@@ -400,9 +428,8 @@ class MenuGui(object):
         if (posx, posy) in self.info_box.slots:
             if self.info_box.slots[(posx, posy)][:7] == 'Healing':
                 potion = 'Healing Potion'
-                stat = self.game_data['player stats']['health']
                 value = 30
-                self.drink_potion(potion, stat, value)
+                self.drink_potion(potion, health, value)
             elif self.info_box.slots[(posx, posy)][:5] == 'Ether':
                 potion = 'Ether Potion'
                 stat = self.game_data['player stats']['magic points']
@@ -422,6 +449,33 @@ class MenuGui(object):
                     self.inventory['equipped armor'].remove('Chain Mail')
                 else:
                     self.inventory['equipped armor'].append('Chain Mail')
+
+    def select_magic(self):
+        """
+        Select spell from magic menu.
+        """
+        health = self.game_data['player stats']['health']
+        magic = self.game_data['player stats']['magic points']
+        posx = self.arrow.rect.x - 190
+        posy = self.arrow.rect.y - 39
+
+        if (posx, posy) in self.info_box.slots:
+            if self.info_box.slots[(posx, posy)][:4] == 'Cure':
+               self.use_cure_spell()
+
+    def use_cure_spell(self):
+        """
+        Use cure spell to heal player.
+        """
+        health = self.game_data['player stats']['health']
+        magic = self.game_data['player stats']['magic points']
+        inventory = self.game_data['player inventory']
+
+        if magic['current'] > inventory['Cure']['magic points']:
+            magic['current'] -= inventory['Cure']['magic points']
+            health['current'] += inventory['Cure']['power']
+            if health['current'] > health['maximum']:
+                health['current'] = health['maximum']
 
     def drink_potion(self, potion, stat, value):
         """

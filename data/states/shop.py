@@ -277,11 +277,13 @@ class PotionShop(Shop):
         item = {'type': 'Healing Potion',
                 'price': 15,
                 'quantity': 1,
+                'power': None,
                 'dialogue': healing_dialogue}
 
         item2 = {'type': 'Ether Potion',
                  'price': 15,
                  'quantity': 1,
+                 'power': None,
                  'dialogue': ether_dialogue}
 
         return [item, item2]

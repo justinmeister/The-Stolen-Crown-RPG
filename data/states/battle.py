@@ -45,6 +45,7 @@ class Battle(tools._State):
         self.player_level = self.game_data['player stats']['Level']
         self.enemies_to_attack = []
         self.action_selected = False
+        self.just_leveled_up = False
 
     def make_player_action_dict(self):
         """
@@ -263,6 +264,13 @@ class Battle(tools._State):
 
         elif self.state == c.LEVEL_UP:
             if (self.current_time - self.timer) > 2200:
+                if self.game_data['player stats']['Level'] == 3:
+                    self.enter_two_actions_per_turn_state()
+                else:
+                    self.end_battle()
+
+        elif self.state == c.TWO_ACTIONS:
+            if (self.current_time - self.timer) > 3000:
                 self.end_battle()
 
         elif self.state == c.SHOW_EXPERIENCE:
@@ -276,6 +284,7 @@ class Battle(tools._State):
                     new_experience = int((player_stats['Level'] * 100) * .75)
                     player_stats['experience to next level'] = new_experience
                     self.enter_level_up_state()
+                    self.just_leveled_up = True
                 else:
                     self.end_battle()
 
@@ -500,7 +509,7 @@ class Battle(tools._State):
         """
         Transition battle into the Player attack state.
         """
-        self.state = c.PLAYER_ATTACK
+        self.state = self.info_box.state = c.PLAYER_ATTACK
         enemy_to_attack = self.enemies_to_attack.pop(0)
         if enemy_to_attack in self.enemy_list:
             self.player.enter_attack_state(enemy_to_attack)
@@ -640,6 +649,10 @@ class Battle(tools._State):
         """
         self.state = self.info_box.state = c.LEVEL_UP
         self.info_box.reset_level_up_message()
+        self.set_timer_to_current_time()
+
+    def enter_two_actions_per_turn_state(self):
+        self.state = self.info_box.state = c.TWO_ACTIONS
         self.set_timer_to_current_time()
 
     def execute_player_actions(self):
