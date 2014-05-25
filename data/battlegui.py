@@ -15,7 +15,7 @@ class InfoBox(object):
     Info box that describes attack damage and other battle
     related information.
     """
-    def __init__(self, game_data, experience):
+    def __init__(self, game_data, experience, gold):
         self.game_data = game_data
         self.enemy_damage = 0
         self.player_damage = 0
@@ -24,6 +24,7 @@ class InfoBox(object):
         self.title_font.set_underline(True)
         self.font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 18)
         self.experience_points = experience
+        self.gold_earned = gold
         self.state_dict = self.make_state_dict()
         self.image = self.make_image()
         self.rect = self.image.get_rect(bottom=608)
@@ -50,7 +51,8 @@ class InfoBox(object):
                         c.BATTLE_WON: 'Battle won!',
                         c.SHOW_EXPERIENCE: self.show_experience(),
                         c.LEVEL_UP: self.level_up(),
-                        c.TWO_ACTIONS: 'Two actions per turn mode is now available.'}
+                        c.TWO_ACTIONS: 'Two actions per turn mode is now available.',
+                        c.SHOW_GOLD: self.show_gold()}
 
         return state_dict
 
@@ -169,6 +171,12 @@ class InfoBox(object):
         Show how much experience the player earned.
         """
         return "You earned {} experience points this battle!".format(self.experience_points)
+
+    def show_gold(self):
+        """
+        Show how much gold the player earned.
+        """
+        return "You found {} gold.".format(self.gold_earned)
 
     def level_up(self):
         """

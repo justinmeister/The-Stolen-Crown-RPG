@@ -28,8 +28,11 @@ class Battle(tools._State):
         self.sword = attackitems.Sword(self.player)
         self.enemy_group, self.enemy_pos_list, self.enemy_list = self.make_enemies()
         self.experience_points = self.get_experience_points()
+        self.new_gold = self.get_new_gold()
         self.background = self.make_background()
-        self.info_box = battlegui.InfoBox(game_data, self.experience_points)
+        self.info_box = battlegui.InfoBox(game_data, 
+                                          self.experience_points, 
+                                          self.new_gold)
         self.arrow = battlegui.SelectArrow(self.enemy_pos_list,
                                            self.info_box)
         self.select_box = battlegui.SelectBox()
@@ -86,6 +89,18 @@ class Battle(tools._State):
             experience_total += (random.randint(5,10)*enemy.level)
 
         return experience_total
+
+    def get_new_gold(self):
+        """
+        Calculate the gold collected at the end of the battle.
+        """
+        gold = 0
+
+        for enemy in self.enemy_list:
+            max_gold = enemy.level * 10
+            gold += (random.randint(1, max_gold))
+
+        return gold
 
     def make_background(self):
         """Make the blue/black background"""
@@ -261,6 +276,10 @@ class Battle(tools._State):
                 self.end_battle()
 
         elif self.state == c.BATTLE_WON:
+            if (self.current_time - self.timer) > 1800:
+                self.enter_show_gold_state()
+
+        elif self.state == c.SHOW_GOLD:
             if (self.current_time - self.timer) > 1800:
                 self.enter_show_experience_state()
 
@@ -636,6 +655,14 @@ class Battle(tools._State):
         """
         self.state = self.info_box.state = c.BATTLE_WON
         self.player.state = c.VICTORY_DANCE
+        self.set_timer_to_current_time()
+
+    def enter_show_gold_state(self):
+        """
+        Transition battle into the show gold state.
+        """
+        self.inventory['GOLD']['quantity'] += self.new_gold
+        self.state = self.info_box.state = c.SHOW_GOLD
         self.set_timer_to_current_time()
 
     def enter_show_experience_state(self):
