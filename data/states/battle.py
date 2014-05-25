@@ -194,11 +194,13 @@ class Battle(tools._State):
                     if self.arrow.index == (len(self.arrow.pos_list) - 1):
                         self.enter_select_action_state()
                     elif self.info_box.magic_text_list[self.arrow.index] == 'Cure':
-                        if self.game_data['player stats']['magic']['current'] >= 25:
+                        magic_points = self.game_data['player inventory']['Cure']['magic points']
+                        if self.game_data['player stats']['magic']['current'] >= magic_points:
                             self.player_actions.append(c.CURE_SPELL)
                             self.action_selected = True
                     elif self.info_box.magic_text_list[self.arrow.index] == 'Fire Blast':
-                        if self.game_data['player stats']['magic']['current'] >= 25:
+                        magic_points = self.game_data['player inventory']['Fire Blast']['magic points']
+                        if self.game_data['player stats']['magic']['current'] >= magic_points:
                             self.player_actions.append(c.FIRE_SPELL)
                             self.action_selected = True
 
@@ -398,7 +400,7 @@ class Battle(tools._State):
         """
         self.state = self.info_box.state = c.FIRE_SPELL
         POWER = self.inventory['Fire Blast']['power']
-        MAGIC_POINTS = self.inventory['Fire Blast']['magic']
+        MAGIC_POINTS = self.inventory['Fire Blast']['magic points']
         self.game_data['player stats']['magic']['current'] -= MAGIC_POINTS
         for enemy in self.enemy_list:
             DAMAGE = random.randint(POWER//2, POWER)

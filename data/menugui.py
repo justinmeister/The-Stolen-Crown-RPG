@@ -56,8 +56,8 @@ class SmallArrow(pg.sprite.Sprite):
         """Make the list of possible arrow positions"""
         pos_list = []
 
-        for i in range(4):
-            pos = (35, 452 + (i * 50))
+        for i in range(3):
+            pos = (35, 443 + (i * 45))
             pos_list.append(pos)
 
         return pos_list
@@ -85,7 +85,7 @@ class SmallArrow(pg.sprite.Sprite):
         surface.blit(self.image, self.rect)
 
 
-class GoldBox(pg.sprite.Sprite):
+class QuickStats(pg.sprite.Sprite):
     def __init__(self, game_data):
         self.inventory = game_data['player inventory']
         self.game_data = game_data
@@ -116,10 +116,10 @@ class GoldBox(pg.sprite.Sprite):
                 max = self.stats[stat]['maximum']
                 text = "{}{}: {}/{}".format(first_letter, rest_of_letters, current, max)
             elif stat == 'GOLD':
-                text = "{}: {}".format(stat, self.inventory[stat]['quantity'])
+                text = "Gold: {}".format(self.inventory[stat]['quantity'])
             render = self.small_font.render(text, True, c.NEAR_BLACK)
-            x = 16
-            y = 25 + (i*30)
+            x = 26
+            y = 45 + (i*30)
             text_rect = render.get_rect(x=x,
                                         centery=y)
             surface.blit(render, text_rect)
@@ -144,6 +144,8 @@ class InfoBox(pg.sprite.Sprite):
         super(InfoBox, self).__init__()
         self.inventory = inventory
         self.player_stats = player_stats
+        self.attack_power = self.get_attack_power()
+        self.defense_power = self.get_defense_power()
         self.font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
         self.big_font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 24)
         self.title_font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 28)
@@ -158,10 +160,27 @@ class InfoBox(pg.sprite.Sprite):
         self.possible_magic = ['Fire Blast', 'Cure']
         self.quantity_items = ['Healing Potion', 'ELIXIR', 'Ether Potion']
         self.slots = {}
-        self.state = 'items'
+        self.state = 'stats'
         self.state_dict = self.make_state_dict()
         self.print_slots = True
 
+    def get_attack_power(self):
+        """
+        Calculate the current attack power based on equipped weapons.
+        """
+        weapon = self.inventory['equipped weapon']
+        weapon_power = self.inventory[weapon]['power']
+        return weapon_power + (self.player_stats['Level'] * 5)        
+
+    def get_defense_power(self):
+        """
+        Calculate the current defense power based on equipped weapons.
+        """
+        defense_power = 0
+        for armor in self.inventory['equipped armor']:
+            defense_power += self.inventory[armor]['power']
+
+        return defense_power
 
     def make_state_dict(self):
         """Make the dictionary of state methods"""
@@ -175,8 +194,10 @@ class InfoBox(pg.sprite.Sprite):
     def show_player_stats(self):
         """Show the player's main stats"""
         title = 'STATS'
-        stat_list = ['Level', 'health',
-                     'magic', 'experience to next level']
+        stat_list = ['Level', 'experience to next level',
+                     'health', 'magic', 'Attack Power', 
+                     'Defense Power', 'gold']
+        attack_power = 5
         surface, rect = self.make_blank_info_box(title)
 
         for i, stat in enumerate(stat_list):
@@ -189,6 +210,12 @@ class InfoBox(pg.sprite.Sprite):
                 text = "{}{}: {}".format(stat[0].upper(),
                                          stat[1:],
                                          self.player_stats[stat])
+            elif stat == 'Attack Power':
+				text = "{}: {}".format(stat, self.get_attack_power()) 
+            elif stat == 'Defense Power':
+                text = "{}: {}".format(stat, self.get_defense_power())
+            elif stat == 'gold':
+                text = "Gold: {}".format(self.inventory['GOLD']['quantity'])
             else:
                 text = "{}: {}".format(stat, str(self.player_stats[stat]))
             text_image = self.font.render(text, True, c.NEAR_BLACK)
@@ -332,9 +359,8 @@ class SelectionBox(pg.sprite.Sprite):
         self.font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
         self.image, self.rect = self.make_image()
 
-
     def make_image(self):
-        choices = ['Items', 'Magic']
+        choices = ['Stats', 'Items', 'Magic']
         image = setup.GFX['goldbox']
         rect = image.get_rect(left=10, top=425)
 
@@ -344,7 +370,7 @@ class SelectionBox(pg.sprite.Sprite):
 
         for i, choice in enumerate(choices):
             choice_image = self.font.render(choice, True, c.NEAR_BLACK)
-            choice_rect = choice_image.get_rect(x=100, y=(25 + (i * 50)))
+            choice_rect = choice_image.get_rect(x=100, y=(15 + (i * 45)))
             surface.blit(choice_image, choice_rect)
 
         return surface, rect
@@ -354,8 +380,6 @@ class SelectionBox(pg.sprite.Sprite):
         surface.blit(self.image, self.rect)
 
 
-
-
 class MenuGui(object):
     def __init__(self, level, inventory, stats):
         self.level = level
@@ -363,7 +387,7 @@ class MenuGui(object):
         self.inventory = inventory
         self.stats = stats
         self.info_box = InfoBox(inventory, stats)
-        self.gold_box = GoldBox(self.game_data)
+        self.gold_box = QuickStats(self.game_data)
         self.selection_box = SelectionBox()
         self.arrow = SmallArrow(self.info_box)
         self.arrow_index = 0
@@ -397,8 +421,10 @@ class MenuGui(object):
             elif keys[pg.K_SPACE]:
                 if self.arrow.state == 'selectmenu':
                     if self.arrow_index == 0:
-                        self.info_box.state = 'items'
+                        self.info_box.state = 'stats'
                     elif self.arrow_index == 1:
+                        self.info_box.state = 'items'
+                    elif self.arrow_index == 2:
                         self.info_box.state = 'magic'
                 elif self.arrow.state == 'itemsubmenu':
                     self.select_item()
@@ -408,7 +434,7 @@ class MenuGui(object):
                 self.allow_input = False
             elif keys[pg.K_RETURN]:
                 self.level.state = 'normal'
-                self.info_box.state = 'items'
+                self.info_box.state = 'stats'
                 self.allow_input = False
                 self.arrow_index = 0
                 self.arrow.state = 'selectmenu'
