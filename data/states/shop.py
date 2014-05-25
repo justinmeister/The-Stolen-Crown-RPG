@@ -18,6 +18,7 @@ class Shop(tools._State):
         super(Shop, self).__init__()
         self.key = None
         self.sell_items = None
+        self.music = setup.MUSIC['shop_theme']
 
     def startup(self, current_time, game_data):
         """Startup state"""

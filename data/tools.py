@@ -41,6 +41,11 @@ class Control(object):
         persist = self.state.cleanup()
         self.state = self.state_dict[self.state_name]
         self.state.previous = previous
+        if self.state.music:
+            pg.mixer.music.load(self.state.music)
+            pg.mixer.music.play()
+        else:
+            pg.mixer.music.stop()
         self.state.startup(self.current_time, persist)
 
     def event_loop(self):
@@ -88,6 +93,7 @@ class _State(object):
         self.next = None
         self.previous = None
         self.game_data = {}
+        self.music = None
 
     def get_event(self, event):
         pass

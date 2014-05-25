@@ -9,6 +9,7 @@ found in the tools.py module.
 import copy
 import pygame as pg
 from .. import tools, collision
+from .. import constants as c
 from .. components import person, textbox, portal
 from . import player_menu
 from .. import tilerender
@@ -22,6 +23,26 @@ class LevelState(tools._State):
         self.name = name
         self.tmx_map = setup.TMX[name]
         self.allow_battles = battles
+        self.music = self.set_music()
+
+    def set_music(self):
+        """
+        Set music based on name.
+        """
+        music_dict = {c.TOWN: 'town_theme',
+                      c.OVERWORLD: 'overworld',
+                      c.CASTLE: 'kings_theme',
+                      c.DUNGEON:'dungeon_theme',
+                      c.DUNGEON2: 'dungeon_theme',
+                      c.DUNGEON3: 'dungeon_theme',
+                      c.DUNGEON4: 'dungeon_theme',
+                      c.DUNGEON5: 'dungeon_theme'}
+
+        if self.name in music_dict:
+            music = music_dict[self.name]
+            return setup.MUSIC[music]
+        else:
+            return None
 
     def startup(self, current_time, game_data):
         """
