@@ -43,6 +43,8 @@ class Battle(tools._State):
         self.select_action_state_dict = self.make_selection_state_dict()
         self.observers = [observer.Battle(self)]
         self.player.observers.extend(self.observers)
+        self.observers.append(observer.SoundEffects())
+        print self.player.observers
         self.damage_points = pg.sprite.Group()
         self.player_actions = []
         self.player_action_dict = self.make_player_action_dict()
@@ -418,6 +420,7 @@ class Battle(tools._State):
         """
         Cast fire blast on all enemies.
         """
+        self.notify(c.FIRE)
         self.state = self.info_box.state = c.FIRE_SPELL
         POWER = self.inventory['Fire Blast']['power']
         MAGIC_POINTS = self.inventory['Fire Blast']['magic points']

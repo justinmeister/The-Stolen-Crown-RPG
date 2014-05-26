@@ -2,6 +2,7 @@
 Module for all game observers.
 """
 from . import constants as c
+from . import setup
 from .components import attackitems
 from . import setup
 
@@ -51,6 +52,26 @@ class Battle(object):
         Eliminate all traces of enemy.
         """
         self.level.player.attacked_enemy = None
+
+
+class SoundEffects(object):
+    """
+    Observer for sound effects.
+    """
+    def on_notify(self, event):
+        """
+        Observer is notified of SFX event.
+        """
+        if event in setup.SFX:
+            setup.SFX[event].play()
+
+
+
+
+
+
+
+
 
 
 

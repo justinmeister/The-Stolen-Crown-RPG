@@ -1,7 +1,7 @@
 from __future__ import division
 import math, random, copy
 import pygame as pg
-from .. import setup
+from .. import setup, observer
 from .. import constants as c
 
 
@@ -36,7 +36,7 @@ class Person(pg.sprite.Sprite):
         self.default_direction = direction
         self.item = None
         self.wander_box = self.make_wander_box()
-        self.observers = []
+        self.observers = [observer.SoundEffects()]
         self.health = 0
         self.death_image = pg.transform.scale2x(self.image)
         self.battle = None
@@ -299,6 +299,7 @@ class Person(pg.sprite.Sprite):
         """
         Set values for attack state.
         """
+        self.notify(c.SWORD)
         self.attacked_enemy = enemy
         self.x_vel = -5
         self.state = 'attack'
@@ -552,8 +553,6 @@ class Player(Person):
                     self.fade_in = True
                     self.image = self.spritesheet_dict['facing left 2']
                     self.image = pg.transform.scale2x(self.image)
-
-
 
     def check_for_input(self):
         """Checks for player input"""

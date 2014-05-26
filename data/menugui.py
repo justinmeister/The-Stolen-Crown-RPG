@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
+
 """
 This class controls all the GUI for the player
 menu screen.
 """
 import pygame as pg
-from . import setup
+from . import setup, observer
 from . import constants as c
 from . import tools
 
@@ -384,6 +385,8 @@ class MenuGui(object):
     def __init__(self, level, inventory, stats):
         self.level = level
         self.game_data = self.level.game_data
+        self.sfx_observer = observer.SoundEffects()
+        self.observers = [self.sfx_observer]
         self.inventory = inventory
         self.stats = stats
         self.info_box = InfoBox(inventory, stats)
@@ -394,31 +397,40 @@ class MenuGui(object):
         self.allow_input = False
 
 
+
     def check_for_input(self, keys):
         """Check for input"""
         if self.allow_input:
             if keys[pg.K_DOWN]:
                 if self.arrow_index < len(self.arrow.pos_list) - 1:
+                    self.notify(c.CLICK)
                     self.arrow_index += 1
                     self.allow_input = False
             elif keys[pg.K_UP]:
                 if self.arrow_index > 0:
+                    self.notify(c.CLICK)
                     self.arrow_index -= 1
                     self.allow_input = False
             elif keys[pg.K_RIGHT]:
                 if self.info_box.state == 'items':
                     if not self.arrow.state == 'itemsubmenu':
+                        self.notify(c.CLICK)
                         self.arrow_index = 0
                     self.arrow.state = 'itemsubmenu'
                 elif self.info_box.state == 'magic':
                     if not self.arrow.state == 'magicsubmenu':
+                        self.notify(c.CLICK)
                         self.arrow_index = 0
                     self.arrow.state = 'magicsubmenu'
+                self.allow_input = False
 
             elif keys[pg.K_LEFT]:
+                self.notify(c.CLICK)
                 self.arrow.state = 'selectmenu'
                 self.arrow_index = 0
+                self.allow_input = False
             elif keys[pg.K_SPACE]:
+                self.notify(c.CLICK2)
                 if self.arrow.state == 'selectmenu':
                     if self.arrow_index == 0:
                         self.info_box.state = 'stats'
@@ -442,8 +454,17 @@ class MenuGui(object):
         if (not keys[pg.K_DOWN]
                 and not keys[pg.K_UP]
                 and not keys[pg.K_RETURN]
-                and not keys[pg.K_SPACE]):
+                and not keys[pg.K_SPACE]
+                and not keys[pg.K_RIGHT]
+                and not keys[pg.K_LEFT]):
             self.allow_input = True
+
+    def notify(self, event):
+        """
+        Notify all observers of event.
+        """
+        for observer in self.observers:
+            observer.on_notify(event)
 
     def select_item(self):
         """

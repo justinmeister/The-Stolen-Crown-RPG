@@ -41,12 +41,19 @@ class Control(object):
         persist = self.state.cleanup()
         self.state = self.state_dict[self.state_name]
         self.state.previous = previous
+        self.state.startup(self.current_time, persist)
+        self.set_music()
+
+    def set_music(self):
+        """
+        Set music for the new state.
+        """
         if self.state.music:
             pg.mixer.music.load(self.state.music)
+            pg.mixer.music.set_volume(.4)
             pg.mixer.music.play()
         else:
             pg.mixer.music.stop()
-        self.state.startup(self.current_time, persist)
 
     def event_loop(self):
         self.events = pg.event.get()

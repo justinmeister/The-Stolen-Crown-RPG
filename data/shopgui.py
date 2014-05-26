@@ -4,7 +4,7 @@ A Gui object is created and updated by the shop state.
 """
 
 import pygame as pg
-from . import setup
+from . import setup, observer
 from . components import textbox
 from . import constants as c
 
@@ -15,6 +15,8 @@ class Gui(object):
         self.level = level
         self.game_data = self.level.game_data
         self.level.game_data['last direction'] = 'down'
+        self.SFX_observer = observer.SoundEffects()
+        self.observers = [self.SFX_observer]
         self.sellable_items = level.sell_items
         self.player_inventory = level.game_data['player inventory']
         self.name = level.name
@@ -52,10 +54,17 @@ class Gui(object):
         self.selection_box = self.make_selection_box(choices)
         self.state_dict = self.make_state_dict()
 
-
+    def notify(self, event):
+        """
+        Notify all observers of event.
+        """
+        for observer in self.observers:
+            observer.on_notify(event)
 
     def make_dialogue_box(self, dialogue_list, index):
-        """Make the sprite that controls the dialogue"""
+        """
+        Make the sprite that controls the dialogue.
+        """
         image = setup.GFX['dialoguebox']
         rect = image.get_rect()
         surface = pg.Surface(rect.size)
@@ -73,12 +82,12 @@ class Gui(object):
 
         return sprite
 
-
     def check_to_draw_arrow(self, sprite):
-        """Blink arrow if more text needs to be read"""
+        """
+        Blink arrow if more text needs to be read.
+        """
         if self.index < len(self.dialogue) - 1:
             sprite.image.blit(self.arrow.image, self.arrow.rect)
-
 
     def make_gold_box(self):
         """Make the box to display total gold"""
@@ -100,7 +109,6 @@ class Gui(object):
         sprite.rect = rect
 
         return sprite
-
 
     def make_selection_box(self, choices):
         """Make the box for the player to select options"""
@@ -157,7 +165,6 @@ class Gui(object):
 
         return state_dict
 
-
     def control_dialogue(self, keys, current_time):
         """Control the dialogue boxes"""
         self.dialogue_box = self.make_dialogue_box(self.dialogue, self.index)
@@ -172,7 +179,6 @@ class Gui(object):
 
         if not keys[pg.K_SPACE]:
             self.allow_input = True
-
 
     def begin_new_transaction(self):
         """Set state to buysell or select, depending if the shop
@@ -213,10 +219,12 @@ class Gui(object):
             if self.arrow_index < (len(choices) - 1):
                 self.arrow_index += 1
                 self.allow_input = False
+                self.notify(c.CLICK)
         elif keys[pg.K_UP] and self.allow_input:
             if self.arrow_index > 0:
                 self.arrow_index -= 1
                 self.allow_input = False
+                self.notify(c.CLICK)
         elif keys[pg.K_SPACE] and self.allow_input:
             if self.arrow_index == 0:
                 self.state = 'confirmpurchase'
@@ -233,6 +241,7 @@ class Gui(object):
                 else:
                     self.state = 'buysell'
 
+            self.notify(c.CLICK2)
             self.arrow_index = 0
             self.allow_input = False
 
@@ -254,15 +263,18 @@ class Gui(object):
             if self.arrow_index < (len(choices) - 1):
                 self.arrow_index += 1
                 self.allow_input = False
+                self.notify(c.CLICK)
         elif keys[pg.K_UP] and self.allow_input:
             if self.arrow_index > 0:
                 self.arrow_index -= 1
                 self.allow_input = False
+                self.notify(c.CLICK)
         elif keys[pg.K_SPACE] and self.allow_input:
             if self.arrow_index == 0:
                 self.buy_item()
             elif self.arrow_index == 1:
                 self.state = self.begin_new_transaction()
+            self.notify(c.CLICK2)
             self.arrow_index = 0
             self.allow_input = False
 
@@ -285,6 +297,7 @@ class Gui(object):
                 self.state = 'hasitem'
                 self.player_inventory['GOLD']['quantity'] += item['price']
             else:
+                self.notify(c.CLOTH_BELT)
                 self.state = 'accept'
                 self.add_player_item(item)
 
@@ -329,15 +342,18 @@ class Gui(object):
             if self.arrow_index < (len(choices) - 1):
                 self.arrow_index += 1
                 self.allow_input = False
+                self.notify(c.CLICK)
         elif keys[pg.K_UP] and self.allow_input:
             if self.arrow_index > 0:
                 self.arrow_index -= 1
                 self.allow_input = False
+                self.notify(c.CLICK)
         elif keys[pg.K_SPACE] and self.allow_input:
             if self.arrow_index == 0:
                 self.sell_item_from_inventory()
             elif self.arrow_index == 1:
                 self.state = self.begin_new_transaction()
+                self.notify(c.CLICK2)
             self.allow_input = False
             self.arrow_index = 0
 
@@ -356,12 +372,14 @@ class Gui(object):
             if item_name == self.game_data['player inventory']['equipped weapon']:
                 self.state = 'cantsellequippedweapon'
             else:
+                self.notify(c.CLOTH_BELT)
                 self.sell_inventory_data_adjust(item_price, item_name)
 
         elif item_name in self.armor_list:
             if item_name in self.game_data['player inventory']['equipped armor']:
                 self.state = 'cantsellequippedarmor'
             else:
+                self.notify(c.CLOTH_BELT)
                 self.sell_inventory_data_adjust(item_price, item_name)
 
     def sell_inventory_data_adjust(self, item_price, item_name):
@@ -384,6 +402,7 @@ class Gui(object):
         self.dialogue_box = self.make_dialogue_box(dialogue, 0)
 
         if keys[pg.K_SPACE] and self.allow_input:
+            self.notify(c.CLICK2)
             self.state = self.begin_new_transaction()
             self.selection_arrow.rect.topleft = self.arrow_pos1
             self.allow_input = False
@@ -398,6 +417,7 @@ class Gui(object):
         self.gold_box = self.make_gold_box()
 
         if keys[pg.K_SPACE] and self.allow_input:
+            self.notify(c.CLICK2)
             self.state = self.begin_new_transaction()
             self.selection_arrow.rect.topleft = self.arrow_pos1
             self.allow_input = False
@@ -412,6 +432,7 @@ class Gui(object):
         self.gold_box = self.make_gold_box()
 
         if keys[pg.K_SPACE] and self.allow_input:
+            self.notify(c.CLICK2)
             self.state = self.begin_new_transaction()
             self.selection_arrow.rect.topleft = self.arrow_pos1
             self.allow_input = False
@@ -429,6 +450,7 @@ class Gui(object):
             self.state = self.begin_new_transaction()
             self.selection_arrow.rect.topleft = self.arrow_pos1
             self.allow_input = False
+            self.notify(c.CLICK2)
 
         if not keys[pg.K_SPACE]:
             self.allow_input = True
@@ -446,11 +468,13 @@ class Gui(object):
             if self.arrow_index < (len(self.arrow_pos_list) - 1):
                 self.arrow_index += 1
                 self.allow_input = False
+                self.notify(c.CLICK)
 
         elif keys[pg.K_UP] and self.allow_input:
             if self.arrow_index > 0:
                 self.arrow_index -= 1
                 self.allow_input = False
+                self.notify(c.CLICK)
         elif keys[pg.K_SPACE] and self.allow_input:
             if self.arrow_index == 0:
                 self.state = 'select'
@@ -472,6 +496,7 @@ class Gui(object):
                 self.game_data['last state'] = self.level.name
 
             self.arrow_index = 0
+            self.notify(c.CLICK2)
 
         if not keys[pg.K_SPACE] and not keys[pg.K_DOWN] and not keys[pg.K_UP]:
             self.allow_input = True
@@ -510,10 +535,12 @@ class Gui(object):
             if self.arrow_index < (len(self.arrow_pos_list) - 1):
                 self.arrow_index += 1
                 self.allow_input = False
+                self.notify(c.CLICK)
         elif keys[pg.K_UP] and self.allow_input:
             if self.arrow_index > 0:
                 self.arrow_index -= 1
                 self.allow_input = False
+                self.notify(c.CLICK)
         elif keys[pg.K_SPACE] and self.allow_input:
             if self.arrow_index == 0:
                 self.state = 'confirmsell'
@@ -532,6 +559,7 @@ class Gui(object):
                 self.state = 'buysell'
                 self.allow_input = False
             self.arrow_index = 0
+            self.notify(c.CLICK2)
 
         if not keys[pg.K_SPACE] and not keys[pg.K_DOWN] and not keys[pg.K_UP]:
             self.allow_input = True
@@ -545,6 +573,7 @@ class Gui(object):
         if keys[pg.K_SPACE] and self.allow_input:
             self.state = 'buysell'
             self.allow_input = False
+            self.notify(c.CLICK2)
 
 
         if not keys[pg.K_SPACE]:
@@ -560,6 +589,7 @@ class Gui(object):
         if keys[pg.K_SPACE] and self.allow_input:
             self.state = 'buysell'
             self.allow_input = False
+            self.notify(c.CLICK2)
 
         if not keys[pg.K_SPACE]:
             self.allow_input = True

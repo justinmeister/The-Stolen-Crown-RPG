@@ -70,6 +70,11 @@ SHOW_GOLD = 'show gold'
 
 END_BATTLE = 'end battle'
 
+#SOUND EFFECTS
 
-
+CLICK = 'click'
+CLICK2 = 'click2'
+CLOTH_BELT = 'cloth_belt'
+SWORD = 'sword'
+FIRE = 'fire'
 

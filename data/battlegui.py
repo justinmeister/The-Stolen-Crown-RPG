@@ -3,7 +3,7 @@ GUI components for battle states.
 """
 import sys
 import pygame as pg
-from . import setup
+from . import setup, observer
 from . import constants as c
 
 #Python 2/3 compatibility.
@@ -245,6 +245,15 @@ class SelectArrow(object):
         self.rect.topleft = self.pos_list[self.index]
         self.allow_input = False
         self.enemy_pos_list = enemy_pos_list
+        self.sound_effect_observer = observer.SoundEffects()
+        self.observers = [self.sound_effect_observer]
+
+    def notify(self, event):
+        """
+        Notify all observers of events.
+        """
+        for observer in self.observers:
+            observer.on_notify(event)
 
     def make_state_dict(self):
         """Make state dictionary"""
@@ -296,9 +305,11 @@ class SelectArrow(object):
     def check_input(self, keys):
         if self.allow_input:
             if keys[pg.K_DOWN] and self.index < (len(self.pos_list) - 1):
+                self.notify(c.CLICK)
                 self.index += 1
                 self.allow_input = False
             elif keys[pg.K_UP] and self.index > 0:
+                self.notify(c.CLICK)
                 self.index -= 1
                 self.allow_input = False
 
