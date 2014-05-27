@@ -184,11 +184,11 @@ def create_game_data_dict():
     """Create a dictionary of persistant values the player
     carries between states"""
 
-    player_items = {'GOLD': dict([('quantity',600),
+    player_items = {'GOLD': dict([('quantity',100),
                                   ('value',0)]),
-                    'Healing Potion': dict([('quantity',5),
+                    'Healing Potion': dict([('quantity',2),
                                             ('value',15)]),
-                    'Ether Potion': dict([('quantity',5),
+                    'Ether Potion': dict([('quantity',1),
                                           ('value', 15)]),
                     'Cure': dict([('magic points', 25),
                                   ('power', 50)]),
@@ -198,15 +198,15 @@ def create_game_data_dict():
                     'equipped weapon': 'Rapier',
                     'equipped armor': []}
 
-    player_health = {'current': 100,
-                     'maximum': 100}
+    player_health = {'current': 70,
+                     'maximum': 70}
 
-    player_magic = {'current': 100,
-                    'maximum': 100}
+    player_magic = {'current': 70,
+                    'maximum': 70}
 
     player_stats = {'health': player_health,
-                    'Level': 2,
-                    'experience to next level': 20,
+                    'Level': 1,
+                    'experience to next level': 30,
                     'magic': player_magic,
                     'attack points': 10,
                     'Defense Points': 10}
@@ -215,7 +215,7 @@ def create_game_data_dict():
     data_dict = {'last location': None,
                  'last state': None,
                  'last direction': 'down',
-                 'king item': {'GOLD': dict([('quantity', 500),
+                 'king item': {'GOLD': dict([('quantity', 100),
                                              ('value',0)])},
                  'old man item': {'ELIXIR': dict([('value',1000),
                                                   ('quantity',1)])},

@@ -576,7 +576,7 @@ class Player(Person):
         else:
             weapon_power = self.game_data['player inventory'][weapon]['power']
         max_strength = weapon_power + (self.level * 5)
-        min_strength = max_strength // 2
+        min_strength = max_strength // 4
         return random.randint(min_strength, max_strength)
 
 

@@ -44,7 +44,6 @@ class Battle(tools._State):
         self.observers = [observer.Battle(self)]
         self.player.observers.extend(self.observers)
         self.observers.append(observer.SoundEffects())
-        print self.player.observers
         self.damage_points = pg.sprite.Group()
         self.player_actions = []
         self.player_action_dict = self.make_player_action_dict()
@@ -100,7 +99,7 @@ class Battle(tools._State):
         gold = 0
 
         for enemy in self.enemy_list:
-            max_gold = enemy.level * 10
+            max_gold = enemy.level * 20
             gold += (random.randint(1, max_gold))
 
         return gold
@@ -305,7 +304,7 @@ class Battle(tools._State):
                     player_stats['Level'] += 1
                     player_stats['health']['maximum'] += int(player_stats['health']['maximum']*.25)
                     player_stats['magic']['maximum'] += int(player_stats['magic']['maximum']*.20)
-                    new_experience = int((player_stats['Level'] * 100) * .75)
+                    new_experience = int((player_stats['Level'] * 50) * .75)
                     player_stats['experience to next level'] = new_experience
                     self.enter_level_up_state()
                     self.just_leveled_up = True
