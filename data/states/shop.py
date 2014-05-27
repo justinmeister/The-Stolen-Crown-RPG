@@ -24,7 +24,8 @@ class Shop(tools._State):
         """Startup state"""
         self.game_data = game_data
         self.current_time = current_time
-        self.state = 'normal'
+        self.state_dict = self.make_state_dict()
+        self.state = 'transition in'
         self.next = c.TOWN
         self.get_image = tools.get_image
         self.dialogue = self.make_dialogue()
@@ -33,7 +34,18 @@ class Shop(tools._State):
         self.items = self.make_purchasable_items()
         self.background = self.make_background()
         self.gui = shopgui.Gui(self)
+        self.transition_rect = setup.SCREEN.get_rect()
+        self.transition_alpha = 255
 
+    def make_state_dict(self):
+        """
+        Make a dictionary for all state methods.
+        """
+        state_dict = {'normal': self.normal_update,
+                      'transition in': self.transition_in,
+                      'transition out': self.transition_out}
+
+        return state_dict
 
     def make_dialogue(self):
         """Make the list of dialogue phrases"""
@@ -102,12 +114,44 @@ class Shop(tools._State):
 
         return sprite
 
-
     def update(self, surface, keys, current_time):
-        """Update level state"""
+        """
+        Update scene.
+        """
+        state_function = self.state_dict[self.state]
+        state_function(surface, keys, current_time)
+
+    def normal_update(self, surface, keys, current_time):
+        """Update level normally"""
         self.gui.update(keys, current_time)
         self.draw_level(surface)
 
+    def transition_in(self, surface, *args):
+        """
+        Transition into level.
+        """
+        transition_image = pg.Surface(self.transition_rect.size)
+        transition_image.fill(c.TRANSITION_COLOR)
+        transition_image.set_alpha(self.transition_alpha)
+        self.draw_level(surface)
+        surface.blit(transition_image, self.transition_rect)
+        self.transition_alpha -= c.TRANSITION_SPEED 
+        if self.transition_alpha <= 0:
+            self.state = 'normal'
+            self.transition_alpha = 0
+
+    def transition_out(self, surface, *args):
+        """
+        Transition level to new scene.
+        """
+        transition_image = pg.Surface(self.transition_rect.size)
+        transition_image.fill(c.TRANSITION_COLOR)
+        transition_image.set_alpha(self.transition_alpha)
+        self.draw_level(surface)
+        surface.blit(transition_image, self.transition_rect)
+        self.transition_alpha += c.TRANSITION_SPEED 
+        if self.transition_alpha >= 255:
+            self.done = True
 
     def draw_level(self, surface):
         """Blit graphics to game surface"""
@@ -169,7 +213,7 @@ class WeaponShop(Shop):
         rapier_dialogue = 'Rapier (50 gold)'
 
         item2 = {'type': 'Long Sword',
-                'price': 100,
+                'price': 150,
                 'quantity': 1,
                 'power': 10,
                 'dialogue': longsword_dialogue}

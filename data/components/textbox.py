@@ -145,29 +145,38 @@ class TextHandler(object):
                 elif self.talking_sprite.battle:
                     self.game_data['battle type'] = self.talking_sprite.battle
                     self.dialogue_reset()
-                    self.talking_sprite = None
-                    self.level.state = 'normal'
-                    self.level.switch_to_battle = True
-                    self.textbox = None
-                    self.last_textbox_timer = current_time
-                    self.reset_sprite_direction()
+                    self.end_dialogue(current_time)
                 elif self.talking_sprite.name == 'oldmanbrother' and \
                         self.game_data['talked to sick brother'] and \
                         not self.game_data['has brother elixir']:
                     self.talking_sprite.item = 'ELIXIR'
                     self.game_data['has brother elixir'] = True
                     self.check_for_item()
+                elif self.talking_sprite.name == 'oldman':
+                    if self.game_data['has brother elixir'] and \
+                            not self.game_data['elixir received']:
+                        del self.game_data['player inventory']['ELIXIR']
+                        self.game_data['elixir received'] = True
+                        self.dialogue_reset()
+                    else:
+                        self.end_dialogue(current_time)
                 else:
                     self.dialogue_reset()
-                    self.talking_sprite = None
-                    self.level.state = 'normal'
-                    self.textbox = None
-                    self.last_textbox_timer = current_time
-                    self.reset_sprite_direction()
+                    self.end_dialogue(current_time)
+
 
         if not keys[pg.K_SPACE]:
             self.allow_input = True
 
+    def end_dialogue(self, current_time):
+        """
+        End dialogue state for level.
+        """
+        self.talking_sprite = None
+        self.level.state = 'normal'
+        self.textbox = None
+        self.last_textbox_timer = current_time
+        self.reset_sprite_direction()
 
     def check_for_dialogue(self, sprite):
         """Checks if a sprite is in the correct location to give dialogue"""
@@ -194,6 +203,8 @@ class TextHandler(object):
                 self.textbox = DialogueBox(sprite.dialogue)
                 sprite.direction = 'left'
                 self.talking_sprite = sprite
+
+        
 
 
     def check_for_item(self):

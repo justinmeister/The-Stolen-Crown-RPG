@@ -158,7 +158,7 @@
     <property name="state" value="town"/>
    </properties>
   </object>
-  <object name="start point" gid="123" x="256" y="496">
+  <object name="start point" gid="123" x="256" y="368">
    <properties>
     <property name="direction" value="down"/>
     <property name="state" value="main menu"/>

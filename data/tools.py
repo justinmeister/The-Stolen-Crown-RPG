@@ -190,8 +190,6 @@ def create_game_data_dict():
                                             ('value',15)]),
                     'Ether Potion': dict([('quantity',1),
                                           ('value', 15)]),
-                    'Cure': dict([('magic points', 25),
-                                  ('power', 50)]),
                     'Rapier': dict([('quantity', 1),
                                     ('value', 50),
                                     ('power', 5)]),

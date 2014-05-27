@@ -236,7 +236,7 @@ class Gui(object):
 
             else:
                 if self.level.name in self.no_selling:
-                    self.level.done = True
+                    self.level.state = 'transition out'
                     self.game_data['last state'] = self.level.name
                 else:
                     self.state = 'buysell'
@@ -492,7 +492,7 @@ class Gui(object):
 
             else:
 
-                self.level.done = True
+                self.level.state = 'transition out'
                 self.game_data['last state'] = self.level.name
 
             self.arrow_index = 0

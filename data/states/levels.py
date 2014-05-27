@@ -50,7 +50,7 @@ class LevelState(tools._State):
         """
         self.game_data = game_data
         self.current_time = current_time
-        self.state = 'normal'
+        self.state = 'transition_in'
         self.reset_dialogue = ()
         self.switch_to_battle = False
         self.allow_input = False
@@ -74,6 +74,8 @@ class LevelState(tools._State):
         self.state_dict = self.make_state_dict()
         self.portals = self.make_level_portals()
         self.menu_screen = player_menu.Player_Menu(game_data, self)
+        self.transition_rect = setup.SCREEN.get_rect()
+        self.transition_alpha = 255
 
     def make_viewport(self, map_image):
         """
@@ -197,9 +199,8 @@ class LevelState(tools._State):
 
                 sprite = sprite_dict[properties['type']]
                 if sprite.name == 'oldman':
-                    if self.game_data['old man gift']:
+                    if self.game_data['old man gift'] and not self.game_data['elixir received']:
                         sprite.item = self.game_data['old man gift']
-                        self.game_data['old man gift'] = {}
                     else:
                         sprite.item = item
                 else:
@@ -237,8 +238,6 @@ class LevelState(tools._State):
                                        'As a reward, I will teach you a magic spell.',
                                        'Use it wisely.',
                                        'You learned FIRE BLAST.']
-                    del self.game_data['player inventory']['ELIXIR']
-                    self.game_data['elixir received'] = True
                     dialogue = ['My good health is thanks to you.',
                                 'I will be forever in your debt.']
                     self.reset_dialogue = sprite, dialogue
@@ -291,7 +290,9 @@ class LevelState(tools._State):
         """
         state_dict = {'normal': self.running_normally,
                       'dialogue': self.handling_dialogue,
-                      'menu': self.goto_menu}
+                      'menu': self.goto_menu,
+                      'transition_in': self.transition_in,
+                      'transition_out': self.transition_out}
 
         return state_dict
 
@@ -337,7 +338,7 @@ class LevelState(tools._State):
             self.player.location = self.player.get_tile_location()
             self.next = portal.name
             self.update_game_data()
-            self.done = True
+            self.state = 'transition_out'
 
     def check_for_battle(self):
         """
@@ -348,7 +349,7 @@ class LevelState(tools._State):
             self.player.location = self.player.get_tile_location()
             self.update_game_data()
             self.next = 'battle'
-            self.done = True
+            self.state = 'transition_out'
 
     def check_for_menu(self, keys):
         """
@@ -391,15 +392,12 @@ class LevelState(tools._State):
         elif direction == 'right':
             location[0] -= 1
 
-
-
     def handling_dialogue(self, surface, keys, current_time):
         """
         Update only dialogue boxes.
         """
         self.dialogue_handler.update(keys, current_time)
         self.draw_level(surface)
-
 
     def goto_menu(self, surface, keys, *args):
         """
@@ -408,13 +406,41 @@ class LevelState(tools._State):
         self.menu_screen.update(surface, keys)
         self.menu_screen.draw(surface)
 
-
     def check_for_dialogue(self):
         """
         Check if the level needs to freeze.
         """
         if self.dialogue_handler.textbox:
             self.state = 'dialogue'
+
+    def transition_out(self, surface, *args):
+        """
+        Transition level to new scene.
+        """
+        transition_image = pg.Surface(self.transition_rect.size)
+        transition_image.fill(c.TRANSITION_COLOR)
+        transition_image.set_alpha(self.transition_alpha)
+        self.draw_level(surface)
+        surface.blit(transition_image, self.transition_rect)
+        self.transition_alpha += c.TRANSITION_SPEED
+        if self.transition_alpha >= 255:
+            self.transition_alpha = 255
+            self.done = True
+
+    def transition_in(self, surface, *args):
+        """
+        Transition into level.
+        """
+        self.viewport_update()
+        transition_image = pg.Surface(self.transition_rect.size)
+        transition_image.fill(c.TRANSITION_COLOR)
+        transition_image.set_alpha(self.transition_alpha)
+        self.draw_level(surface)
+        surface.blit(transition_image, self.transition_rect)
+        self.transition_alpha -= c.TRANSITION_SPEED 
+        if self.transition_alpha <= 0:
+            self.state = 'normal'
+            self.transition_alpha = 0
 
     def update(self, surface, keys, current_time):
         """

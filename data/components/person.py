@@ -277,10 +277,10 @@ class Person(pg.sprite.Sprite):
         self.image_list = self.animation_dict[self.direction]
         self.image = self.image_list[self.index]
 
-        assert(self.rect.y % 32 == 0), ('Player not centered on tile: '
-                                        + str(self.rect.y))
-        assert(self.rect.x % 32 == 0), ('Player not centered on tile'
-                                        + str(self.rect.x))
+        if self.rect.y % 32 != 0:
+            self.correct_position(self.rect.y)
+        if self.rect.x % 32 != 0:
+            self.correct_position(self.rect.x)
 
         if (self.current_time - self.move_timer) > 2000:
             direction_list = ['up', 'down', 'left', 'right']
@@ -288,6 +288,17 @@ class Person(pg.sprite.Sprite):
             direction = direction_list[0]
             self.begin_auto_moving(direction)
             self.move_timer = self.current_time
+
+    def correct_position(self, rect_pos):
+        """
+        Adjust sprite position to be centered on tile.
+        """
+        diff = rect_pos % 32
+        if diff <= 16:
+            rect_pos - diff
+        else:
+            rect_pos + diff
+ 
 
     def battle_resting(self):
         """
@@ -475,6 +486,8 @@ class Player(Person):
         self.healing_alpha = 0
         self.fade_in = True
         self.game_data = game_data
+        self.index = 1
+        self.image = self.image_list[self.index]
 
     @property
     def level(self):

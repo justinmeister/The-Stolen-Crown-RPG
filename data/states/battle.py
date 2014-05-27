@@ -20,7 +20,7 @@ class Battle(tools._State):
         self.allow_input = False
         self.game_data = game_data
         self.inventory = game_data['player inventory']
-        self.state = c.SELECT_ACTION
+        self.state = 'transition in'
         self.next = game_data['last state']
         self.run_away = False
 
@@ -51,6 +51,8 @@ class Battle(tools._State):
         self.enemies_to_attack = []
         self.action_selected = False
         self.just_leveled_up = False
+        self.transition_rect = setup.SCREEN.get_rect()
+        self.transition_alpha = 255
 
     def make_player_action_dict(self):
         """
@@ -346,7 +348,7 @@ class Battle(tools._State):
         self.game_data['last state'] = self.name
         self.game_data['battle counter'] = random.randint(50, 255)
         self.game_data['battle type'] = None
-        self.done = True
+        self.state = 'transition out'
 
     def attack_enemy(self, enemy_damage):
         enemy = self.player.attacked_enemy
@@ -377,6 +379,31 @@ class Battle(tools._State):
         surface.blit(self.arrow.image, self.arrow.rect)
         self.player_health_box.draw(surface)
         self.damage_points.draw(surface)
+        self.draw_transition(surface)
+
+    def draw_transition(self, surface):
+        """
+        Fade in and out of state.
+        """
+        if self.state == 'transition in':
+
+            transition_image = pg.Surface(self.transition_rect.size)
+            transition_image.fill(c.TRANSITION_COLOR)
+            transition_image.set_alpha(self.transition_alpha)
+            surface.blit(transition_image, self.transition_rect)
+            self.transition_alpha -= c.TRANSITION_SPEED 
+            if self.transition_alpha <= 0:
+                self.state = c.SELECT_ACTION
+                self.transition_alpha = 0
+
+        elif self.state == 'transition out':
+            transition_image = pg.Surface(self.transition_rect.size)
+            transition_image.fill(c.TRANSITION_COLOR)
+            transition_image.set_alpha(self.transition_alpha)
+            surface.blit(transition_image, self.transition_rect)
+            self.transition_alpha += c.TRANSITION_SPEED 
+            if self.transition_alpha >= 255:
+                self.done = True
 
     def player_damaged(self, damage):
         self.game_data['player stats']['health']['current'] -= damage
@@ -422,6 +449,7 @@ class Battle(tools._State):
         self.notify(c.FIRE)
         self.state = self.info_box.state = c.FIRE_SPELL
         POWER = self.inventory['Fire Blast']['power']
+        POWER += self.game_data['player stats']['Level'] * 5
         MAGIC_POINTS = self.inventory['Fire Blast']['magic points']
         self.game_data['player stats']['magic']['current'] -= MAGIC_POINTS
         for enemy in self.enemy_list:
