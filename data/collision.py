@@ -12,7 +12,6 @@ class CollisionHandler(object):
         self.sprites = sprites
         self.level = level
 
-
     def make_blocker_list(self, blockers, sprites):
         """
         Return a combined list of sprite blockers and object blockers.
@@ -26,7 +25,6 @@ class CollisionHandler(object):
             blocker_list.extend(sprite.blockers)
 
         return blocker_list
-
 
     def update(self, keys, current_time):
         """
@@ -50,7 +48,6 @@ class CollisionHandler(object):
             if sprite.state == 'automoving':
                 if sprite.rect.x % 32 == 0 and sprite.rect.y % 32 == 0:
                     sprite.begin_auto_resting()
-
 
     def check_for_blockers(self):
         """Checks for collisions with blocker rects"""

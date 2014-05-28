@@ -101,7 +101,6 @@ class ItemBox(DialogueBox):
         return image
 
 
-
 class TextHandler(object):
     """Handles interaction between sprites to create dialogue boxes"""
 
@@ -114,7 +113,6 @@ class TextHandler(object):
         self.level = level
         self.last_textbox_timer = 0.0
         self.game_data = level.game_data
-
 
     def update(self, keys, current_time):
         """Checks for the creation of Dialogue boxes"""
@@ -144,24 +142,51 @@ class TextHandler(object):
                     self.check_for_item()
                 elif self.talking_sprite.battle:
                     self.game_data['battle type'] = self.talking_sprite.battle
-                    self.dialogue_reset()
                     self.end_dialogue(current_time)
+                    self.level.switch_to_battle = True
                 elif self.talking_sprite.name == 'oldmanbrother' and \
                         self.game_data['talked to sick brother'] and \
                         not self.game_data['has brother elixir']:
                     self.talking_sprite.item = 'ELIXIR'
                     self.game_data['has brother elixir'] = True
                     self.check_for_item()
+                    dialogue = ['Hurry! There is precious little time.']
+                    self.talking_sprite.dialogue = dialogue
                 elif self.talking_sprite.name == 'oldman':
                     if self.game_data['has brother elixir'] and \
                             not self.game_data['elixir received']:
                         del self.game_data['player inventory']['ELIXIR']
                         self.game_data['elixir received'] = True
-                        self.dialogue_reset()
+                        dialogue = ['My good health is thanks to you.',
+                                    'I will be forever in your debt.']
+                        self.talking_sprite.dialogue = dialogue
+                    elif not self.game_data['talked to sick brother']:
+                        self.game_data['talked to sick brother'] = True
+                         
+                        dialogue = ['Hurry to the NorthEast Shores!',
+                                    'I do not have much time left.']
+                        self.talking_sprite.dialogue = dialogue
                     else:
                         self.end_dialogue(current_time)
+                elif self.talking_sprite.name == 'king':
+                     
+                    if (self.game_data['crown quest'] 
+                            and not self.game_data['delivered crown']):
+                        retrieved_crown_dialogue = ['My crown! You recovered my stolen crown!!!',
+                                                   'I can not believe what I see before my eyes.',
+                                                   'You are truly a brave and noble warrior.',
+                                                   'Henceforth, I name thee Grand Protector of this Town!',
+                                                   'Go forth and be recognized.',
+                                                   'You are the greatest warrior this world has ever known.']
+                        self.talking_sprite.dialogue = retrieved_crown_dialogue
+                        self.game_data['delivered crown'] = True
+                        self.end_dialogue(current_time)
+                    elif self.game_data['delivered crown']:
+                        thank_you_dialogue = ['Thank you for retrieving my crown.',
+                                              'My kingdom is forever in your debt.']
+                        self.talking_sprite.dialogue = thank_you_dialogue
+                        self.end_dialogue(current_time)
                 else:
-                    self.dialogue_reset()
                     self.end_dialogue(current_time)
 
 
@@ -203,9 +228,6 @@ class TextHandler(object):
                 self.textbox = DialogueBox(sprite.dialogue)
                 sprite.direction = 'left'
                 self.talking_sprite = sprite
-
-        
-
 
     def check_for_item(self):
         """Checks if sprite has an item to give to the player"""
@@ -277,14 +299,4 @@ class TextHandler(object):
     def open_chest(self, sprite):
         if sprite.name == 'treasurechest':
             sprite.index = 1
-
-    def dialogue_reset(self):
-        """
-        Reset dialogue if necessary.
-        """
-        if self.level.reset_dialogue:
-            sprite = self.level.reset_dialogue[0]
-            dialogue = self.level.reset_dialogue[1]
-            sprite.dialogue = dialogue
-            self.level.reset_dialogue = ()
 

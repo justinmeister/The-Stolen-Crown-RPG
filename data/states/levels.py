@@ -238,15 +238,11 @@ class LevelState(tools._State):
                                        'As a reward, I will teach you a magic spell.',
                                        'Use it wisely.',
                                        'You learned FIRE BLAST.']
-                    dialogue = ['My good health is thanks to you.',
-                                'I will be forever in your debt.']
-                    self.reset_dialogue = sprite, dialogue
 
             elif self.game_data['talked to sick brother']:
                 sprite.dialogue = quest_in_process_dialogue
 
             elif not self.game_data['talked to sick brother']:
-                self.game_data['talked to sick brother'] = True
                 self.reset_dialogue = (sprite, quest_in_process_dialogue)
         elif sprite.name == 'oldmanbrother':
             if self.game_data['has brother elixir']:
