@@ -186,6 +186,8 @@ class TextHandler(object):
                                               'My kingdom is forever in your debt.']
                         self.talking_sprite.dialogue = thank_you_dialogue
                         self.end_dialogue(current_time)
+                    else:
+                        self.end_dialogue(current_time)
                 else:
                     self.end_dialogue(current_time)
 

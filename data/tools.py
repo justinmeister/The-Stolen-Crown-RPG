@@ -51,7 +51,7 @@ class Control(object):
         if self.state.music:
             pg.mixer.music.load(self.state.music)
             pg.mixer.music.set_volume(.4)
-            pg.mixer.music.play()
+            pg.mixer.music.play(-1)
         else:
             pg.mixer.music.stop()
 

@@ -84,11 +84,12 @@ class MusicChange(object):
         """
         Observer is notified of change in music.
         """
+        print event
         if event in self.event_dict:
             new_music = self.event_dict[event]
             if new_music in setup.MUSIC:
                 music_file = setup.MUSIC[new_music]
-                pg.mixer.music.load(music_file)
+                pg.mixer.music.load(new_music)
                 pg.mixer.music.play(-1)
 
 

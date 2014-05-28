@@ -209,7 +209,7 @@ class WeaponShop(Shop):
 
     def make_purchasable_items(self):
         """Make list of items to be chosen"""
-        longsword_dialogue = 'Long Sword (100 gold)'
+        longsword_dialogue = 'Long Sword (150 gold)'
         rapier_dialogue = 'Rapier (50 gold)'
 
         item2 = {'type': 'Long Sword',

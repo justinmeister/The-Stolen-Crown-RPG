@@ -393,9 +393,6 @@ class Gui(object):
         else:
             del self.player_inventory[self.item_to_be_sold['type']]
 
-
-
-
     def reject_insufficient_gold(self, keys, current_time):
         """Reject player selection if they do not have enough gold"""
         dialogue = ["You don't have enough gold!"]
@@ -410,7 +407,6 @@ class Gui(object):
         if not keys[pg.K_SPACE]:
             self.allow_input = True
 
-
     def accept_purchase(self, keys, current_time):
         """Accept purchase and confirm with message"""
         self.dialogue_box = self.make_dialogue_box(self.accept_dialogue, 0)
@@ -424,7 +420,6 @@ class Gui(object):
 
         if not keys[pg.K_SPACE]:
             self.allow_input = True
-
 
     def accept_sale(self, keys, current_time):
         """Confirm to player that item was sold"""
@@ -489,9 +484,7 @@ class Gui(object):
                     self.state = 'cantsell'
                     self.allow_input = False
                     self.arrow_index = 0
-
             else:
-
                 self.level.state = 'transition out'
                 self.game_data['last state'] = self.level.name
 
@@ -501,7 +494,6 @@ class Gui(object):
         if not keys[pg.K_SPACE] and not keys[pg.K_DOWN] and not keys[pg.K_UP]:
             self.allow_input = True
 
-
     def check_for_sellable_items(self):
         """Check for sellable items"""
         for item in self.player_inventory:
@@ -509,7 +501,6 @@ class Gui(object):
                 return True
         else:
             return False
-
 
     def sell_items(self, keys, current_time):
         """Have player select items to sell"""

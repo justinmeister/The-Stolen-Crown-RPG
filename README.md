@@ -14,3 +14,5 @@ Town Theme by Mekathratos: opengameart.org/content/danza-del-bosque
 Overworld Theme by bart: opengameart.org/content/adventure-begins
 
 Shop Theme by Aaron Krogh: https://soundcloud.com/aaron-anderson-11/a-4-coastal-town
+
+Victory Theme by matthew.pablo http://opengameart.org/content/enchanted-festival

@@ -79,5 +79,7 @@ CLICK2 = 'click2'
 CLOTH_BELT = 'cloth_belt'
 SWORD = 'sword'
 FIRE = 'fire'
+PUNCH = 'punch'
+POWERUP = 'powerup'
 
 TRANSITION_SPEED = 25 

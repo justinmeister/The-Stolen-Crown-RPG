@@ -41,7 +41,8 @@ class Battle(tools._State):
                                                         self.game_data)
 
         self.select_action_state_dict = self.make_selection_state_dict()
-        self.observers = [observer.Battle(self)]
+        self.observers = [observer.Battle(self),
+                          observer.MusicChange()]
         self.player.observers.extend(self.observers)
         self.observers.append(observer.SoundEffects())
         self.damage_points = pg.sprite.Group()
@@ -487,37 +488,7 @@ class Battle(tools._State):
             attackitems.HealthPoints(HEAL_AMOUNT, self.player.rect.topright, False))
         self.player_healed(HEAL_AMOUNT, MAGIC_POINTS)
         self.info_box.state = c.DRINK_HEALING_POTION
-
-    def drink_ether(self):
-        """
-        Drink ether potion.
-        """
-        self.state = self.info_box.state = c.DRINK_ETHER_POTION
-        self.player.healing = True
-        self.set_timer_to_current_time()
-        self.arrow.state = 'invisible'
-        self.enemy_index = 0
-        self.damage_points.add(
-            attackitems.HealthPoints(30,
-                                     self.player.rect.topright,
-                                     False,
-                                     True))
-        self.magic_boost(30)
-
-    def drink_healing_potion(self):
-        """
-        Drink Healing Potion.
-        """
-        self.state = self.info_box.state = c.DRINK_HEALING_POTION
-        self.player.healing = True
-        self.arrow.state = 'invisible'
-        self.enemy_index = 0
-        self.damage_points.add(
-            attackitems.HealthPoints(30,
-                                     self.player.rect.topright,
-                                     False))
-        self.player_healed(30)
-        self.set_timer_to_current_time()
+        self.notify(c.POWERUP)
 
     def enter_select_enemy_state(self):
         """
@@ -602,6 +573,7 @@ class Battle(tools._State):
                                      self.player.rect.topright,
                                      False))
         self.player_healed(30)
+        self.notify(c.POWERUP)
 
     def enter_drink_ether_potion_state(self):
         """
@@ -618,6 +590,7 @@ class Battle(tools._State):
                                      True))
         self.magic_boost(30)
         self.set_timer_to_current_time()
+        self.notify(c.POWERUP)
 
     def enter_select_action_state(self):
         """
@@ -644,6 +617,8 @@ class Battle(tools._State):
         self.set_timer_to_current_time()
         self.player_damaged(player_damage)
         if player_damage:
+            sfx_num = random.randint(1,3)
+            self.notify('punch{}'.format(sfx_num))
             self.player.damaged = True
             self.player.enter_knock_back_state()
 
@@ -684,6 +659,7 @@ class Battle(tools._State):
         """
         Transition battle into the battle won state.
         """
+        self.notify(c.BATTLE_WON)
         self.state = self.info_box.state = c.BATTLE_WON
         self.player.state = c.VICTORY_DANCE
         self.set_timer_to_current_time()
