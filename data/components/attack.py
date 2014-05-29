@@ -1,9 +1,13 @@
 """
 Sprites for attacks.
 """
-
+import sys
 import pygame as pg
 from .. import setup, tools
+
+#Python 2/3 compatibility.
+if sys.version_info[0] == 2:
+    range = xrange
 
 class Fire(pg.sprite.Sprite):
     """

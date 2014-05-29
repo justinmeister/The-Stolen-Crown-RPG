@@ -4,11 +4,15 @@
 This class controls all the GUI for the player
 menu screen.
 """
+import sys
 import pygame as pg
 from . import setup, observer
 from . import constants as c
 from . import tools
 
+#Python 2/3 compatibility.
+if sys.version_info[0] == 2:
+    range = xrange
 
 class SmallArrow(pg.sprite.Sprite):
     """Small arrow for menu"""

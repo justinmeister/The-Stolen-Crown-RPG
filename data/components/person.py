@@ -1,9 +1,14 @@
 from __future__ import division
-import math, random, copy
+from itertools import izip
+import math, random, copy, sys
 import pygame as pg
 from .. import setup, observer
 from .. import constants as c
 
+
+#Python 2/3 compatibility.
+if sys.version_info[0] == 2:
+    range = xrange
 
 class Person(pg.sprite.Sprite):
     """Base class for all world characters
@@ -57,7 +62,7 @@ class Person(pg.sprite.Sprite):
                 image_list.append(
                     self.get_image(column*32, row*32, 32, 32, sheet))
 
-        for key, image in zip(image_keys, image_list):
+        for key, image in izip(image_keys, image_list):
             image_dict[key] = image
 
         return image_dict

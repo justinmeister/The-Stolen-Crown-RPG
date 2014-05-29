@@ -5,8 +5,7 @@ differentiated by self.name and self.tmx_map.
 This class inherits from the generic state class
 found in the tools.py module.
 """
-
-import copy
+import copy, sys
 import pygame as pg
 from .. import tools, collision
 from .. import constants as c
@@ -15,6 +14,10 @@ from . import player_menu
 from .. import tilerender
 from .. import setup
 
+
+#Python 2/3 compatibility.
+if sys.version_info[0] == 2:
+    range = xrange
 
 
 class LevelState(tools._State):
@@ -36,7 +39,9 @@ class LevelState(tools._State):
                       c.DUNGEON2: 'dungeon_theme',
                       c.DUNGEON3: 'dungeon_theme',
                       c.DUNGEON4: 'dungeon_theme',
-                      c.DUNGEON5: 'dungeon_theme'}
+                      c.DUNGEON5: 'dungeon_theme',
+                      c.HOUSE: 'pleasant_creek',
+                      c.BROTHER_HOUSE: 'pleasant_creek'}
 
         if self.name in music_dict:
             music = music_dict[self.name]
