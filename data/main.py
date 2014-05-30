@@ -1,5 +1,4 @@
-from data.states.main_menu import main_menu
-from data.states import shop, levels, battle
+from data.states import shop, levels, battle, main_menu
 from . import setup, tools
 from . import constants as c
 

@@ -82,4 +82,10 @@ FIRE = 'fire'
 PUNCH = 'punch'
 POWERUP = 'powerup'
 
-TRANSITION_SPEED = 25 
+TRANSITION_SPEED = 35 
+
+#LEVEL STATES
+
+NORMAL = 'normal'
+TRANSITION_IN = 'transition in'
+TRANSITION_OUT = 'transition out'
