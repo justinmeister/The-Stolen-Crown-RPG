@@ -21,6 +21,7 @@ DUNGEON2 = 'dungeon2'
 DUNGEON3 = 'dungeon3'
 DUNGEON4 = 'dungeon4'
 DUNGEON5 = 'dungeon5'
+INSTRUCTIONS = 'instructions'
 
 ##Colors
 

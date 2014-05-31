@@ -26,28 +26,29 @@ class LevelState(tools._State):
         self.name = name
         self.tmx_map = setup.TMX[name]
         self.allow_battles = battles
-        self.music = self.set_music()
+        self.music, self.volume = self.set_music()
 
     def set_music(self):
         """
         Set music based on name.
         """
-        music_dict = {c.TOWN: 'town_theme',
-                      c.OVERWORLD: 'overworld',
-                      c.CASTLE: 'kings_theme',
-                      c.DUNGEON:'dungeon_theme',
-                      c.DUNGEON2: 'dungeon_theme',
-                      c.DUNGEON3: 'dungeon_theme',
-                      c.DUNGEON4: 'dungeon_theme',
-                      c.DUNGEON5: 'dungeon_theme',
-                      c.HOUSE: 'pleasant_creek',
-                      c.BROTHER_HOUSE: 'pleasant_creek'}
+        music_dict = {c.TOWN: ('town_theme', .4),
+                      c.OVERWORLD: ('overworld', .4),
+                      c.CASTLE: ('kings_theme', .4),
+                      c.DUNGEON: ('dungeon_theme', .4),
+                      c.DUNGEON2: ('dungeon_theme', .4),
+                      c.DUNGEON3: ('dungeon_theme', .4),
+                      c.DUNGEON4: ('dungeon_theme', .4),
+                      c.DUNGEON5: ('dungeon_theme', .4),
+                      c.HOUSE: ('pleasant_creek', .1),
+                      c.BROTHER_HOUSE: ('pleasant_creek', .1)}
 
         if self.name in music_dict:
-            music = music_dict[self.name]
-            return setup.MUSIC[music]
+            music = music_dict[self.name][0]
+            volume = music_dict[self.name][1]
+            return setup.MUSIC[music], volume
         else:
-            return None
+            return None, None
 
     def startup(self, current_time, game_data):
         """

@@ -50,10 +50,8 @@ class Control(object):
         """
         if self.state.music:
             pg.mixer.music.load(self.state.music)
-            pg.mixer.music.set_volume(.4)
+            pg.mixer.music.set_volume(self.state.volume)
             pg.mixer.music.play(-1)
-        else:
-            pg.mixer.music.stop()
 
     def event_loop(self):
         self.events = pg.event.get()

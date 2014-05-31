@@ -18,6 +18,7 @@ class Battle(tools._State):
         super(Battle, self).__init__()
         self.name = 'battle'
         self.music = setup.MUSIC['high_action']
+        self.volume = 0.4
 
     def startup(self, current_time, game_data):
         """Initialize state attributes"""
