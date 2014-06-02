@@ -1,9 +1,8 @@
 __author__ = 'justinarmstrong'
 import copy
 import pygame as pg
-from .. import setup
+from .. import setup, observer, tools
 from .. import constants as c
-
 
 
 class NextArrow(pg.sprite.Sprite):
@@ -31,10 +30,14 @@ class DialogueBox(object):
         self.done = False
         self.allow_input = False
         self.name = image_key
-
+        self.observers = [observer.SoundEffects()]
+        self.notify = tools.notify_observers
+        self.notify(self, c.CLICK)
 
     def make_dialogue_box_image(self):
-        """Make the image of the dialogue box"""
+        """
+        Make the image of the dialogue box.
+        """
         image = pg.Surface(self.rect.size)
         image.set_colorkey(c.BLACK)
         image.blit(self.bground, (0, 0))
@@ -67,38 +70,11 @@ class DialogueBox(object):
             self.allow_input = True
 
     def check_to_draw_arrow(self):
-        """Blink arrow if more text needs to be read"""
+        """
+        Blink arrow if more text needs to be read.
+        """
         if self.index < len(self.dialogue_list) - 1:
             self.image.blit(self.arrow.image, self.arrow.rect)
-        else:
-            pass
-
-
-class ItemBox(DialogueBox):
-    """Text box for information like obtaining new items"""
-    def __init__(self, dialogue, item=None):
-        super(ItemBox, self).__init__(None, 0, 'infobox', item)
-
-    def make_dialogue_box_image(self):
-        """Make the image of the dialogue box"""
-        image = pg.Surface(self.rect.size)
-        image.set_colorkey(c.BLACK)
-        image.blit(self.bground, (0, 0))
-
-        if self.item:
-            type = 'Healing Potion'
-            total = str(1)
-            dialogue = 'You received ' + total + ' ' + type + '.'
-            self.dialogue_list = [dialogue]
-            self.item = None
-
-        dialogue_image = self.font.render(self.dialogue_list[self.index],
-                                          False,
-                                          c.NEAR_BLACK)
-        dialogue_rect = dialogue_image.get_rect(left=50, top=50)
-        image.blit(dialogue_image, dialogue_rect)
-
-        return image
 
 
 class TextHandler(object):
@@ -113,6 +89,8 @@ class TextHandler(object):
         self.level = level
         self.last_textbox_timer = 0.0
         self.game_data = level.game_data
+        self.observers = [observer.SoundEffects()]
+        self.notify = tools.notify_observers
 
     def update(self, keys, current_time):
         """Checks for the creation of Dialogue boxes"""
@@ -204,6 +182,7 @@ class TextHandler(object):
         self.textbox = None
         self.last_textbox_timer = current_time
         self.reset_sprite_direction()
+        self.notify(self, c.CLICK)
 
     def check_for_dialogue(self, sprite):
         """Checks if a sprite is in the correct location to give dialogue"""

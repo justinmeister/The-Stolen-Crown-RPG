@@ -309,9 +309,11 @@ class Gui(object):
         value = item['price']
         power = item['power']
         magic_list = ['Cure', 'Fire Blast']
+        player_armor = ['Chain Mail', 'Wooden Shield']
         player_items = self.level.game_data['player inventory']
         player_health = self.level.game_data['player stats']['health']
         player_magic = self.level.game_data['player stats']['magic']
+        equipped_armor = self.level.game_data['player inventory']['equipped armor']
 
         item_to_add = {'quantity': quantity,
                        'value': value,
@@ -321,7 +323,9 @@ class Gui(object):
             item_to_add = {'magic points': item['magic points'],
                            'power': item['power']}
             player_items[item_type] = item_to_add
-        elif item_type in player_items:
+        if item_type in player_armor:
+            equipped_armor.append(item_type)
+        if item_type in player_items:
             player_items[item_type]['quantity'] += quantity
         elif quantity > 0:
             player_items[item_type] = item_to_add
@@ -381,6 +385,9 @@ class Gui(object):
             else:
                 self.notify(c.CLOTH_BELT)
                 self.sell_inventory_data_adjust(item_price, item_name)
+        else:
+            self.notify(c.CLOTH_BELT)
+            self.sell_inventory_data_adjust(item_price, item_name)
 
     def sell_inventory_data_adjust(self, item_price, item_name):
         """

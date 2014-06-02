@@ -416,5 +416,11 @@
   <object name="blocker" gid="120" x="128" y="784"/>
   <object name="blocker" gid="120" x="112" y="768"/>
   <object name="blocker" gid="120" x="112" y="752"/>
+  <object name="sprite" type="soldier" gid="124" x="112" y="576">
+   <properties>
+    <property name="dialogue length" value="1"/>
+    <property name="dialogue0" value="Hey, there."/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

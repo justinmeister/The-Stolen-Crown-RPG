@@ -245,8 +245,7 @@ class SelectArrow(object):
         self.rect.topleft = self.pos_list[self.index]
         self.allow_input = False
         self.enemy_pos_list = enemy_pos_list
-        self.sound_effect_observer = observer.SoundEffects()
-        self.observers = [self.sound_effect_observer]
+        self.observers = [observer.SoundEffects()]
 
     def notify(self, event):
         """

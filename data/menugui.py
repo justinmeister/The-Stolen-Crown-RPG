@@ -165,7 +165,7 @@ class InfoBox(pg.sprite.Sprite):
         self.possible_magic = ['Fire Blast', 'Cure']
         self.quantity_items = ['Healing Potion', 'ELIXIR', 'Ether Potion']
         self.slots = {}
-        self.state = 'stats'
+        self.state = 'invisible'
         self.state_dict = self.make_state_dict()
         self.print_slots = True
 
@@ -191,7 +191,8 @@ class InfoBox(pg.sprite.Sprite):
         """Make the dictionary of state methods"""
         state_dict = {'stats': self.show_player_stats,
                       'items': self.show_items,
-                      'magic': self.show_magic}
+                      'magic': self.show_magic,
+                      'invisible': self.show_nothing}
 
         return state_dict
 
@@ -331,6 +332,13 @@ class InfoBox(pg.sprite.Sprite):
         self.image = surface
         self.rect = rect
 
+    def show_nothing(self):
+        """
+        Show nothing when the menu is opened from a level.
+        """
+        self.image = pg.Surface((1, 1))
+        self.rect = self.image.get_rect()
+        self.image.fill(c.BLACK_BLUE)
 
     def make_blank_info_box(self, title):
         """Make an info box with title, otherwise blank"""
@@ -365,7 +373,7 @@ class SelectionBox(pg.sprite.Sprite):
         self.image, self.rect = self.make_image()
 
     def make_image(self):
-        choices = ['Stats', 'Items', 'Magic']
+        choices = ['Items', 'Magic', 'Stats']
         image = setup.GFX['goldbox']
         rect = image.get_rect(left=10, top=425)
 
@@ -399,8 +407,6 @@ class MenuGui(object):
         self.arrow = SmallArrow(self.info_box)
         self.arrow_index = 0
         self.allow_input = False
-
-
 
     def check_for_input(self, keys):
         """Check for input"""
@@ -437,11 +443,11 @@ class MenuGui(object):
                 self.notify(c.CLICK2)
                 if self.arrow.state == 'selectmenu':
                     if self.arrow_index == 0:
-                        self.info_box.state = 'stats'
-                    elif self.arrow_index == 1:
                         self.info_box.state = 'items'
-                    elif self.arrow_index == 2:
+                    elif self.arrow_index == 1:
                         self.info_box.state = 'magic'
+                    elif self.arrow_index == 2:
+                        self.info_box.state = 'stats'
                 elif self.arrow.state == 'itemsubmenu':
                     self.select_item()
                 elif self.arrow.state == 'magicsubmenu':
@@ -450,7 +456,7 @@ class MenuGui(object):
                 self.allow_input = False
             elif keys[pg.K_RETURN]:
                 self.level.state = 'normal'
-                self.info_box.state = 'stats'
+                self.info_box.state = 'invisible'
                 self.allow_input = False
                 self.arrow_index = 0
                 self.arrow.state = 'selectmenu'

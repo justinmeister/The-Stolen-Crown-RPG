@@ -1,6 +1,7 @@
 """
 This is the state where the player can look at
 his inventory, equip items and check stats.
+Most of the logic is in menugui.MenuGUI()
 """
 import pygame as pg
 from .. import tools, setup, menugui
@@ -17,7 +18,9 @@ class Player_Menu(object):
         self.gui = menugui.MenuGui(level, inventory, stats)
 
     def make_background(self):
-        """Makes the generic black/blue background"""
+        """
+        Makes the generic black/blue background.
+        """
         background = pg.sprite.Sprite()
         surface = pg.Surface(c.SCREEN_SIZE).convert()
         surface.fill(c.BLACK_BLUE)
@@ -31,7 +34,9 @@ class Player_Menu(object):
         return background
 
     def make_sprite(self, key, coordx, coordy, x=40, y=25):
-        """Get the image for the player"""
+        """
+        Get the image for the player.
+        """
         spritesheet = setup.GFX[key]
         surface = pg.Surface((32, 32))
         surface.set_colorkey(c.BLACK)

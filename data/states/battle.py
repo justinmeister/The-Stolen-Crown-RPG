@@ -21,7 +21,9 @@ class Battle(tools._State):
         self.volume = 0.4
 
     def startup(self, current_time, game_data):
-        """Initialize state attributes"""
+        """
+        Initialize state attributes.
+        """
         self.current_time = current_time
         self.timer = current_time
         self.allow_input = False
@@ -115,7 +117,9 @@ class Battle(tools._State):
         return gold
 
     def make_background(self):
-        """Make the blue/black background"""
+        """
+        Make the blue/black background.
+        """
         background = pg.sprite.Sprite()
         surface = pg.Surface(c.SCREEN_SIZE).convert()
         surface.fill(c.BLACK_BLUE)
@@ -126,7 +130,9 @@ class Battle(tools._State):
         return background_group
 
     def make_enemies(self):
-        """Make the enemies for the battle. Return sprite group"""
+        """
+        Make the enemies for the battle. Return sprite group.
+        """
         pos_list = []
 
         for column in range(3):
@@ -158,7 +164,9 @@ class Battle(tools._State):
         return enemy_group, pos_list[0:len(enemy_group)], enemy_list
 
     def make_player(self):
-        """Make the sprite for the player's character"""
+        """
+        Make the sprite for the player's character.
+        """
         player = person.Player('left', self.game_data, 630, 220, 'battle resting', 1)
         player.image = pg.transform.scale2x(player.image)
         return player
@@ -173,7 +181,9 @@ class Battle(tools._State):
         return dict(izip(pos_list, state_list))
 
     def update(self, surface, keys, current_time):
-        """Update the battle state"""
+        """
+        Update the battle state.
+        """
         self.current_time = current_time
         self.check_input(keys)
         self.check_timed_events()
@@ -198,17 +208,21 @@ class Battle(tools._State):
                 self.end_battle()
 
             elif keys[pg.K_SPACE]:
+
                 if self.state == c.SELECT_ACTION:
+                    self.notify(c.CLICK2)
                     enter_state_function = self.select_action_state_dict[
                         self.arrow.rect.topleft]
                     enter_state_function()
 
                 elif self.state == c.SELECT_ENEMY:
+                    self.notify(c.CLICK2)
                     self.player_actions.append(c.PLAYER_ATTACK)
                     self.enemies_to_attack.append(self.get_enemy_to_attack())
                     self.action_selected = True
 
                 elif self.state == c.SELECT_ITEM:
+                    self.notify(c.CLICK2)
                     if self.arrow.index == (len(self.arrow.pos_list) - 1):
                         self.enter_select_action_state()
                     elif self.info_box.item_text_list[self.arrow.index][:14] == 'Healing Potion':
@@ -218,6 +232,7 @@ class Battle(tools._State):
                         self.player_actions.append(c.DRINK_ETHER_POTION)
                         self.action_selected = True
                 elif self.state == c.SELECT_MAGIC:
+                    self.notify(c.CLICK2)
                     if self.arrow.index == (len(self.arrow.pos_list) - 1):
                         self.enter_select_action_state()
                     elif self.info_box.magic_text_list[self.arrow.index] == 'Cure':
@@ -661,6 +676,7 @@ class Battle(tools._State):
         self.arrow.state = 'invisible'
         self.player.state = c.RUN_AWAY
         self.set_timer_to_current_time()
+        self.notify(c.RUN_AWAY)
 
     def enter_battle_won_state(self):
         """

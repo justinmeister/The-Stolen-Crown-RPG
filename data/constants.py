@@ -49,7 +49,7 @@ SWITCH_ENEMY = 'switch enemy'
 PLAYER_ATTACK = 'player attack'
 SELECT_ITEM = 'select item'
 SELECT_MAGIC = 'select magic'
-RUN_AWAY = 'run away'
+RUN_AWAY = 'run_away'
 ATTACK_ANIMATION = 'attack animation'
 BATTLE_WON = 'battle won'
 ENEMY_DAMAGED = 'enemy damaged'
@@ -82,6 +82,7 @@ SWORD = 'sword'
 FIRE = 'fire'
 PUNCH = 'punch'
 POWERUP = 'powerup'
+TALK = 'talk'
 
 TRANSITION_SPEED = 35 
 

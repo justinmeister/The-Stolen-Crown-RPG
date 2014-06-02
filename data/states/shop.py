@@ -49,27 +49,33 @@ class Shop(tools._State):
         return state_dict
 
     def make_dialogue(self):
-        """Make the list of dialogue phrases"""
+        """
+        Make the list of dialogue phrases.
+        """
         raise NotImplementedError
-
 
     def make_accept_dialogue(self):
-        """Make the dialogue for when the player buys an item"""
+        """
+        Make the dialogue for when the player buys an item.
+        """
         return ['Item purchased.']
 
-
     def make_accept_sale_dialogue(self):
-        """Make the dialogue for when the player sells an item"""
+        """
+        Make the dialogue for when the player sells an item.
+        """
         return ['Item sold.']
 
-
     def make_purchasable_items(self):
-        """Make the list of items to be bought at shop"""
+        """
+        Make the list of items to be bought at shop.
+        """
         raise NotImplementedError
 
-
     def make_background(self):
-        """Make the level surface"""
+        """
+        Make the level surface.
+        """
         background = pg.sprite.Sprite()
         surface = pg.Surface(c.SCREEN_SIZE).convert()
         surface.fill(c.BLACK_BLUE)
@@ -86,9 +92,10 @@ class Shop(tools._State):
 
         return background
 
-
     def make_sprite(self, key, coordx, coordy, x, y=304):
-        """Get the image for the player"""
+        """
+        Get the image for the player.
+        """
         spritesheet = setup.GFX[key]
         surface = pg.Surface((32, 32))
         surface.set_colorkey(c.BLACK)
@@ -104,9 +111,10 @@ class Shop(tools._State):
 
         return sprite
 
-
     def make_counter(self):
-        """Make the counter to conduct business"""
+        """
+        Make the counter to conduct business.
+        """
         sprite_sheet = copy.copy(setup.GFX['house'])
         sprite = pg.sprite.Sprite()
         sprite.image = self.get_image(102, 64, 26, 82, sprite_sheet)
@@ -123,7 +131,9 @@ class Shop(tools._State):
         state_function(surface, keys, current_time)
 
     def normal_update(self, surface, keys, current_time):
-        """Update level normally"""
+        """
+        Update level normally.
+        """
         self.gui.update(keys, current_time)
         self.draw_level(surface)
 
@@ -155,29 +165,34 @@ class Shop(tools._State):
             self.done = True
 
     def draw_level(self, surface):
-        """Blit graphics to game surface"""
+        """
+        Blit graphics to game surface.
+        """
         surface.blit(self.background.image, self.background.rect)
         self.gui.draw(surface)
 
 
-
 class Inn(Shop):
-    """Where our hero gets rest"""
+    """
+    Where our hero gets rest.
+    """
     def __init__(self):
         super(Inn, self).__init__()
         self.name = c.INN
         self.key = 'innman'
 
     def make_dialogue(self):
-        """Make the list of dialogue phrases"""
+        """
+        Make the list of dialogue phrases.
+        """
         return ["Welcome to the " + self.name + "!",
                 "Would you like a room to restore your health?"]
 
-
     def make_accept_dialogue(self):
-        """Make the dialogue for when the player buys an item"""
+        """
+        Make the dialogue for when the player buys an item.
+        """
         return ['Your health has been replenished!']
-
 
     def make_purchasable_items(self):
         """Make list of items to be chosen"""
@@ -190,7 +205,6 @@ class Inn(Shop):
                 'dialogue': dialogue}
 
         return [item]
-
 
 
 class WeaponShop(Shop):
@@ -283,7 +297,7 @@ class MagicShop(Shop):
         cure_dialogue = 'Cure (150 gold)'
 
         item1 = {'type': 'Cure',
-                 'price': 150,
+                 'price': 50,
                  'quantity': 1,
                  'magic points': 25,
                  'power': 50,

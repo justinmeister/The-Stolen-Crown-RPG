@@ -47,7 +47,9 @@ class Person(pg.sprite.Sprite):
         self.battle = None
 
     def create_spritesheet_dict(self, sheet_key):
-        """Implemented by inheriting classes"""
+        """
+        Make a dictionary of images from sprite sheet.
+        """
         image_list = []
         image_dict = {}
         sheet = setup.GFX[sheet_key]
@@ -68,7 +70,9 @@ class Person(pg.sprite.Sprite):
         return image_dict
 
     def create_animation_dict(self):
-        """Return a dictionary of image lists for animation"""
+        """
+        Return a dictionary of image lists for animation.
+        """
         image_dict = self.spritesheet_dict
 
         left_list = [image_dict['facing left 1'], image_dict['facing left 2']]
@@ -84,7 +88,9 @@ class Person(pg.sprite.Sprite):
         return direction_dict
 
     def create_state_dict(self):
-        """Return a dictionary of all state methods"""
+        """
+        Return a dictionary of all state methods.
+        """
         state_dict = {'resting': self.resting,
                       'moving': self.moving,
                       'animated resting': self.animated_resting,
@@ -101,8 +107,10 @@ class Person(pg.sprite.Sprite):
         return state_dict
 
     def create_vector_dict(self):
-        """Return a dictionary of x and y velocities set to
-        direction keys."""
+        """
+        Return a dictionary of x and y velocities set to
+        direction keys.
+        """
         vector_dict = {'up': (0, -1),
                        'down': (0, 1),
                        'left': (-1, 0),
@@ -111,7 +119,9 @@ class Person(pg.sprite.Sprite):
         return vector_dict
 
     def update(self, current_time, *args):
-        """Implemented by inheriting classes"""
+        """
+        Update sprite.
+        """
         self.blockers = self.set_blockers()
         self.current_time = current_time
         self.image_list = self.animation_dict[self.direction]
@@ -120,7 +130,9 @@ class Person(pg.sprite.Sprite):
         self.location = self.get_tile_location()
 
     def set_blockers(self):
-        """Sets blockers to prevent collision with other sprites"""
+        """
+        Sets blockers to prevent collision with other sprites.
+        """
         blockers = []
 
         if self.state == 'resting' or self.state == 'autoresting':
@@ -191,7 +203,6 @@ class Person(pg.sprite.Sprite):
 
         return box_rects
 
-
     def resting(self):
         """
         When the Person is not moving between tiles.
@@ -199,10 +210,10 @@ class Person(pg.sprite.Sprite):
         """
         self.image = self.image_list[self.index]
 
-        assert(self.rect.y % 32 == 0), ('Player not centered on tile: '
-                                        + str(self.rect.y) + " : " + str(self.name))
-        assert(self.rect.x % 32 == 0), ('Player not centered on tile'
-                                        + str(self.rect.x))
+        if self.rect.y % 32 != 0:
+            self.correct_position(self.rect.y)
+        if self.rect.x % 32 != 0:
+            self.correct_position(self.rect.x)
 
     def moving(self):
         """
@@ -278,7 +289,6 @@ class Person(pg.sprite.Sprite):
         Determine when to move a sprite from resting to moving in a random
         direction.
         """
-        #self.image = self.image_list[self.index]
         self.image_list = self.animation_dict[self.direction]
         self.image = self.image_list[self.index]
 
