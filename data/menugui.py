@@ -190,8 +190,7 @@ class InfoBox(pg.sprite.Sprite):
         Calculate the current attack power based on equipped weapons.
         """
         weapon = self.inventory['equipped weapon']
-        weapon_power = self.inventory[weapon]['power']
-        return weapon_power + (self.player_stats['Level'] * 5)        
+        return self.inventory[weapon]['power']
 
     def get_defense_power(self):
         """
@@ -550,11 +549,13 @@ class MenuGui(object):
         magic = self.game_data['player stats']['magic']
         inventory = self.game_data['player inventory']
 
-        if magic['current'] >= inventory['Cure']['magic points']:
-            magic['current'] -= inventory['Cure']['magic points']
-            health['current'] += inventory['Cure']['power']
-            if health['current'] > health['maximum']:
-                health['current'] = health['maximum']
+        if health['current'] != health['maximum']:
+            if magic['current'] >= inventory['Cure']['magic points']:
+                self.notify(c.POWERUP)
+                magic['current'] -= inventory['Cure']['magic points']
+                health['current'] += inventory['Cure']['power']
+                if health['current'] > health['maximum']:
+                    health['current'] = health['maximum']
 
     def drink_potion(self, potion, stat, value):
         """

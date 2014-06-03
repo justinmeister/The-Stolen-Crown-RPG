@@ -330,7 +330,7 @@ class Gui(object):
             equipped_armor.append(item_type)
         if item_type in player_weapons:
             player_items['equipped weapon'] = item_type
-        if item_type in player_items:
+        if item_type in player_items and item_type not in magic_list:
             player_items[item_type]['quantity'] += quantity
         elif quantity > 0:
             player_items[item_type] = item_to_add

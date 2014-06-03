@@ -80,9 +80,9 @@ class Battle(tools._State):
         new_dict = {c.OVERWORLD: 1,
                     c.DUNGEON: 2,
                     c.DUNGEON2: 2,
-                    c.DUNGEON3: 3,
+                    c.DUNGEON3: 2,
                     c.DUNGEON4: 2,
-                    c.DUNGEON5: 5}
+                    c.DUNGEON5: 4}
 
         return new_dict
 
@@ -100,7 +100,7 @@ class Battle(tools._State):
         experience_total = 0
 
         for enemy in self.enemy_list:
-            experience_total += (random.randint(5,10)*enemy.level)
+            experience_total += (random.randint(5,10))
 
         return experience_total
 
@@ -157,7 +157,10 @@ class Battle(tools._State):
             enemy.image = pg.transform.scale2x(enemy.image)
             enemy.index = i
             enemy.level = self.make_enemy_level_dict()[self.previous]
-            enemy.health = enemy.level * 7
+            if enemy.name == 'evilwizard':
+                enemy.health = 100
+            else:
+                enemy.health = enemy.level * 4
 
         enemy_list = [enemy for enemy in enemy_group]
 

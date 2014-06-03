@@ -5,10 +5,10 @@ import pygame as pg
 from .. import setup, observer
 from .. import constants as c
 
-
 #Python 2/3 compatibility.
 if sys.version_info[0] == 2:
     range = xrange
+
 
 class Person(pg.sprite.Sprite):
     """Base class for all world characters
@@ -599,12 +599,9 @@ class Player(Person):
         Calculate hit strength based on attack stats.
         """
         weapon = self.game_data['player inventory']['equipped weapon']
-        if not weapon:
-            weapon_power = 0
-        else:
-            weapon_power = self.game_data['player inventory'][weapon]['power']
-        max_strength = weapon_power + (self.level * 5)
-        min_strength = max_strength // 4
+        weapon_power = self.game_data['player inventory'][weapon]['power']
+        max_strength = weapon_power 
+        min_strength = max_strength - 7
         return random.randint(min_strength, max_strength)
 
 

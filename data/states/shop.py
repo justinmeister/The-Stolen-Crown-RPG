@@ -230,13 +230,13 @@ class WeaponShop(Shop):
         item2 = {'type': 'Long Sword',
                 'price': 150,
                 'quantity': 1,
-                'power': 10,
+                'power': 11,
                 'dialogue': longsword_dialogue}
 
         item1 = {'type': 'Rapier',
                  'price': 50,
                  'quantity': 1,
-                 'power': 5,
+                 'power': 9,
                  'dialogue': rapier_dialogue}
 
         return [item1, item2]
@@ -265,13 +265,13 @@ class ArmorShop(Shop):
         item = {'type': 'Chain Mail',
                 'price': 50,
                 'quantity': 1,
-                'power': 1,
+                'power': 2,
                 'dialogue': chainmail_dialogue}
 
         item2 = {'type': 'Wooden Shield',
                  'price': 75,
                  'quantity': 1,
-                 'power': 1,
+                 'power': 3,
                  'dialogue': shield_dialogue}
 
         return [item, item2]

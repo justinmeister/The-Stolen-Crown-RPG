@@ -188,7 +188,7 @@ def create_game_data_dict():
     """Create a dictionary of persistant values the player
     carries between states"""
 
-    player_items = {'GOLD': dict([('quantity',200),
+    player_items = {'GOLD': dict([('quantity',100),
                                   ('value',0)]),
                     'Healing Potion': dict([('quantity',2),
                                             ('value',15)]),
@@ -196,7 +196,7 @@ def create_game_data_dict():
                                           ('value', 15)]),
                     'Rapier': dict([('quantity', 1),
                                     ('value', 50),
-                                    ('power', 5)]),
+                                    ('power', 9)]),
                     'equipped weapon': 'Rapier',
                     'equipped armor': []}
 
