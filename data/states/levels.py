@@ -180,6 +180,11 @@ class LevelState(tools._State):
                 else:
                     battle = None
 
+                if 'state' in properties:
+                    sprite_state = properties['state']
+                else:
+                    sprite_state = None
+
 
                 x = properties['x'] * 2
                 y = ((properties['y']) * 2) - 32
@@ -204,11 +209,17 @@ class LevelState(tools._State):
                                'treasurechest': person.Chest(x, y, id)}
 
                 sprite = sprite_dict[properties['type']]
+                if sprite_state:
+                    sprite.state = sprite_state
+
                 if sprite.name == 'oldman':
                     if self.game_data['old man gift'] and not self.game_data['elixir received']:
                         sprite.item = self.game_data['old man gift']
                     else:
                         sprite.item = item
+                elif sprite.name == 'king':
+                    if not self.game_data['talked to king']:
+                        sprite.item = self.game_data['king item']
                 else:
                     sprite.item = item
                 sprite.battle = battle

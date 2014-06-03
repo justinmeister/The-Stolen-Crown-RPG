@@ -14,8 +14,11 @@ from . import tools
 if sys.version_info[0] == 2:
     range = xrange
 
+
 class SmallArrow(pg.sprite.Sprite):
-    """Small arrow for menu"""
+    """
+    Small arrow for menu.
+    """
     def __init__(self, info_box):
         super(SmallArrow, self).__init__()
         self.image = setup.GFX['smallarrow']
@@ -26,7 +29,9 @@ class SmallArrow(pg.sprite.Sprite):
         self.pos_list = []
 
     def make_state_dict(self):
-        """Make state dictionary"""
+        """
+        Make state dictionary.
+        """
         state_dict = {'selectmenu': self.navigate_select_menu,
                       'itemsubmenu': self.navigate_item_submenu,
                       'magicsubmenu': self.navigate_magic_submenu}
@@ -34,7 +39,9 @@ class SmallArrow(pg.sprite.Sprite):
         return state_dict
 
     def navigate_select_menu(self, pos_index):
-        """Nav the select menu"""
+        """
+        Nav the select menu.
+        """
         self.pos_list = self.make_select_menu_pos_list()
         self.rect.topleft = self.pos_list[pos_index]
 
@@ -44,7 +51,9 @@ class SmallArrow(pg.sprite.Sprite):
         self.rect.topleft = self.pos_list[pos_index]
 
     def navigate_magic_submenu(self, pos_index):
-        """Nav the magic submenu"""
+        """
+        Nav the magic submenu.
+        """
         self.pos_list = self.make_magic_menu_pos_list()
         self.rect.topleft = self.pos_list[pos_index]
 
@@ -58,7 +67,9 @@ class SmallArrow(pg.sprite.Sprite):
         return pos_list
 
     def make_select_menu_pos_list(self):
-        """Make the list of possible arrow positions"""
+        """
+        Make the list of possible arrow positions.
+        """
         pos_list = []
 
         for i in range(3):
@@ -68,7 +79,9 @@ class SmallArrow(pg.sprite.Sprite):
         return pos_list
 
     def make_item_menu_pos_list(self):
-        """Make the list of arrow positions in the item submenu"""
+        """
+        Make the list of arrow positions in the item submenu.
+        """
         pos_list = [(300, 173),
                     (300, 223),
                     (300, 323),
@@ -81,12 +94,15 @@ class SmallArrow(pg.sprite.Sprite):
         return pos_list
 
     def update(self, pos_index):
-        """Update arrow position"""
+        """
+        Update arrow position.
+        """
         state_function = self.state_dict[self.state]
         state_function(pos_index)
 
     def draw(self, surface):
-        """Draw to surface"""
+        """
+        Draw to surface"""
         surface.blit(self.image, self.rect)
 
 

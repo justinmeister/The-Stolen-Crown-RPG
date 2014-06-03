@@ -148,6 +148,13 @@ class TextHandler(object):
                         self.end_dialogue(current_time)
                 elif self.talking_sprite.name == 'king':
                      
+                    if not self.game_data['talked to king']:
+                        self.game_data['talked to king'] = True
+                        new_dialogue = ['Hurry to the castle in the NorthWest!',
+                                        'The sorceror who lives there has my crown.',
+                                        'Please retrieve it for me.']
+                        self.talking_sprite.dialogue = new_dialogue
+                        self.end_dialogue(current_time)
                     if (self.game_data['crown quest'] 
                             and not self.game_data['delivered crown']):
                         retrieved_crown_dialogue = ['My crown! You recovered my stolen crown!!!',
@@ -217,7 +224,10 @@ class TextHandler(object):
         if item:
             if item in self.game_data['player inventory']:
                 if 'quantity' in self.game_data['player inventory'][item]:
-                    self.game_data['player inventory'][item]['quantity'] += 1
+                    if item == 'GOLD':
+                        self.game_data['player inventory'][item]['quantity'] += 100
+                    else:
+                        self.game_data['player inventory'][item]['quantity'] += 1
             else:
                 self.add_new_item_to_inventory(item)
 

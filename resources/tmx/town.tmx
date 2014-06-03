@@ -380,16 +380,16 @@
   <object name="sprite" type="soldier" gid="124" x="160" y="224">
    <properties>
     <property name="dialogue length" value="2"/>
-    <property name="dialogue0" value="Only those given special permission by the King can leave this town."/>
-    <property name="dialogue1" value="It is for our own good, as few could survive in the outside world."/>
+    <property name="dialogue0" value="The castle to the NorthWest is very dangerous."/>
+    <property name="dialogue1" value="Make sure to buy a Long Sword before attempting to enter it."/>
    </properties>
   </object>
   <object name="sprite" type="soldier" gid="124" x="208" y="224">
    <properties>
-    <property name="dialogue length" value="3"/>
-    <property name="dialogue0" value="Be careful.  There are monsters surrounding our town."/>
-    <property name="dialogue1" value="Make sure to equip sufficient armor and weapons."/>
-    <property name="dialogue2" value="Spells and potions are useful too."/>
+    <property name="" value=""/>
+    <property name="dialogue length" value="2"/>
+    <property name="dialogue0" value="Armor is important to protect you from monsters."/>
+    <property name="dialogue1" value="The Armor Shop sells excellent shields and chain mail."/>
    </properties>
   </object>
   <object name="portal" type="castle" gid="139" x="176" y="112"/>
@@ -416,11 +416,5 @@
   <object name="blocker" gid="120" x="128" y="784"/>
   <object name="blocker" gid="120" x="112" y="768"/>
   <object name="blocker" gid="120" x="112" y="752"/>
-  <object name="sprite" type="soldier" gid="124" x="112" y="576">
-   <properties>
-    <property name="dialogue length" value="1"/>
-    <property name="dialogue0" value="Hey, there."/>
-   </properties>
-  </object>
  </objectgroup>
 </map>
