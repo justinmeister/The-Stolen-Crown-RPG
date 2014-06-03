@@ -163,12 +163,13 @@
   </object>
   <object name="sprite" type="king" gid="74" x="192" y="112">
    <properties>
-    <property name="dialogue length" value="5"/>
+    <property name="dialogue length" value="6"/>
     <property name="dialogue0" value="Please!  You must help me!"/>
     <property name="dialogue1" value="An evil sorceror has stolen my magic crown."/>
     <property name="dialogue2" value="WIthout it, our town will be overrun by monsters!"/>
-    <property name="dialogue3" value="Take this money for supplies."/>
-    <property name="dialogue4" value="Our town's fate is in your hands."/>
+    <property name="dialogue3" value="Go to the NorthWest Castle and retrieve it for me."/>
+    <property name="dialogue4" value="Here is some GOLD for supplies."/>
+    <property name="dialogue5" value="You are my only hope."/>
    </properties>
   </object>
   <object name="sprite" type="soldier" gid="74" x="128" y="336">

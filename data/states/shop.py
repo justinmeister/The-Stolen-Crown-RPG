@@ -294,7 +294,7 @@ class MagicShop(Shop):
     def make_purchasable_items(self):
         """Make list of items to be chosen"""
         fire_dialogue = 'Fire Blast (150 gold)'
-        cure_dialogue = 'Cure (150 gold)'
+        cure_dialogue = 'Cure (50 gold)'
 
         item1 = {'type': 'Cure',
                  'price': 50,

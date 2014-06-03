@@ -59,6 +59,7 @@ class LevelState(tools._State):
         self.state = 'transition_in'
         self.reset_dialogue = ()
         self.switch_to_battle = False
+        self.use_portal = False
         self.allow_input = False
         self.cut_off_bottom_map = ['castle', 'town', 'dungeon']
         self.renderer = tilerender.Renderer(self.tmx_map)
@@ -67,7 +68,7 @@ class LevelState(tools._State):
         self.viewport = self.make_viewport(self.map_image)
         self.level_surface = self.make_level_surface(self.map_image)
         self.level_rect = self.level_surface.get_rect()
-        self.portals = None
+        self.portals = self.make_level_portals()
         self.player = self.make_player()
         self.blockers = self.make_blockers()
         self.sprites = self.make_sprites()
@@ -75,10 +76,10 @@ class LevelState(tools._State):
         self.collision_handler = collision.CollisionHandler(self.player,
                                                             self.blockers,
                                                             self.sprites,
+                                                            self.portals,
                                                             self)
         self.dialogue_handler = textbox.TextHandler(self)
         self.state_dict = self.make_state_dict()
-        self.portals = self.make_level_portals()
         self.menu_screen = player_menu.Player_Menu(game_data, self)
         self.transition_rect = setup.SCREEN.get_rect()
         self.transition_alpha = 255
@@ -345,11 +346,8 @@ class LevelState(tools._State):
         """
         Check if the player walks into a door, requiring a level change.
         """
-        portal = pg.sprite.spritecollideany(self.player, self.portals)
-
-        if portal and self.player.state == 'resting':
+        if self.use_portal and not self.done:
             self.player.location = self.player.get_tile_location()
-            self.next = portal.name
             self.update_game_data()
             self.state = 'transition_out'
 

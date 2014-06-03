@@ -5,11 +5,12 @@ from . import constants as c
 class CollisionHandler(object):
     """Handles collisions between the user, blockers and computer
     characters"""
-    def __init__(self, player, blockers, sprites, level):
+    def __init__(self, player, blockers, sprites, portals, level):
         self.player = player
         self.static_blockers = blockers
         self.blockers = self.make_blocker_list(blockers, sprites)
         self.sprites = sprites
+        self.portals = portals
         self.level = level
 
     def make_blocker_list(self, blockers, sprites):
@@ -41,6 +42,7 @@ class CollisionHandler(object):
 
         if self.player.rect.x % 32 == 0 and self.player.rect.y % 32 == 0:
             if not self.player.state == 'resting':
+                self.check_for_portal()
                 self.check_for_battle()
             self.player.begin_resting()
 
@@ -49,8 +51,20 @@ class CollisionHandler(object):
                 if sprite.rect.x % 32 == 0 and sprite.rect.y % 32 == 0:
                     sprite.begin_auto_resting()
 
+    def check_for_portal(self):
+        """
+        Check for a portal to change level scene.
+        """
+        portal = pg.sprite.spritecollideany(self.player, self.portals)
+
+        if portal:
+            self.level.next = portal.name
+            self.level.use_portal = True
+
     def check_for_blockers(self):
-        """Checks for collisions with blocker rects"""
+        """
+        Checks for collisions with blocker rects.
+        """
         player_collided = False
         sprite_collided_list = []
 

@@ -326,11 +326,12 @@ class Battle(tools._State):
                 player_stats = self.game_data['player stats']
                 player_stats['experience to next level'] -= self.experience_points
                 if player_stats['experience to next level'] <= 0:
+                    extra_experience = player_stats['experience to next level'] * -1
                     player_stats['Level'] += 1
                     player_stats['health']['maximum'] += int(player_stats['health']['maximum']*.25)
                     player_stats['magic']['maximum'] += int(player_stats['magic']['maximum']*.20)
                     new_experience = int((player_stats['Level'] * 50) * .75)
-                    player_stats['experience to next level'] = new_experience
+                    player_stats['experience to next level'] = new_experience - extra_experience
                     self.enter_level_up_state()
                     self.just_leveled_up = True
                 else:

@@ -460,8 +460,12 @@ class MenuGui(object):
                 if self.arrow.state == 'selectmenu':
                     if self.arrow_index == 0:
                         self.info_box.state = 'items'
+                        self.arrow.state = 'itemsubmenu'
+                        self.arrow_index = 0
                     elif self.arrow_index == 1:
                         self.info_box.state = 'magic'
+                        self.arrow.state = 'magicsubmenu'
+                        self.arrow_index = 0
                     elif self.arrow_index == 2:
                         self.info_box.state = 'stats'
                 elif self.arrow.state == 'itemsubmenu':
@@ -556,12 +560,14 @@ class MenuGui(object):
         """
         Drink potion and change player stats.
         """
-        self.inventory[potion]['quantity'] -= 1
-        stat['current'] += value
-        if stat['current'] > stat['maximum']:
-            stat['current'] = stat['maximum']
-        if not self.inventory[potion]['quantity']:
-            del self.inventory[potion]
+        if stat['current'] != stat['maximum']:
+            self.notify(c.POWERUP)
+            self.inventory[potion]['quantity'] -= 1
+            stat['current'] += value
+            if stat['current'] > stat['maximum']:
+                stat['current'] = stat['maximum']
+            if not self.inventory[potion]['quantity']:
+                del self.inventory[potion]
 
     def update(self, keys):
         self.info_box.update()

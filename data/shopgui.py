@@ -303,13 +303,16 @@ class Gui(object):
 
 
     def add_player_item(self, item):
-        """Add item to player's inventory"""
+        """
+        Add item to player's inventory.
+        """
         item_type = item['type']
         quantity = item['quantity']
         value = item['price']
         power = item['power']
         magic_list = ['Cure', 'Fire Blast']
         player_armor = ['Chain Mail', 'Wooden Shield']
+        player_weapons = ['Rapier', 'Long Sword']
         player_items = self.level.game_data['player inventory']
         player_health = self.level.game_data['player stats']['health']
         player_magic = self.level.game_data['player stats']['magic']
@@ -325,6 +328,8 @@ class Gui(object):
             player_items[item_type] = item_to_add
         if item_type in player_armor:
             equipped_armor.append(item_type)
+        if item_type in player_weapons:
+            player_items['equipped weapon'] = item_type
         if item_type in player_items:
             player_items[item_type]['quantity'] += quantity
         elif quantity > 0:
@@ -333,9 +338,10 @@ class Gui(object):
             player_health['current'] = player_health['maximum']
             player_magic['current'] = player_magic['maximum']
 
-
     def confirm_sell(self, keys, current_time):
-        """Confirm player wants to sell item"""
+        """
+        Confirm player wants to sell item.
+        """
         dialogue = ['Are you sure?']
         choices = ['Yes', 'No']
         self.dialogue_box = self.make_dialogue_box(dialogue, 0)
