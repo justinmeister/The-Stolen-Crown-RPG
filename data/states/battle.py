@@ -432,8 +432,20 @@ class Battle(tools._State):
             if self.transition_alpha >= 255:
                 self.done = True
 
+        elif self.state == c.DEATH_FADE:
+            transition_image = pg.Surface(self.transition_rect.size)
+            transition_image.fill(c.TRANSITION_COLOR)
+            transition_image.set_alpha(self.transition_alpha)
+            surface.blit(transition_image, self.transition_rect)
+            self.transition_alpha += c.DEATH_TRANSITION_SPEED
+            if self.transition_alpha >= 255:
+                self.done = True
+                self.next = c.DEATH_SCENE
+
     def player_damaged(self, damage):
         self.game_data['player stats']['health']['current'] -= damage
+        if self.game_data['player stats']['health']['current'] <= 0:
+            self.state = c.DEATH_FADE
 
     def player_healed(self, heal, magic_points=0):
         """

@@ -22,6 +22,7 @@ DUNGEON3 = 'dungeon3'
 DUNGEON4 = 'dungeon4'
 DUNGEON5 = 'dungeon5'
 INSTRUCTIONS = 'instructions'
+DEATH_SCENE = 'death scene'
 
 ##Colors
 
@@ -68,6 +69,7 @@ SHOW_EXPERIENCE = 'show experience'
 LEVEL_UP = 'level up'
 TWO_ACTIONS = 'two actions'
 SHOW_GOLD = 'show gold'
+DEATH_FADE = 'death fade'
 
 #EVENTS
 
@@ -85,6 +87,7 @@ POWERUP = 'powerup'
 TALK = 'talk'
 
 TRANSITION_SPEED = 35 
+DEATH_TRANSITION_SPEED = 5
 
 #LEVEL STATES
 

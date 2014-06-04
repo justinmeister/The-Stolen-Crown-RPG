@@ -1,4 +1,4 @@
-from data.states import shop, levels, battle, main_menu
+from data.states import shop, levels, battle, main_menu, death
 from . import setup, tools
 from . import constants as c
 
@@ -22,6 +22,7 @@ DUNGEON3 = 'dungeon3'
 DUNGEON4 = 'dungeon4'
 DUNGEON5 = 'dungeon5'
 INSTRUCTIONS = 'instructions'
+DEATH_SCENE = 'death scene'
 
 
 def main():
@@ -44,7 +45,8 @@ def main():
                   DUNGEON3: levels.LevelState(DUNGEON3, True),
                   DUNGEON4: levels.LevelState(DUNGEON4, True),
                   DUNGEON5: levels.LevelState(DUNGEON5, True),
-                  INSTRUCTIONS: main_menu.Instructions()
+                  INSTRUCTIONS: main_menu.Instructions(),
+                  DEATH_SCENE: death.DeathScene()
                   }
 
     run_it.setup_states(state_dict, c.MAIN_MENU)

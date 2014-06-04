@@ -2,11 +2,18 @@
 This class controls the textbox GUI for any shop state.
 A Gui object is created and updated by the shop state.
 """
-
+import sys
+import pickle
 import pygame as pg
 from . import setup, observer
 from . components import textbox
 from . import constants as c
+
+
+#Python 2/3 compatibility.
+if sys.version_info[0] == 2:
+    import cPickle
+    pickle = cPickle 
 
 
 class Gui(object):
@@ -337,6 +344,7 @@ class Gui(object):
         elif item_type == 'room':
             player_health['current'] = player_health['maximum']
             player_magic['current'] = player_magic['maximum']
+            pickle.dump(self.game_data, open( "save.p", "wb"))
 
     def confirm_sell(self, keys, current_time):
         """

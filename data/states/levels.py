@@ -6,6 +6,7 @@ This class inherits from the generic state class
 found in the tools.py module.
 """
 import copy, sys
+import pickle
 import pygame as pg
 from .. import tools, collision
 from .. import constants as c
@@ -17,6 +18,8 @@ from .. import setup
 
 #Python 2/3 compatibility.
 if sys.version_info[0] == 2:
+    import cPickle
+    pickle = cPickle
     range = xrange
 
 
