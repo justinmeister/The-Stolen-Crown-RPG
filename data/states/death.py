@@ -21,12 +21,14 @@ class DeathScene(tools._State):
 
     def startup(self, current_time, game_data):
         self.game_data = game_data
+        self.font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
         self.background = pg.Surface(setup.SCREEN_RECT.size)
         self.background.fill(c.BLACK_BLUE)
         self.player = person.Player('down', self.game_data, 1, 1, 'resting', 1)
         self.player.image = pg.transform.scale2x(self.player.image)
         self.player.rect = self.player.image.get_rect()
         self.player.rect.center = setup.SCREEN_RECT.center
+        self.message_box = self.make_message_box()
         self.state_dict = self.make_state_dict()
         self.state = c.TRANSITION_IN
         self.alpha = 255
@@ -34,7 +36,29 @@ class DeathScene(tools._State):
         self.transition_surface = copy.copy(self.background)
         self.transition_surface.fill(c.BLACK_BLUE)
         self.transition_surface.set_alpha(self.alpha)
-    
+
+    def make_message_box(self):
+        """
+        Make the text box informing of death.
+        """
+        box_image = setup.GFX['dialoguebox']
+        box_rect = box_image.get_rect()
+        text = 'You have died. Restart from last save point?'
+        text_render = self.font.render(text, True, c.NEAR_BLACK) 
+        text_rect = text_render.get_rect(centerx=box_rect.centerx,
+                                         y=30)
+
+        temp_surf = pg.Surface(box_rect.size)
+        temp_surf.set_colorkey(c.BLACK)
+        temp_surf.blit(box_image, box_rect)
+        temp_surf.blit(text_render, text_rect)
+        
+        box_sprite = pg.sprite.Sprite()
+        box_sprite.image = temp_surf
+        box_sprite.rect = temp_surf.get_rect(bottom=608)
+        
+        return box_sprite
+
     def make_state_dict(self):
         """
         Make the dicitonary of state methods for the scene.
@@ -83,6 +107,7 @@ class DeathScene(tools._State):
         """
         surface.blit(self.background, (0, 0))
         surface.blit(self.player.image, self.player.rect)
+        surface.blit(self.message_box.image, self.message_box.rect)
 
 
 
