@@ -10,6 +10,30 @@ if sys.version_info[0] == 2:
     pickle = cPickle
 
 
+class Arrow(pg.sprite.Sprite):
+    """
+    Arrow to select restart or saved gamed.
+    """
+    def __init__(self):
+        super(Arrow, self).__init__()
+        self.image = setup.GFX['smallarrow']
+        self.rect = self.image.get_rect(x=300,
+                                        y=550)
+        self.index = 0
+        self.pos_list = [100, 200]
+
+    def update(self, keys):
+        """
+        Update arrow position.
+        """
+        if keys[pg.K_DOWN] and not keys[pg.K_UP]:
+            self.index = 1
+        elif keys[pg.K_UP] and not keys[pg.K_DOWN]:
+            self.index = 0
+
+        self.rect.y = self.pos_list[self.index]
+
+
 class DeathScene(tools._State):
     """
     Scene when the player has died.
@@ -29,6 +53,7 @@ class DeathScene(tools._State):
         self.player.rect = self.player.image.get_rect()
         self.player.rect.center = setup.SCREEN_RECT.center
         self.message_box = self.make_message_box()
+        self.arrow = Arrow()
         self.state_dict = self.make_state_dict()
         self.state = c.TRANSITION_IN
         self.alpha = 255
@@ -47,11 +72,22 @@ class DeathScene(tools._State):
         text_render = self.font.render(text, True, c.NEAR_BLACK) 
         text_rect = text_render.get_rect(centerx=box_rect.centerx,
                                          y=30)
+        text2 = 'Yes'
+        text2_render = self.font.render(text2, True, c.NEAR_BLACK)
+        text2_rect = text2_render.get_rect(centerx=box_rect.centerx,
+                                           y=70)
+
+        text3 = 'No'
+        text3_render = self.font.render(text3, True, c.NEAR_BLACK)
+        text3_rect = text3_render.get_rect(centerx=box_rect.centerx,
+                                           y=105)
 
         temp_surf = pg.Surface(box_rect.size)
         temp_surf.set_colorkey(c.BLACK)
         temp_surf.blit(box_image, box_rect)
         temp_surf.blit(text_render, text_rect)
+        temp_surf.blit(text2_render, text2_rect)
+        temp_surf.blit(text3_render, text3_rect)
         
         box_sprite = pg.sprite.Sprite()
         box_sprite.image = temp_surf
@@ -108,6 +144,7 @@ class DeathScene(tools._State):
         surface.blit(self.background, (0, 0))
         surface.blit(self.player.image, self.player.rect)
         surface.blit(self.message_box.image, self.message_box.rect)
+        surface.blit(self.arrow.image, self.arrow.rect)
 
 
 

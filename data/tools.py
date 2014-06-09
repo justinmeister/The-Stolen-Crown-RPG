@@ -200,7 +200,7 @@ def create_game_data_dict():
                     'equipped weapon': 'Rapier',
                     'equipped armor': []}
 
-    player_health = {'current': 1,
+    player_health = {'current': 0,
                      'maximum': 70}
 
     player_magic = {'current': 70,
