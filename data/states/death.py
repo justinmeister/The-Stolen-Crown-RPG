@@ -18,9 +18,9 @@ class Arrow(pg.sprite.Sprite):
         super(Arrow, self).__init__()
         self.image = setup.GFX['smallarrow']
         self.rect = self.image.get_rect(x=300,
-                                        y=550)
+                                        y=532)
         self.index = 0
-        self.pos_list = [100, 200]
+        self.pos_list = [532, 566]
 
     def update(self, keys):
         """
@@ -58,7 +58,7 @@ class DeathScene(tools._State):
         self.state = c.TRANSITION_IN
         self.alpha = 255
         self.name = c.DEATH_SCENE
-        self.transition_surface = copy.copy(self.background)
+        self.transition_surface = pg.Surface(setup.SCREEN_RECT.size)
         self.transition_surface.fill(c.BLACK_BLUE)
         self.transition_surface.set_alpha(self.alpha)
 
@@ -105,15 +105,15 @@ class DeathScene(tools._State):
 
         return state_dict
 
-    def update(self, surface, *args):
+    def update(self, surface, keys, *args):
         """
         Update scene.
         """
         update_level = self.state_dict[self.state]
-        update_level()
+        update_level(keys)
         self.draw_level(surface)
 
-    def transition_in(self):
+    def transition_in(self, *args):
         """
         Transition into scene with a fade.
         """
@@ -123,19 +123,31 @@ class DeathScene(tools._State):
             self.alpha = 0
             self.state = c.NORMAL
 
-    def transition_out(self):
+    def transition_out(self, *args):
         """
         Transition out of scene with a fade.
         """
         self.transition_surface.set_alpha(self.alpha)
         self.alpha += c.TRANSITION_SPEED
         if self.alpha >= 255:
-            self.game_data = pickle.load(open("save.p", "rb"))
             self.game_data['last state'] = self.name
             self.done = True
 
-    def normal_update(self):
-        pass
+    def normal_update(self, keys):
+        self.arrow.update(keys)
+        self.check_for_input(keys)
+
+    def check_for_input(self, keys):
+        """
+        Check if player wants to restart from last save point
+        or just start from the beginning of the game.
+        """
+        if keys[pg.K_SPACE]:
+            if self.arrow.index == 0:
+                self.next = c.MAIN_MENU
+            elif self.arrow.index == 1:
+                self.next = c.MAIN_MENU
+            self.state = c.TRANSITION_OUT
 
     def draw_level(self, surface):
         """
@@ -145,6 +157,7 @@ class DeathScene(tools._State):
         surface.blit(self.player.image, self.player.rect)
         surface.blit(self.message_box.image, self.message_box.rect)
         surface.blit(self.arrow.image, self.arrow.rect)
+        surface.blit(self.transition_surface, (0, 0))
 
 
 

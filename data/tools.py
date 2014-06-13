@@ -27,6 +27,7 @@ class Control(object):
         self.state_dict = state_dict
         self.state_name = start_state
         self.state = self.state_dict[self.state_name]
+        self.set_music()
 
     def update(self):
         self.current_time = pg.time.get_ticks()

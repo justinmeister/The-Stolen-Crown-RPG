@@ -5,12 +5,15 @@ from .. import constants as c
 class Menu(tools._State):
     def __init__(self):
         super(Menu, self).__init__()
+        self.game_data = tools.create_game_data_dict()
         self.music = setup.MUSIC['kings_theme']
-        pg.mixer.music.load(self.music)
-        pg.mixer.music.set_volume(.4)
-        pg.mixer.music.play(-1)
+        self.volume = 0.4
         self.next = c.INSTRUCTIONS
         self.tmx_map = setup.TMX['title']
+        self.name = c.MAIN_MENU
+        self.startup(0, 0)
+    
+    def startup(self, *args):
         self.renderer = tilerender.Renderer(self.tmx_map)
         self.map_image = self.renderer.make_2x_map()
         self.map_rect = self.map_image.get_rect()
@@ -20,9 +23,7 @@ class Menu(tools._State):
         self.title_rect = self.title_box.get_rect()
         self.title_rect.midbottom = self.viewport.midbottom
         self.title_rect.y -= 30
-        self.game_data = tools.create_game_data_dict()
         self.state_dict = self.make_state_dict()
-        self.name = c.MAIN_MENU
         self.state = c.TRANSITION_IN
         self.alpha = 255
         self.transition_surface = pg.Surface(setup.SCREEN_RECT.size)
