@@ -161,7 +161,7 @@
   <object name="start point" gid="123" x="368" y="560">
    <properties>
     <property name="direction" value="down"/>
-    <property name="state" value="main menu"/>
+    <property name="state" value="instructions"/>
    </properties>
   </object>
   <object name="portal" type="brotherhouse" gid="139" x="400" y="144"/>
@@ -193,5 +193,11 @@
   <object name="blocker" gid="120" x="400" y="544"/>
   <object name="blocker" gid="120" x="400" y="560"/>
   <object name="blocker" gid="120" x="400" y="576"/>
+  <object name="start point" gid="123" x="368" y="560">
+   <properties>
+    <property name="direction" value="down"/>
+    <property name="state" value="load game"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

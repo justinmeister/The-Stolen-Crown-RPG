@@ -6,7 +6,6 @@ This class inherits from the generic state class
 found in the tools.py module.
 """
 import copy, sys
-import pickle
 import pygame as pg
 from .. import tools, collision
 from .. import constants as c
@@ -18,8 +17,6 @@ from .. import setup
 
 #Python 2/3 compatibility.
 if sys.version_info[0] == 2:
-    import cPickle
-    pickle = cPickle
     range = xrange
 
 
@@ -112,8 +109,7 @@ class LevelState(tools._State):
         """
         Make the player and sets location.
         """
-        last_state = self.game_data['last state']
-
+        last_state = self.previous
 
         if last_state == 'battle':
             player = person.Player(self.game_data['last direction'], self.game_data)

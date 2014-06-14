@@ -1,4 +1,4 @@
-import copy, pickle, sys
+import copy, pickle, sys, os
 import pygame as pg
 from .. import setup, tools
 from ..components import person
@@ -14,13 +14,13 @@ class Arrow(pg.sprite.Sprite):
     """
     Arrow to select restart or saved gamed.
     """
-    def __init__(self):
+    def __init__(self, x, y):
         super(Arrow, self).__init__()
         self.image = setup.GFX['smallarrow']
-        self.rect = self.image.get_rect(x=300,
-                                        y=532)
+        self.rect = self.image.get_rect(x=x,
+                                        y=y)
         self.index = 0
-        self.pos_list = [532, 566]
+        self.pos_list = [y, y+34]
 
     def update(self, keys):
         """
@@ -53,7 +53,7 @@ class DeathScene(tools._State):
         self.player.rect = self.player.image.get_rect()
         self.player.rect.center = setup.SCREEN_RECT.center
         self.message_box = self.make_message_box()
-        self.arrow = Arrow()
+        self.arrow = Arrow(300, 532)
         self.state_dict = self.make_state_dict()
         self.state = c.TRANSITION_IN
         self.alpha = 255
@@ -61,6 +61,9 @@ class DeathScene(tools._State):
         self.transition_surface = pg.Surface(setup.SCREEN_RECT.size)
         self.transition_surface.fill(c.BLACK_BLUE)
         self.transition_surface.set_alpha(self.alpha)
+        if not os.path.isfile("save.p"):
+            game_data = tools.create_game_data_dict()
+            pickle.dump(game_data, open("save.p", "wb"))
 
     def make_message_box(self):
         """
@@ -130,7 +133,6 @@ class DeathScene(tools._State):
         self.transition_surface.set_alpha(self.alpha)
         self.alpha += c.TRANSITION_SPEED
         if self.alpha >= 255:
-            self.game_data['last state'] = self.name
             self.done = True
 
     def normal_update(self, keys):
@@ -144,7 +146,8 @@ class DeathScene(tools._State):
         """
         if keys[pg.K_SPACE]:
             if self.arrow.index == 0:
-                self.next = c.MAIN_MENU
+                self.next = c.TOWN
+                self.game_data = pickle.load(open("save.p", "rb"))
             elif self.arrow.index == 1:
                 self.next = c.MAIN_MENU
             self.state = c.TRANSITION_OUT

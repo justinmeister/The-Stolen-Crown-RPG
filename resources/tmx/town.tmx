@@ -416,5 +416,17 @@
   <object name="blocker" gid="120" x="128" y="784"/>
   <object name="blocker" gid="120" x="112" y="768"/>
   <object name="blocker" gid="120" x="112" y="752"/>
+  <object name="start point" gid="123" x="320" y="688">
+   <properties>
+    <property name="direction" value="down"/>
+    <property name="state" value="death scene"/>
+   </properties>
+  </object>
+  <object name="start point" gid="123" x="320" y="688">
+   <properties>
+    <property name="direction" value="down"/>
+    <property name="state" value="load game"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

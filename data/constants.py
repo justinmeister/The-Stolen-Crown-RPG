@@ -23,6 +23,7 @@ DUNGEON4 = 'dungeon4'
 DUNGEON5 = 'dungeon5'
 INSTRUCTIONS = 'instructions'
 DEATH_SCENE = 'death scene'
+LOADGAME = 'load game'
 
 ##Colors
 

@@ -23,6 +23,7 @@ DUNGEON4 = 'dungeon4'
 DUNGEON5 = 'dungeon5'
 INSTRUCTIONS = 'instructions'
 DEATH_SCENE = 'death scene'
+LOADGAME = 'load game'
 
 
 def main():
@@ -46,6 +47,7 @@ def main():
                   DUNGEON4: levels.LevelState(DUNGEON4, True),
                   DUNGEON5: levels.LevelState(DUNGEON5, True),
                   INSTRUCTIONS: main_menu.Instructions(),
+                  LOADGAME: main_menu.LoadGame(),
                   DEATH_SCENE: death.DeathScene()
                   }
 
