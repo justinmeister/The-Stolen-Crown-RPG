@@ -192,7 +192,7 @@ class Inn(Shop):
         """
         Make the dialogue for when the player buys an item.
         """
-        return ['Your health has been replenished!']
+        return ['Your health has been replenished and your game saved!']
 
     def make_purchasable_items(self):
         """Make list of items to be chosen"""

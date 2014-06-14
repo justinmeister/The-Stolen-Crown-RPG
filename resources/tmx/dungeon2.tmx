@@ -6,13 +6,16 @@
  <tileset firstgid="111" name="tileset3" tilewidth="16" tileheight="16">
   <image source="../graphics/tileset3.png" width="176" height="192"/>
  </tileset>
+ <tileset firstgid="243" name="stairs" tilewidth="16" tileheight="16">
+  <image source="../graphics/stairs.png" trans="5e81a2" width="32" height="16"/>
+ </tileset>
  <layer name="Tile Layer 1" width="25" height="25">
   <data encoding="base64" compression="zlib">
-   eJzdlEEKACAIBP3/g+zey7qGiEjuSiV0Smc0JJH/Qs1hMNTkVRwzcHTMwXZ4uSd8Vg1idhY/w0DwIxaSb5nV3bvFMRocrDk8PnunMncIPsLD+ksqb52t7XJIIi9y7JxKL+jaF2IBx8lVXg==
+   eJxjYBh+YBsapoUZILHPVLLjEB476OEPWtuBTS055tNKDzX8TivziTGDGubjM4ua5qObSWnaGyx2bKeDHbTyBzbzaZ2miJGjhvnUsIdWZQklYU2sXnrZQW5dCNPzhQg7aO2PoQoAd2pYOA==
   </data>
  </layer>
  <objectgroup name="Object Layer 1" width="25" height="25">
-  <object name="start point" gid="73" x="64" y="80">
+  <object name="start point" gid="73" x="64" y="64">
    <properties>
     <property name="direction" value="down"/>
     <property name="state" value="dungeon"/>
@@ -124,14 +127,14 @@
   <object name="blocker" gid="70" x="256" y="224"/>
   <object name="blocker" gid="70" x="256" y="240"/>
   <object name="portal" type="dungeon3" gid="89" x="336" y="352"/>
-  <object name="start point" gid="73" x="336" y="368">
+  <object name="start point" gid="73" x="336" y="352">
    <properties>
     <property name="direction" value="down"/>
     <property name="state" value="dungeon3"/>
    </properties>
   </object>
   <object name="portal" type="dungeon4" gid="89" x="80" y="352"/>
-  <object name="start point" gid="73" x="80" y="368">
+  <object name="start point" gid="73" x="80" y="352">
    <properties>
     <property name="direction" value="down"/>
     <property name="state" value="dungeon4"/>

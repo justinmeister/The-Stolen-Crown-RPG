@@ -6,9 +6,12 @@
  <tileset firstgid="111" name="tileset3" tilewidth="16" tileheight="16">
   <image source="../graphics/tileset3.png" width="176" height="192"/>
  </tileset>
+ <tileset firstgid="243" name="stairs" tilewidth="16" tileheight="16">
+  <image source="../graphics/stairs.png" trans="5e81a2" width="32" height="16"/>
+ </tileset>
  <layer name="Tile Layer 1" width="25" height="27">
   <data encoding="base64" compression="zlib">
-   eJztlUkOwjAMRX1CYAldQveIUWLacQugDIeg6+Zk/EiJaiwXCLQIoUR6ihs3fkqy8JCIxmACpmAG5m5tVJELWV+AJdiAFVi7WH5/Em+/6LgqtEA7gI5SI2eOQsl3QS+AxNUpWD3psBCL33HkDmKxdBhGHwwYWl2eT8V+ozhkXiLPlVS8o8Q6dmCvzPLtNEchsPvO4AJOLNYGv79nDkP37/vq4PcXHdHxjw6fi+f4jXPU5fBzkw7fz5p0POpR8qwhDtunMnCkstfI3ptS2c8O7v8swFH3uAG1VgYY
+   eJztlUsOwiAQhjmhutQutXvjM/G18xZqfRyiXcOZPIA/CaTjZKqirTEGki9MmTJfgMUMlVJjMAFTMANztzaqyIWsL8ASbMAKrF3Mvz+Jt1905AIt0A6gI9QoiEML+S7oBZC4OprU4w7t1nz8jqNwXEnMHYbQBwOCVJfmU7bfCA6e5/BzJRXvyLGOHdgLM387yaEZdt8ZXMCJxNKg9/fMYdT9+7466P1FR3T8o8Pn4jl+4xx1OfzcpMP3syYdj3oUP2uIw/apDBxV2Wt4701V2c8O7v8swFH3uAGzDAfD
   </data>
  </layer>
  <objectgroup name="Object Layer 1" width="25" height="27">
@@ -107,14 +110,14 @@
   <object name="blocker" gid="70" x="304" y="192"/>
   <object name="blocker" gid="70" x="304" y="160"/>
   <object name="portal" type="dungeon2" gid="89" x="48" y="96"/>
-  <object name="start point" gid="73" x="48" y="112">
+  <object name="start point" gid="73" x="48" y="96">
    <properties>
     <property name="direction" value="down"/>
     <property name="state" value="dungeon2"/>
    </properties>
   </object>
   <object name="portal" type="dungeon4" gid="89" x="336" y="96"/>
-  <object name="start point" gid="73" x="336" y="112">
+  <object name="start point" gid="73" x="336" y="96">
    <properties>
     <property name="direction" value="down"/>
     <property name="state" value="dungeon4"/>
@@ -131,7 +134,7 @@
  </objectgroup>
  <layer name="Tile Layer 2" width="25" height="27">
   <data encoding="base64" compression="zlib">
-   eJxjYKAP6EHj9yKx+3CoI0YNsvh0NDtmILFn4lBHjBpk8VEwCkbBKBgFo2AUjIJRQD0AAG1HCSk=
+   eJxjYKAP6EHj9yKx+3CoI0YNsvh0NDtmILFn4lBHjBpk8eEGPlPJnC9UMmcUjIJRMApGwSgYBSMLAABr6wsQ
   </data>
  </layer>
 </map>

@@ -9,26 +9,29 @@
  <tileset firstgid="243" name="castledoor" tilewidth="16" tileheight="16">
   <image source="../graphics/castledoor.png" width="32" height="48"/>
  </tileset>
+ <tileset firstgid="249" name="stairs" tilewidth="16" tileheight="16">
+  <image source="../graphics/stairs.png" trans="5e81a2" width="32" height="16"/>
+ </tileset>
  <layer name="Tile Layer 1" width="25" height="25">
   <data encoding="base64" compression="zlib">
-   eJztz80KgkAYheG5wmgpLaN9plaklT94F1r2cw+51ivzXYwwiAuhiSi+Aw8z3+pwlPpu1nCxgQcfAbbYYY/Dmx0hIhxxwhkxEqTIkP9IR4NWvzPMjbu11PFCrV8HC+OuLXWYO/oO2THeITumd8iO6R3/uGOJlfrsjj42dxQoccEVFW6444Gn/kskw3Q16m94
+   eJztz80KgkAYheG5wmgZLaO9labYj5Z4F5Wl3kOzzivrXUwwiAuhiVC+Aw8z3+pwlPpvPKywxgY+AmwRIkL8ZccOexxwRIIUJ5yRIR9IxwuNeSeYWnfjqOMJbd4Z5tatHXXYOz4dsqO7Q3b075Ad/TvGuGOBpfrtDm243HHBFTcUuOOBEhVq85dI2nkD3Rtw5g==
   </data>
  </layer>
  <layer name="Tile Layer 2" width="25" height="25">
   <data encoding="base64" compression="zlib">
-   eJxjYBhc4DMQf6GxHV+B+BuN7fgOxD9obMcoGAWjYBSMglEwCkYuAACy2gXC
+   eJxjYBhc4DMQf6GxHV+B+BuN7fgOxD9obMcoGAWjYBSMAtqDn3jkftHNFaNgFGACAK3hB7U=
   </data>
  </layer>
  <objectgroup name="Object Layer 1" width="25" height="25">
-  <object name="portal" type="dungeon2" gid="89" x="176" y="304"/>
-  <object name="portal" type="dungeon4" gid="89" x="192" y="304"/>
-  <object name="start point" gid="73" x="176" y="288">
+  <object name="portal" type="dungeon2" gid="89" x="128" y="304"/>
+  <object name="portal" type="dungeon4" gid="89" x="240" y="304"/>
+  <object name="start point" gid="73" x="128" y="304">
    <properties>
     <property name="direction" value="up"/>
     <property name="state" value="dungeon2"/>
    </properties>
   </object>
-  <object name="start point" gid="73" x="192" y="288">
+  <object name="start point" gid="73" x="240" y="304">
    <properties>
     <property name="direction" value="up"/>
     <property name="state" value="dungeon4"/>
@@ -80,13 +83,13 @@
   <object name="blocker" gid="70" x="112" y="96"/>
   <object name="portal" type="dungeon5" gid="89" x="176" y="64"/>
   <object name="portal" type="dungeon5" gid="89" x="192" y="64"/>
-  <object name="start point" gid="73" x="176" y="80">
+  <object name="start point" gid="73" x="176" y="64">
    <properties>
     <property name="direction" value="down"/>
     <property name="state" value="dungeon5"/>
    </properties>
   </object>
-  <object name="start point" gid="73" x="192" y="80">
+  <object name="start point" gid="73" x="192" y="64">
    <properties>
     <property name="direction" value="down"/>
     <property name="state" value="dungeon5"/>
