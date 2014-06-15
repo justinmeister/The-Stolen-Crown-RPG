@@ -183,6 +183,7 @@ class Gui(object):
 
                 if self.index == (len(self.dialogue) - 1):
                     self.state = self.begin_new_transaction()
+                self.notify(c.CLICK2)
 
         if not keys[pg.K_SPACE]:
             self.allow_input = True
@@ -196,7 +197,6 @@ class Gui(object):
             state = 'buysell'
 
         return state
-
 
     def make_selection(self, keys, current_time):
         """Control the selection"""

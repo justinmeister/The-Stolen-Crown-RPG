@@ -1,6 +1,7 @@
 import pickle, sys, os
 import pygame as pg
 from .. import setup, tools, tilerender
+from .. import observer
 from .. import constants as c
 import death
  
@@ -128,6 +129,14 @@ class Instructions(tools._State):
         self.transition_surface = pg.Surface(setup.SCREEN_RECT.size)
         self.transition_surface.fill(c.BLACK_BLUE)
         self.transition_surface.set_alpha(self.alpha)
+        self.observers = [observer.SoundEffects()]
+
+    def notify(self, event):
+        """
+        Notify all observers of event.
+        """
+        for observer in self.observers:
+            observer.on_notify(event)
 
     def set_next_scene(self):
         """
@@ -217,6 +226,7 @@ class LoadGame(Instructions):
         super(LoadGame, self).__init__()
         self.arrow = death.Arrow(200, 260)
         self.arrow.pos_list[1] += 34
+        self.allow_input = False
 
     def set_image(self):
         """
@@ -231,19 +241,30 @@ class LoadGame(Instructions):
         pass
     
     def normal_update(self, keys):
-        if keys[pg.K_DOWN]:
-            self.arrow.index = 1
-        elif keys[pg.K_UP]:
-            self.arrow.index = 0
-        elif keys[pg.K_SPACE]:
-            if self.arrow.index == 0:
-                self.game_data = pickle.load(open("save.p", "rb"))
-                self.next = c.TOWN
-                self.state = c.TRANSITION_OUT
-            else:
-                self.next = c.OVERWORLD
-                self.state = c.TRANSITION_OUT
+        if self.allow_input:
+            if keys[pg.K_DOWN] and self.arrow.index == 0:
+                self.arrow.index = 1
+                self.notify(c.CLICK)
+                self.allow_input = False
+            elif keys[pg.K_UP] and self.arrow.index == 1:
+                self.arrow.index = 0
+                self.notify(c.CLICK)
+                self.allow_input = False
+            elif keys[pg.K_SPACE]:
+                if self.arrow.index == 0:
+                    self.game_data = pickle.load(open("save.p", "rb"))
+                    self.next = c.TOWN
+                    self.state = c.TRANSITION_OUT
+                else:
+                    self.next = c.OVERWORLD
+                    self.state = c.TRANSITION_OUT
+                self.notify(c.CLICK2)
 
-        self.arrow.rect.y = self.arrow.pos_list[self.arrow.index]  
+            self.arrow.rect.y = self.arrow.pos_list[self.arrow.index]  
+
+        if not keys[pg.K_DOWN] and not keys[pg.K_UP]:
+            self.allow_input = True
+
+        
 
 

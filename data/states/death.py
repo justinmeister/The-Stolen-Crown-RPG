@@ -1,6 +1,7 @@
 import copy, pickle, sys, os
 import pygame as pg
 from .. import setup, tools
+from .. import observer
 from ..components import person
 from .. import constants as c
 
@@ -21,17 +22,34 @@ class Arrow(pg.sprite.Sprite):
                                         y=y)
         self.index = 0
         self.pos_list = [y, y+34]
+        self.allow_input = False
+        self.observers = [observer.SoundEffects()]
+       
+    def notify(self, event):
+        """
+        Notify all observers of event.
+        """
+        for observer in self.observers:
+            observer.on_notify(event)
 
     def update(self, keys):
         """
         Update arrow position.
         """
-        if keys[pg.K_DOWN] and not keys[pg.K_UP]:
-            self.index = 1
-        elif keys[pg.K_UP] and not keys[pg.K_DOWN]:
-            self.index = 0
+        if self.allow_input:
+            if keys[pg.K_DOWN] and not keys[pg.K_UP] and self.index == 0:
+                self.index = 1
+                self.allow_input = False
+                self.notify(c.CLICK)
+            elif keys[pg.K_UP] and not keys[pg.K_DOWN] and self.index == 1:
+                self.index = 0
+                self.allow_input = False
+                self.notify(c.CLICK)
 
-        self.rect.y = self.pos_list[self.index]
+            self.rect.y = self.pos_list[self.index]
+
+        if not keys[pg.K_DOWN] and not keys[pg.K_UP]:
+            self.allow_input = True
 
 
 class DeathScene(tools._State):
@@ -64,6 +82,14 @@ class DeathScene(tools._State):
         if not os.path.isfile("save.p"):
             game_data = tools.create_game_data_dict()
             pickle.dump(game_data, open("save.p", "wb"))
+        self.observers = [observer.SoundEffects()]
+
+    def notify(self, event):
+        """
+        Notify all observers of event.
+        """
+        for observer in self.observers:
+            observer.on_notify(event)
 
     def make_message_box(self):
         """
@@ -151,6 +177,7 @@ class DeathScene(tools._State):
             elif self.arrow.index == 1:
                 self.next = c.MAIN_MENU
             self.state = c.TRANSITION_OUT
+            self.notify(c.CLICK2)
 
     def draw_level(self, surface):
         """

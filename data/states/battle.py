@@ -63,6 +63,7 @@ class Battle(tools._State):
         self.just_leveled_up = False
         self.transition_rect = setup.SCREEN.get_rect()
         self.transition_alpha = 255
+        self.temp_magic = self.game_data['player stats']['magic']['current']
 
     def make_player_action_dict(self):
         """
@@ -240,12 +241,14 @@ class Battle(tools._State):
                         self.enter_select_action_state()
                     elif self.info_box.magic_text_list[self.arrow.index] == 'Cure':
                         magic_points = self.game_data['player inventory']['Cure']['magic points']
-                        if self.game_data['player stats']['magic']['current'] >= magic_points:
+                        if self.temp_magic >= magic_points:
+                            self.temp_magic -= magic_points
                             self.player_actions.append(c.CURE_SPELL)
                             self.action_selected = True
                     elif self.info_box.magic_text_list[self.arrow.index] == 'Fire Blast':
                         magic_points = self.game_data['player inventory']['Fire Blast']['magic points']
-                        if self.game_data['player stats']['magic']['current'] >= magic_points:
+                        if self.temp_magic >= magic_points:
+                            self.temp_magic -= magic_points
                             self.player_actions.append(c.FIRE_SPELL)
                             self.action_selected = True
 
@@ -292,8 +295,11 @@ class Battle(tools._State):
         elif self.state == c.FIRE_SPELL or self.state == c.CURE_SPELL:
             if (self.current_time - self.timer) > 1500:
                 if self.player_actions:
-                    self.player_action_dict[self.player_actions[0]]()
-                    self.player_actions.pop(0)
+                    if not len(self.enemy_list):
+                        self.enter_battle_won_state()
+                    else:
+                        self.player_action_dict[self.player_actions[0]]()
+                        self.player_actions.pop(0)
                 else:
                     if len(self.enemy_list):
                         self.enter_enemy_attack_state()
@@ -489,8 +495,8 @@ class Battle(tools._State):
         self.notify(c.FIRE)
         self.state = self.info_box.state = c.FIRE_SPELL
         POWER = self.inventory['Fire Blast']['power']
-        POWER += self.game_data['player stats']['Level'] * 5
         MAGIC_POINTS = self.inventory['Fire Blast']['magic points']
+        print MAGIC_POINTS
         self.game_data['player stats']['magic']['current'] -= MAGIC_POINTS
         for enemy in self.enemy_list:
             DAMAGE = random.randint(POWER//2, POWER)

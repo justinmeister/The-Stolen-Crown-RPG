@@ -169,7 +169,7 @@
     <property name="dialogue2" value="WIthout it, our town will be overrun by monsters!"/>
     <property name="dialogue3" value="Go to the NorthWest Castle and retrieve it for me."/>
     <property name="dialogue4" value="Here is some GOLD for supplies."/>
-    <property name="dialogue5" value="You are my only hope."/>
+    <property name="dialogue5" value="You receive 100 GOLD."/>
    </properties>
   </object>
   <object name="sprite" type="soldier" gid="74" x="128" y="336">

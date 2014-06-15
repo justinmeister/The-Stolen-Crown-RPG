@@ -277,7 +277,6 @@ class LevelState(tools._State):
                                         'I can not believe what I see before my eyes.',
                                         'You are truly a brave and noble warrior.',
                                         'Henceforth, I name thee Grand Protector of this Town!',
-                                        'Go forth and be recognized.',
                                         'You are the greatest warrior this world has ever known.']
             thank_you_dialogue = ['Thank you for retrieving my crown.',
                                   'My kingdom is forever in your debt.']

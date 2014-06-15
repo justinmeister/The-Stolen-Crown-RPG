@@ -218,7 +218,8 @@ class WeaponShop(Shop):
 
     def make_dialogue(self):
         """Make the list of dialogue phrases"""
-        return ["Welcome to the " + self.name + "!",
+        shop_name = "{}{}".format(self.name[0].upper(), self.name[1:])
+        return ["Welcome to the " + shop_name + "!",
                 "What weapon would you like to buy?"]
 
 
@@ -253,7 +254,8 @@ class ArmorShop(Shop):
 
     def make_dialogue(self):
         """Make the list of dialogue phrases"""
-        return ["Welcome to the " + self.name + "!",
+        shop_name = "{}{}".format(self.name[0].upper(), self.name[1:])
+        return ["Welcome to the " + shop_name + "!",
                 "Would piece of armor would you like to buy?"]
 
 
@@ -287,7 +289,8 @@ class MagicShop(Shop):
 
     def make_dialogue(self):
         """Make the list of dialogue phrases"""
-        return ["Welcome to the " + self.name + "!",
+        shop_name = "{}{}".format(self.name[0].upper(), self.name[1:])
+        return ["Welcome to the " + shop_name + "!",
                 "Would magic spell would you like to buy?"]
 
 
@@ -306,8 +309,8 @@ class MagicShop(Shop):
         item2 = {'type': 'Fire Blast',
                 'price': 150,
                 'quantity': 1,
-                'magic points': 75,
-                'power': 10,
+                'magic points': 40,
+                'power': 15,
                 'dialogue': fire_dialogue}
 
         return [item1, item2]
@@ -324,7 +327,8 @@ class PotionShop(Shop):
 
     def make_dialogue(self):
         """Make the list of dialogue phrases"""
-        return ["Welcome to the " + self.name + "!",
+        shop_name = "{}{}".format(self.name[0].upper(), self.name[1:])
+        return ["Welcome to the " + shop_name + "!",
                 "What potion would you like to buy?"]
 
 

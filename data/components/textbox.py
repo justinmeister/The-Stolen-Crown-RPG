@@ -252,8 +252,8 @@ class TextHandler(object):
         elif item == 'ELIXIR':
             inventory[item] = dict([('quantity',1)])
         elif item == 'Fire Blast':
-            inventory[item] = dict([('magic points', 25),
-                                    ('power', 10)])
+            inventory[item] = dict([('magic points', 40),
+                                    ('power', 15)])
         else:
             pass
 
