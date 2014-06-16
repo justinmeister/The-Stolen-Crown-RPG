@@ -58,8 +58,8 @@ class CollisionHandler(object):
         portal = pg.sprite.spritecollideany(self.player, self.portals)
 
         if portal:
-            self.level.next = portal.name
             self.level.use_portal = True
+            self.level.portal = portal.name
 
     def check_for_blockers(self):
         """
@@ -108,7 +108,6 @@ class CollisionHandler(object):
         """
         if self.level.allow_battles:
             self.level.game_data['battle counter'] -= 5
-
             if self.level.game_data['battle counter'] <= 0:
                 self.level.switch_to_battle = True
 

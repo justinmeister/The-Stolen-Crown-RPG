@@ -149,9 +149,15 @@ class Battle(tools._State):
                                   'down', 'battle resting')
             enemy_group.add(enemy)
         else:
-            for enemy in range(random.randint(1, 6)):
-                enemy_group.add(person.Enemy('devil', 0, 0,
-                                              'down', 'battle resting'))
+            if self.game_data['start of game']:
+                for enemy in range(3):
+                    enemy_group.add(person.Enemy('devil', 0, 0,
+                                                 'down', 'battle resting'))
+                self.game_data['start of game'] = False
+            else:
+                for enemy in range(random.randint(1, 6)):
+                    enemy_group.add(person.Enemy('devil', 0, 0,
+                                                  'down', 'battle resting'))
 
         for i, enemy in enumerate(enemy_group):
             enemy.rect.topleft = pos_list[i]

@@ -144,6 +144,11 @@ class QuickStats(pg.sprite.Sprite):
             text_rect = render.get_rect(x=x,
                                         centery=y)
             surface.blit(render, text_rect)
+
+        if self.game_data['crown quest']:
+            crown = setup.GFX['crown']
+            crown_rect = crown.get_rect(x=178, y=40)
+            surface.blit(crown, crown_rect)
         
         return surface, rect
 

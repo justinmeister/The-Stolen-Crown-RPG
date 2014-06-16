@@ -29,6 +29,7 @@ class LevelState(tools._State):
         self.music_title = None
         self.previous_music = None
         self.music, self.volume = self.set_music()
+        self.portal = None
 
     def set_music(self):
         """
@@ -337,8 +338,8 @@ class LevelState(tools._State):
         self.player.update(keys, current_time)
         self.sprites.update(current_time)
         self.collision_handler.update(keys, current_time)
-        self.check_for_portals()
         self.check_for_battle()
+        self.check_for_portals()
         self.dialogue_handler.update(keys, current_time)
         self.check_for_menu(keys)
         self.viewport_update()
@@ -351,6 +352,7 @@ class LevelState(tools._State):
         if self.use_portal and not self.done:
             self.player.location = self.player.get_tile_location()
             self.update_game_data()
+            self.next = self.portal
             self.state = 'transition_out'
 
     def check_for_battle(self):

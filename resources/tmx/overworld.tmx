@@ -17,7 +17,7 @@
  </tileset>
  <layer name="Tile Layer 1" width="30" height="37">
   <data encoding="base64" compression="zlib">
-   eJztltEKwjAMRftRVmUoQx9E3f//jylMKCGNzZbbF/NwWBmDu3uTlEwppenPmIkX8Vyfb3a+gnRvxKIQumN0l0bt63e8J6TzeYOuB3dB90Bk4riC0OV+JfIAv5p2nYNVh2fY41fi4pxpLw9ApuE3/FruNU+/lpw9/Vpy9vRryTn6OfoZkbP3TtazD6D2QC1vS11nxp6899SV/wfHy++W/sqNWnv2sYY00/Uuj/Sv3SdI/0X31NBFzdQvz8icC6XH6z39ex7RZ625k779AFX2Eqc=
+   eJztltEKgzAMRftRcw5xiHuQTf//fxahhSzErFkSX9aHg6WIt/cmlQwppeHPmIAX8MzPlazvQbozsAk03XN0t4Pa4z3aE9z69oOuBw9G9wJ0wDUToUv9cnQn+JW0cQ5aHZphjV+O0TnTWpaATJvf5lfzX/P0q8nZ068mZ0+/mpxbP7d+jsjZeyarmQei5kApb01dJ4Ilb0td6TkoWr94prWca8l15mpNv7sa6iDB3Wk8y+P93ui3RpvirVl0e0EvQvOb512zzNERumP6nNPLOson5ujece++AX1UE2k=
   </data>
  </layer>
  <layer name="Tile Layer 2" width="30" height="37">
@@ -158,7 +158,7 @@
     <property name="state" value="town"/>
    </properties>
   </object>
-  <object name="start point" gid="123" x="368" y="560">
+  <object name="start point" gid="123" x="432" y="496">
    <properties>
     <property name="direction" value="down"/>
     <property name="state" value="instructions"/>
@@ -188,16 +188,24 @@
   <object name="blocker" gid="120" x="384" y="592"/>
   <object name="blocker" gid="120" x="368" y="496"/>
   <object name="blocker" gid="120" x="384" y="496"/>
-  <object name="blocker" gid="120" x="400" y="512"/>
-  <object name="blocker" gid="120" x="400" y="528"/>
-  <object name="blocker" gid="120" x="400" y="544"/>
-  <object name="blocker" gid="120" x="400" y="560"/>
+  <object name="blocker" gid="120" x="400" y="464"/>
+  <object name="blocker" gid="120" x="416" y="464"/>
+  <object name="blocker" gid="120" x="432" y="464"/>
+  <object name="blocker" gid="120" x="416" y="576"/>
   <object name="blocker" gid="120" x="400" y="576"/>
-  <object name="start point" gid="123" x="368" y="560">
+  <object name="start point" gid="123" x="432" y="496">
    <properties>
     <property name="direction" value="down"/>
     <property name="state" value="load game"/>
    </properties>
   </object>
+  <object name="blocker" gid="120" x="432" y="560"/>
+  <object name="blocker" gid="120" x="432" y="544"/>
+  <object name="blocker" gid="120" x="448" y="528"/>
+  <object name="blocker" gid="120" x="464" y="512"/>
+  <object name="blocker" gid="120" x="464" y="480"/>
+  <object name="blocker" gid="120" x="464" y="496"/>
+  <object name="blocker" gid="120" x="448" y="464"/>
+  <object name="blocker" gid="120" x="384" y="480"/>
  </objectgroup>
 </map>

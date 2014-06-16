@@ -207,7 +207,7 @@ def create_game_data_dict():
                     'equipped weapon': 'Rapier',
                     'equipped armor': []}
 
-    player_health = {'current': 0,
+    player_health = {'current': 70,
                      'maximum': 70}
 
     player_magic = {'current': 70,
@@ -229,12 +229,13 @@ def create_game_data_dict():
                                                   ('quantity',1)])},
                  'player inventory': player_items,
                  'player stats': player_stats,
-                 'battle counter': random.randint(50, 255),
+                 'battle counter': 50,
                  'treasure1': True,
                  'treasure2': True,
                  'treasure3': True,
                  'treasure4': True,
                  'treasure5': True,
+                 'start of game': True,
                  'talked to king': False,
                  'brother quest complete': False,
                  'talked to sick brother': False,
