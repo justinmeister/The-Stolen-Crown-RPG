@@ -26,6 +26,8 @@ class LevelState(tools._State):
         self.name = name
         self.tmx_map = setup.TMX[name]
         self.allow_battles = battles
+        self.music_title = None
+        self.previous_music = None
         self.music, self.volume = self.set_music()
 
     def set_music(self):
@@ -43,9 +45,11 @@ class LevelState(tools._State):
                       c.HOUSE: ('pleasant_creek', .1),
                       c.BROTHER_HOUSE: ('pleasant_creek', .1)}
 
+       
         if self.name in music_dict:
             music = music_dict[self.name][0]
             volume = music_dict[self.name][1]
+            self.music_title = music
             return setup.MUSIC[music], volume
         else:
             return None, None

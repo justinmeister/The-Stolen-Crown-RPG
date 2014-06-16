@@ -16,6 +16,7 @@ class Menu(tools._State):
     def __init__(self):
         super(Menu, self).__init__()
         self.music = setup.MUSIC['kings_theme']
+        self.music_title = 'kings_theme'
         self.volume = 0.4
         self.next = c.INSTRUCTIONS
         self.tmx_map = setup.TMX['title']
@@ -109,6 +110,7 @@ class Instructions(tools._State):
         super(Instructions, self).__init__()
         self.tmx_map = setup.TMX['title']
         self.music = None
+        self.music_title = None
         
     def startup(self, *args):
         self.renderer = tilerender.Renderer(self.tmx_map)

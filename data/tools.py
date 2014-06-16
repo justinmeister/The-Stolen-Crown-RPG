@@ -39,9 +39,11 @@ class Control(object):
 
     def flip_state(self):
         previous, self.state_name = self.state_name, self.state.next
+        previous_music = self.state.music_title
         persist = self.state.cleanup()
         self.state = self.state_dict[self.state_name]
         self.state.previous = previous
+        self.state.previous_music = previous_music
         self.state.startup(self.current_time, persist)
         self.set_music()
 
@@ -49,7 +51,9 @@ class Control(object):
         """
         Set music for the new state.
         """
-        if self.state.music:
+        if self.state.music_title == self.state.previous_music:
+            pass
+        elif self.state.music:
             pg.mixer.music.load(self.state.music)
             pg.mixer.music.set_volume(self.state.volume)
             pg.mixer.music.play(-1)
@@ -100,6 +104,8 @@ class _State(object):
         self.previous = None
         self.game_data = {}
         self.music = None
+        self.music_title = None
+        self.previous_music = None
 
     def get_event(self, event):
         pass
