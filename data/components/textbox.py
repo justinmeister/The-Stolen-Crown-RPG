@@ -155,7 +155,7 @@ class TextHandler(object):
                                         'Please retrieve it for me.']
                         self.talking_sprite.dialogue = new_dialogue
                         self.end_dialogue(current_time)
-                    if (self.game_data['crown quest'] 
+                    elif (self.game_data['crown quest'] 
                             and not self.game_data['delivered crown']):
                         retrieved_crown_dialogue = ['My crown! You recovered my stolen crown!!!',
                                                    'I can not believe what I see before my eyes.',
@@ -163,6 +163,7 @@ class TextHandler(object):
                                                    'Henceforth, I name thee Grand Protector of this Town!',
                                                    'Go forth and be recognized.',
                                                    'You are the greatest warrior this world has ever known.']
+                        self.game_data['talked to king'] = True
                         self.talking_sprite.dialogue = retrieved_crown_dialogue
                         self.game_data['delivered crown'] = True
                         self.end_dialogue(current_time)

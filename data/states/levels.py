@@ -28,38 +28,16 @@ class LevelState(tools._State):
         self.allow_battles = battles
         self.music_title = None
         self.previous_music = None
-        self.music, self.volume = self.set_music()
+        self.music = None
+        self.volume = None
         self.portal = None
-
-    def set_music(self):
-        """
-        Set music based on name.
-        """
-        music_dict = {c.TOWN: ('town_theme', .4),
-                      c.OVERWORLD: ('overworld', .4),
-                      c.CASTLE: ('kings_theme', .4),
-                      c.DUNGEON: ('dungeon_theme', .4),
-                      c.DUNGEON2: ('dungeon_theme', .4),
-                      c.DUNGEON3: ('dungeon_theme', .4),
-                      c.DUNGEON4: ('dungeon_theme', .4),
-                      c.DUNGEON5: ('dungeon_theme', .4),
-                      c.HOUSE: ('pleasant_creek', .1),
-                      c.BROTHER_HOUSE: ('pleasant_creek', .1)}
-
-       
-        if self.name in music_dict:
-            music = music_dict[self.name][0]
-            volume = music_dict[self.name][1]
-            self.music_title = music
-            return setup.MUSIC[music], volume
-        else:
-            return None, None
 
     def startup(self, current_time, game_data):
         """
         Call when the State object is flipped to.
         """
         self.game_data = game_data
+        self.music, self.volume = self.set_music()
         self.current_time = current_time
         self.state = 'transition_in'
         self.reset_dialogue = ()
@@ -88,6 +66,32 @@ class LevelState(tools._State):
         self.menu_screen = player_menu.Player_Menu(game_data, self)
         self.transition_rect = setup.SCREEN.get_rect()
         self.transition_alpha = 255
+
+    def set_music(self):
+        """
+        Set music based on name.
+        """
+        music_dict = {c.TOWN: ('town_theme', .4),
+                      c.OVERWORLD: ('overworld', .4),
+                      c.CASTLE: ('kings_theme', .4),
+                      c.DUNGEON: ('dungeon_theme', .4),
+                      c.DUNGEON2: ('dungeon_theme', .4),
+                      c.DUNGEON3: ('dungeon_theme', .4),
+                      c.DUNGEON4: ('dungeon_theme', .4),
+                      c.DUNGEON5: ('dungeon_theme', .4),
+                      c.HOUSE: ('pleasant_creek', .1),
+                      c.BROTHER_HOUSE: ('pleasant_creek', .1)}
+
+        if self.game_data['crown quest'] and self.name == c.TOWN:
+            self.music_title = 'kings_theme'
+            return setup.MUSIC['kings_theme'], .4
+        elif self.name in music_dict:
+            music = music_dict[self.name][0]
+            volume = music_dict[self.name][1]
+            self.music_title = music
+            return setup.MUSIC[music], volume
+        else:
+            return None, None
 
     def make_viewport(self, map_image):
         """

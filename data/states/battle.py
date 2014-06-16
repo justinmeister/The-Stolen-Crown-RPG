@@ -384,6 +384,7 @@ class Battle(tools._State):
         """
         if self.game_data['battle type'] == 'evilwizard':
             self.game_data['crown quest'] = True
+            self.game_data['talked to king'] = True
         self.game_data['last state'] = self.name
         self.game_data['battle counter'] = random.randint(50, 255)
         self.game_data['battle type'] = None
