@@ -1,5 +1,4 @@
-#Constants used throughout the game
-
+#Constants used throughout the game 
 SCREEN_SIZE = (800, 608)
 
 ##GAME STATES
@@ -24,6 +23,7 @@ DUNGEON5 = 'dungeon5'
 INSTRUCTIONS = 'instructions'
 DEATH_SCENE = 'death scene'
 LOADGAME = 'load game'
+CREDITS = 'credits'
 
 ##Colors
 
