@@ -1,3 +1,4 @@
+import copy
 import pygame as pg
 from .. import tools, setup
 from .. import constants as c
@@ -7,7 +8,7 @@ class CreditEntry(object):
     """
     The text for each credit for the game.
     """
-    def __init__(self):
+    def __init__(self, level):
         self.font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
         self.credit_sprites = self.make_credits()
         self.index = 0
@@ -16,12 +17,14 @@ class CreditEntry(object):
         self.state = c.TRANSITION_IN
         self.alpha = 0
         self.timer = 0.0
+        self.level = level
 
     def make_credits(self):
         """
         Make a list of lists for all the credit surfaces.
         """
-        credits = [['PROGRAMMING AND GAME DESIGN', 'Justin Armstrong'],
+        credits = [['THE STOLEN CROWN', 'A Fantasy RPG'],
+                   ['PROGRAMMING AND GAME DESIGN', 'Justin Armstrong'],
                    ['ART', 'John Smith'],
                    ['MUSIC', 'John Smith'],
                    ['SPECIAL THANKS', '/r/pygame']]
@@ -32,9 +35,10 @@ class CreditEntry(object):
             subcredit_list = []
             for i, subcredit in enumerate(credit):
                 text_sprite = pg.sprite.Sprite()
-                text_sprite.image = self.font.render(subcredit, True, c.WHITE)
-                text_sprite.rect = text_sprite.image.get_rect(centerx = 400,
-                                                              y=300+(i*50))
+                text_sprite.text_image = self.font.render(subcredit, True, c.WHITE)
+                text_sprite.rect = text_sprite.text_image.get_rect(centerx = 400,
+                                                                   y=250+(i*50))
+                text_sprite.image = pg.Surface(text_sprite.rect.size)
                 subcredit_list.append(text_sprite)
             credit_sprites.append(subcredit_list)
         
@@ -52,9 +56,12 @@ class CreditEntry(object):
 
     def transition_in(self):
         for credit in self.current_credit:
+            credit.image = pg.Surface(credit.rect.size).convert()
+            credit.image.set_colorkey(c.BLACK)
             credit.image.set_alpha(self.alpha)
+            credit.image.blit(credit.text_image, (0, 0))
 
-        self.alpha += c.TRANSITION_SPEED
+        self.alpha += 5
         if self.alpha >= 255:
             self.alpha = 255
             self.state = c.NORMAL
@@ -62,22 +69,30 @@ class CreditEntry(object):
 
     def transition_out(self):
         for credit in self.current_credit:
+            credit.image = pg.Surface(credit.rect.size).convert()
+            credit.image.set_colorkey(c.BLACK)
             credit.image.set_alpha(self.alpha)
-        self.alpha -= c.TRANSITION_SPEED
+            credit.image.blit(credit.text_image, (0, 0))
+           
+        self.alpha -= 5
         if self.alpha <= 0:
             self.alpha = 0
-            self.index += 1
+            if self.index < len(self.credit_sprites) - 1:
+                self.index += 1
+            else:
+                self.level.done = True
+                self.level.next = c.MAIN_MENU
             self.current_credit = self.credit_sprites[self.index]
             self.state = c.TRANSITION_IN
 
     def normal_update(self):
-        if (self.current_time - self.timer) > 5000:
+        if (self.current_time - self.timer) > 2500:
             self.state = c.TRANSITION_OUT
 
-    def update(self, surface, current_time, *args):
+    def update(self, current_time):
         self.current_time = current_time
         update_method = self.state_dict[self.state]
-        update()
+        update_method()
 
     def draw(self, surface):
         """
@@ -87,7 +102,7 @@ class CreditEntry(object):
             surface.blit(credit_sprite.image, credit_sprite.rect)
 
 
-class Credits(tools._state):
+class Credits(tools._State):
     """
     End Credits Scene.
     """
@@ -109,10 +124,10 @@ class Credits(tools._state):
         self.volume = 0.4
         self.current_time = current_time
         self.background = pg.Surface(setup.SCREEN_RECT.size)
-        self.background.fill(c.BLACKBLUE)
-        self.credit = CreditEntry()
+        self.background.fill(c.BLACK_BLUE)
+        self.credit = CreditEntry(self)
 
-    def update(self, surface, current_time, *args):
+    def update(self, surface, keys, current_time):
         """
         Update scene.
         """

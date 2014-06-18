@@ -292,7 +292,6 @@ class LevelState(tools._State):
 
             if self.game_data['crown quest'] and not self.game_data['delivered crown']:
                 sprite.dialogue = retrieved_crown_dialogue
-                self.game_data['delivered crown'] = True
                 self.reset_dialogue = (sprite, thank_you_dialogue)
             elif self.game_data['delivered crown']:
                 sprite.dialogue = thank_you_dialogue
@@ -344,6 +343,7 @@ class LevelState(tools._State):
         self.collision_handler.update(keys, current_time)
         self.check_for_battle()
         self.check_for_portals()
+        self.check_for_end_of_game()
         self.dialogue_handler.update(keys, current_time)
         self.check_for_menu(keys)
         self.viewport_update()
@@ -392,6 +392,13 @@ class LevelState(tools._State):
         self.game_data['last state'] = self.name
         self.set_new_start_pos()
 
+    def check_for_end_of_game(self):
+        """
+        Switch scene to credits if main quest is complete.
+        """
+        if self.game_data['delivered crown']:
+            self.next = c.CREDITS
+            self.state = 'transition_out'
 
     def set_new_start_pos(self):
         """
