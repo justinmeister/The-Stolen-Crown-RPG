@@ -59,7 +59,9 @@ class DeathScene(tools._State):
     def __init__(self):
         super(DeathScene, self).__init__()
         self.next = c.TOWN
-        self.music = None
+        self.music = setup.MUSIC['shop_theme']
+        self.volume = 0.5
+        self.music_title = 'shop_theme'
 
     def startup(self, current_time, game_data):
         self.game_data = game_data

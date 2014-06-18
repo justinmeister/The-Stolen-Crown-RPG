@@ -312,7 +312,8 @@ class LevelState(tools._State):
                       'dialogue': self.handling_dialogue,
                       'menu': self.goto_menu,
                       'transition_in': self.transition_in,
-                      'transition_out': self.transition_out}
+                      'transition_out': self.transition_out,
+                      'slow transition out': self.slow_fade_out}
 
         return state_dict
 
@@ -398,7 +399,7 @@ class LevelState(tools._State):
         """
         if self.game_data['delivered crown']:
             self.next = c.CREDITS
-            self.state = 'transition_out'
+            self.state = 'slow transition out'
 
     def set_new_start_pos(self):
         """
@@ -449,6 +450,20 @@ class LevelState(tools._State):
         self.draw_level(surface)
         surface.blit(transition_image, self.transition_rect)
         self.transition_alpha += c.TRANSITION_SPEED
+        if self.transition_alpha >= 255:
+            self.transition_alpha = 255
+            self.done = True
+
+    def slow_fade_out(self, surface, *args):
+        """
+        Transition level to new scene.
+        """
+        transition_image = pg.Surface(self.transition_rect.size)
+        transition_image.fill(c.TRANSITION_COLOR)
+        transition_image.set_alpha(self.transition_alpha)
+        self.draw_level(surface)
+        surface.blit(transition_image, self.transition_rect)
+        self.transition_alpha += 2
         if self.transition_alpha >= 255:
             self.transition_alpha = 255
             self.done = True
