@@ -65,8 +65,6 @@ class Control(object):
             if event.type == pg.QUIT:
                 self.done = True
             elif event.type == pg.KEYDOWN:
-                if event.key == pg.K_ESCAPE:
-                    self.done = True
                 self.keys = pg.key.get_pressed()
                 self.toggle_show_fps(event.key)
                 self.state.get_event(event)

@@ -73,7 +73,7 @@ class LevelState(tools._State):
         """
         music_dict = {c.TOWN: ('town_theme', .4),
                       c.OVERWORLD: ('overworld', .4),
-                      c.CASTLE: ('kings_theme', .4),
+                      c.CASTLE: ('town_theme', .4),
                       c.DUNGEON: ('dungeon_theme', .4),
                       c.DUNGEON2: ('dungeon_theme', .4),
                       c.DUNGEON3: ('dungeon_theme', .4),
@@ -82,7 +82,7 @@ class LevelState(tools._State):
                       c.HOUSE: ('pleasant_creek', .1),
                       c.BROTHER_HOUSE: ('pleasant_creek', .1)}
 
-        if self.game_data['crown quest'] and self.name == c.TOWN:
+        if self.game_data['crown quest'] and (self.name == c.TOWN or self.name == c.CASTLE):
             self.music_title = 'kings_theme'
             return setup.MUSIC['kings_theme'], .4
         elif self.name in music_dict:

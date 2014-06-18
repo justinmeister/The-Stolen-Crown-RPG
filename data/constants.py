@@ -86,6 +86,7 @@ FIRE = 'fire'
 PUNCH = 'punch'
 POWERUP = 'powerup'
 TALK = 'talk'
+MISS = 'whoosh'
 
 TRANSITION_SPEED = 35 
 DEATH_TRANSITION_SPEED = 5

@@ -45,7 +45,8 @@ class CreditEntry(object):
                    ['SOUND EFFECTS', 'Kenney',
                                      'Nic3_one',
                                      'Ekokubza123',
-                                     'kuzyaburst'],
+                                     'kuzyaburst',
+                                     'audione'],
                    ['SPECIAL THANKS', '/r/pygame', 
                                       'Leif Theden', 
                                       'Stacey Hunniford']]

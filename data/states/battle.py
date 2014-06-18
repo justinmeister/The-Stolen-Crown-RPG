@@ -214,11 +214,7 @@ class Battle(tools._State):
         Check user input to navigate GUI.
         """
         if self.allow_input:
-            if keys[pg.K_RETURN]:
-                self.end_battle()
-
-            elif keys[pg.K_SPACE]:
-
+            if keys[pg.K_SPACE]:
                 if self.state == c.SELECT_ACTION:
                     self.notify(c.CLICK2)
                     enter_state_function = self.select_action_state_dict[
@@ -484,6 +480,7 @@ class Battle(tools._State):
         """
         magic = self.game_data['player stats']['magic']
         magic['current'] += magic_points
+        self.temp_magic += magic_points
         if magic['current'] > magic['maximum']:
             magic['current'] = magic['maximum']
 
@@ -503,7 +500,6 @@ class Battle(tools._State):
         self.state = self.info_box.state = c.FIRE_SPELL
         POWER = self.inventory['Fire Blast']['power']
         MAGIC_POINTS = self.inventory['Fire Blast']['magic points']
-        print MAGIC_POINTS
         self.game_data['player stats']['magic']['current'] -= MAGIC_POINTS
         for enemy in self.enemy_list:
             DAMAGE = random.randint(POWER//2, POWER)
@@ -673,6 +669,8 @@ class Battle(tools._State):
             self.notify('punch{}'.format(sfx_num))
             self.player.damaged = True
             self.player.enter_knock_back_state()
+        else:
+            self.notify(c.MISS)
 
     def enter_enemy_damaged_state(self):
         """
