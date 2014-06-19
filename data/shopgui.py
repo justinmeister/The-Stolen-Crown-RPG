@@ -481,7 +481,7 @@ class Gui(object):
         self.selection_arrow.rect.topleft = self.arrow_pos_list[self.arrow_index]
 
         if keys[pg.K_DOWN] and self.allow_input:
-            if self.arrow_index < (len(self.arrow_pos_list) - 1):
+            if self.arrow_index < (len(choices) - 1):
                 self.arrow_index += 1
                 self.allow_input = False
                 self.notify(c.CLICK)
@@ -544,7 +544,7 @@ class Gui(object):
             self.selection_arrow.rect.topleft = self.arrow_pos_list[self.arrow_index]
 
         if keys[pg.K_DOWN] and self.allow_input:
-            if self.arrow_index < (len(self.arrow_pos_list) - 1):
+            if self.arrow_index < (len(choices) - 1):
                 self.arrow_index += 1
                 self.allow_input = False
                 self.notify(c.CLICK)
