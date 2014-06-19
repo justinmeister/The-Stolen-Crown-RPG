@@ -28,7 +28,7 @@ class Gui(object):
         self.player_inventory = level.game_data['player inventory']
         self.name = level.name
         self.state = 'dialogue'
-        self.no_selling = ['Inn', 'Magic Shop']
+        self.no_selling = ['Inn', 'magic shop']
         self.weapon_list = ['Long Sword', 'Rapier']
         self.armor_list = ['Chain Mail', 'Wooden Shield']
         self.font = pg.font.Font(setup.FONTS[c.MAIN_FONT], 22)
