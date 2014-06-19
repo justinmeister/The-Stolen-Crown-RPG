@@ -7,6 +7,8 @@ Requirements: Python 2.7, Pygame 1.9.1
 
 How to run: python The_Stolen_Crown.py
 
+Video Demo: https://www.youtube.com/watch?v=MkZXaDQfTSo
+
 
 ![screenshot](https://raw.github.com/justinmeister/The-Stolen-Crown-RPG/master/screenshot.png)
 
