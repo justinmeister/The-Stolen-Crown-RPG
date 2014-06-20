@@ -232,11 +232,13 @@ class Battle(tools._State):
                     if self.arrow.index == (len(self.arrow.pos_list) - 1):
                         self.enter_select_action_state()
                     elif self.info_box.item_text_list[self.arrow.index][:14] == 'Healing Potion':
-                        self.player_actions.append(c.DRINK_HEALING_POTION)
-                        self.action_selected = True
+                        if 'Healing Potion' in self.game_data['player inventory']:
+                            self.player_actions.append(c.DRINK_HEALING_POTION)
+                            self.action_selected = True
                     elif self.info_box.item_text_list[self.arrow.index][:5] == 'Ether':
-                        self.player_actions.append(c.DRINK_ETHER_POTION)
-                        self.action_selected = True
+                        if 'Ether Potion' in self.game_data['player inventory']:
+                            self.player_actions.append(c.DRINK_ETHER_POTION)
+                            self.action_selected = True
                 elif self.state == c.SELECT_MAGIC:
                     self.notify(c.CLICK2)
                     if self.arrow.index == (len(self.arrow.pos_list) - 1):
