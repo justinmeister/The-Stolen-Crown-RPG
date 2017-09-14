@@ -6,12 +6,12 @@
  <tileset firstgid="111" name="tileset3" tilewidth="16" tileheight="16">
   <image source="../graphics/tileset3.png" width="176" height="192"/>
  </tileset>
- <layer name="Tile Layer 1" width="25" height="27" visible="0">
+ <layer name="Tile Layer 1" width="25" height="27">
   <data encoding="base64" compression="zlib">
    eJxjYBh+IB+Ii4C4GIhLoOwCIC4kkl0KxS147KgC4gYgrgbiGiCuJZHdAMXE2IEL1yJhfOoI2bGdCniw2nEIB6a2P/yA2B8JB9DAjgggjkTCUaN2jNpBZTtqh4k/Ru0YtWMk2jGbAbXtg9wGSgLiZCScApUDtXXKgLgcSi8lYAetAAB7/gvf
   </data>
  </layer>
- <layer name="Tile Layer 2" width="25" height="27" visible="0">
+ <layer name="Tile Layer 2" width="25" height="27">
   <data encoding="base64" compression="zlib">
    eJxjYBgF5IIeJHYvEruPRDX4wHQk9gwk9kwS1YyCUTAKRgEhEDnQDhgFo2AUjEgAAF4VBzg=
   </data>
