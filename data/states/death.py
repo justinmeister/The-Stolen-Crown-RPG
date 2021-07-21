@@ -128,7 +128,7 @@ class DeathScene(tools._State):
 
     def make_state_dict(self):
         """
-        Make the dicitonary of state methods for the scene.
+        Make the dictionary of state methods for the scene.
         """
         state_dict = {c.TRANSITION_IN: self.transition_in,
                       c.TRANSITION_OUT: self.transition_out,
