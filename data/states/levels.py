@@ -386,7 +386,7 @@ class LevelState(tools._State):
 
     def update_game_data(self):
         """
-        Update the persistant game data dictionary.
+        Update the persistent game data dictionary.
         """
         self.game_data['last location'] = self.player.location
         self.game_data['last direction'] = self.player.direction

@@ -190,7 +190,7 @@ def notify_observers(self, event):
         each_observer.on_notify(event)
 
 def create_game_data_dict():
-    """Create a dictionary of persistant values the player
+    """Create a dictionary of persistent values the player
     carries between states"""
 
     player_items = {'GOLD': dict([('quantity',100),

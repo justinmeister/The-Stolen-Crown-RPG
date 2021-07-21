@@ -143,7 +143,7 @@ class Instructions(tools._State):
     def set_next_scene(self):
         """
         Check if there is a saved game. If not, start
-        game at begining.  Otherwise go to load game scene.
+        game at beginning.  Otherwise go to load game scene.
         """
         if not os.path.isfile("save.p"):
             next_scene = c.OVERWORLD
