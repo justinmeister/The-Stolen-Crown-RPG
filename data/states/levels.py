@@ -6,6 +6,7 @@ from the generic state class found in the tools.py module.
 """
 
 import copy
+from pathlib import Path
 
 import pygame as pg
 
@@ -142,10 +143,18 @@ class LevelState(tools._State):
             if properties["name"] == "blocker":
                 left = properties["x"] * 2
                 top = ((properties["y"]) * 2) - 32
+                if self.get_fix_offset():
+                    top += 32
                 blocker = pg.Rect(left, top, 32, 32)
                 blockers.append(blocker)
 
         return blockers
+
+    def get_fix_offset(self):
+        filename = self.renderer.tmx_data.filename
+        return (
+            filename and Path(filename).name in ("dungeon.tmx", "dungeon2.tmx", "dungeon4.tmx"),
+        )
 
     def make_sprites(self):
         """Make any sprites for the level as needed."""
@@ -161,28 +170,18 @@ class LevelState(tools._State):
 
                 index = 1 if properties["type"] == "soldier" and direction == "left" else 0
 
-                if "item" in properties["properties"]:
-                    item = properties["properties"]["item"]
-                else:
-                    item = None
-
-                if "obj_id" in properties["properties"]:
-                    obj_id = properties["properties"]["obj_id"]
-                else:
-                    obj_id = None
-
-                if "battle" in properties["properties"]:
-                    battle = properties["properties"]["battle"]
-                else:
-                    battle = None
-
-                if "state" in properties["properties"]:
-                    sprite_state = properties["properties"]["state"]
-                else:
-                    sprite_state = None
+                item = properties["properties"].get("item", None)
+                obj_id = properties["properties"].get("obj_id", None)
+                battle = properties["properties"].get("battle", None)
+                sprite_state = properties["properties"].get("state", None)
 
                 x = properties["x"] * 2
-                y = ((properties["y"]) * 2) - 32
+                y = (properties["y"] * 2) - 32
+
+                print(properties["type"], x, y)
+
+                if self.get_fix_offset():
+                    y += 32
 
                 sprite_dict = {
                     "oldman": person.Person("oldman", x, y, direction),
@@ -210,9 +209,11 @@ class LevelState(tools._State):
                         sprite.item = self.game_data["king item"]
                 else:
                     sprite.item = item
+
                 sprite.battle = battle
                 self.assign_dialogue(sprite, properties)
                 self.check_for_opened_chest(sprite)
+
                 if sprite.name == "evilwizard" and self.game_data["crown quest"]:
                     pass
                 else:
@@ -315,6 +316,10 @@ class LevelState(tools._State):
             if properties["name"] == "portal":
                 posx = properties["x"] * 2
                 posy = (properties["y"] * 2) - 32
+
+                if self.get_fix_offset():
+                    posy += 32
+
                 new_state = properties["type"]
                 portal_group.add(portal.Portal(posx, posy, new_state))
 

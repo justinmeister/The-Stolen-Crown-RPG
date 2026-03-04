@@ -1,35 +1,32 @@
-import pickle, sys, os
-import pygame as pg
-from .. import setup, tools, tilerender
-from .. import observer
-from .. import constants as c
-from . import death
- 
+import os
+import pickle
+import sys
 
-#Python 2/3 compatibility.
-if sys.version_info[0] == 2:
-    import cPickle
-    pickle = cPickle 
+import pygame as pg
+
+from .. import constants as c
+from .. import observer, setup, tilerender, tools
+from . import death
 
 
 class Menu(tools._State):
     def __init__(self):
         super(Menu, self).__init__()
-        self.music = setup.MUSIC['kings_theme']
-        self.music_title = 'kings_theme'
+        self.music = setup.MUSIC["kings_theme"]
+        self.music_title = "kings_theme"
         self.volume = 0.4
         self.next = c.INSTRUCTIONS
-        self.tmx_map = setup.TMX['title']
+        self.tmx_map = setup.TMX["title"]
         self.name = c.MAIN_MENU
         self.startup(0, 0)
-    
+
     def startup(self, *args):
         self.renderer = tilerender.Renderer(self.tmx_map)
         self.map_image = self.renderer.make_2x_map()
         self.map_rect = self.map_image.get_rect()
         self.viewport = self.make_viewport(self.map_image)
         self.level_surface = pg.Surface(self.map_rect.size)
-        self.title_box = setup.GFX['title_box']
+        self.title_box = setup.GFX["title_box"]
         self.title_rect = self.title_box.get_rect()
         self.title_rect.midbottom = self.viewport.midbottom
         self.title_rect.y -= 30
@@ -51,12 +48,14 @@ class Menu(tools._State):
         """
         Make the dictionary of state methods for the level.
         """
-        state_dict = {c.TRANSITION_IN: self.transition_in,
-                      c.TRANSITION_OUT: self.transition_out,
-                      c.NORMAL: self.normal_update}
+        state_dict = {
+            c.TRANSITION_IN: self.transition_in,
+            c.TRANSITION_OUT: self.transition_out,
+            c.NORMAL: self.normal_update,
+        }
 
         return state_dict
-        
+
     def update(self, surface, *args):
         """
         Update scene.
@@ -71,9 +70,9 @@ class Menu(tools._State):
         """
         self.level_surface.blit(self.map_image, self.viewport, self.viewport)
         self.level_surface.blit(self.title_box, self.title_rect)
-        surface.blit(self.level_surface, (0,0), self.viewport)
-        surface.blit(self.transition_surface, (0,0))
-        
+        surface.blit(self.level_surface, (0, 0), self.viewport)
+        surface.blit(self.transition_surface, (0, 0))
+
     def get_event(self, event):
         if event.type == pg.KEYDOWN:
             self.state = c.TRANSITION_OUT
@@ -87,7 +86,6 @@ class Menu(tools._State):
         if self.alpha <= 0:
             self.alpha = 0
             self.state = c.NORMAL
-        
 
     def transition_out(self):
         """
@@ -106,12 +104,13 @@ class Instructions(tools._State):
     """
     Instructions page.
     """
+
     def __init__(self):
         super(Instructions, self).__init__()
-        self.tmx_map = setup.TMX['title']
+        self.tmx_map = setup.TMX["title"]
         self.music = None
         self.music_title = None
-        
+
     def startup(self, *args):
         self.renderer = tilerender.Renderer(self.tmx_map)
         self.map_image = self.renderer.make_2x_map()
@@ -156,7 +155,7 @@ class Instructions(tools._State):
         """
         Set image for message box.
         """
-        return setup.GFX['instructions_box']
+        return setup.GFX["instructions_box"]
 
     def make_viewport(self, map_image):
         """
@@ -169,12 +168,14 @@ class Instructions(tools._State):
         """
         Make the dictionary of state methods for the level.
         """
-        state_dict = {c.TRANSITION_IN: self.transition_in,
-                      c.TRANSITION_OUT: self.transition_out,
-                      c.NORMAL: self.normal_update}
+        state_dict = {
+            c.TRANSITION_IN: self.transition_in,
+            c.TRANSITION_OUT: self.transition_out,
+            c.NORMAL: self.normal_update,
+        }
 
         return state_dict
-        
+
     def update(self, surface, keys, *args):
         """
         Update scene.
@@ -190,12 +191,12 @@ class Instructions(tools._State):
         self.level_surface.blit(self.map_image, self.viewport, self.viewport)
         self.level_surface.blit(self.title_box, self.title_rect)
         self.draw_arrow()
-        surface.blit(self.level_surface, (0,0), self.viewport)
-        surface.blit(self.transition_surface, (0,0))
+        surface.blit(self.level_surface, (0, 0), self.viewport)
+        surface.blit(self.transition_surface, (0, 0))
 
     def draw_arrow(self):
         pass
-        
+
     def get_event(self, event):
         if event.type == pg.KEYDOWN:
             self.state = c.TRANSITION_OUT
@@ -234,14 +235,14 @@ class LoadGame(Instructions):
         """
         Set image for message box.
         """
-        return setup.GFX['loadgamebox']
+        return setup.GFX["loadgamebox"]
 
     def draw_arrow(self):
         self.level_surface.blit(self.arrow.image, self.arrow.rect)
 
     def get_event(self, event):
         pass
-    
+
     def normal_update(self, keys):
         if self.allow_input:
             if keys[pg.K_DOWN] and self.arrow.index == 0:
@@ -262,11 +263,7 @@ class LoadGame(Instructions):
                     self.state = c.TRANSITION_OUT
                 self.notify(c.CLICK2)
 
-            self.arrow.rect.y = self.arrow.pos_list[self.arrow.index]  
+            self.arrow.rect.y = self.arrow.pos_list[self.arrow.index]
 
         if not keys[pg.K_DOWN] and not keys[pg.K_UP]:
             self.allow_input = True
-
-        
-
-
