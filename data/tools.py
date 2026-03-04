@@ -247,10 +247,3 @@ def create_game_data_dict():
     }
 
     return data_dict
-
-
-
-
-
-
-

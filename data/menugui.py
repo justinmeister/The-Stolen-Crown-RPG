@@ -237,7 +237,7 @@ class InfoBox(pg.sprite.Sprite):
                                          stat[1:],
                                          self.player_stats[stat])
             elif stat == 'Attack Power':
-				text = "{}: {}".format(stat, self.get_attack_power()) 
+                text = "{}: {}".format(stat, self.get_attack_power()) 
             elif stat == 'Defense Power':
                 text = "{}: {}".format(stat, self.get_defense_power())
             elif stat == 'gold':

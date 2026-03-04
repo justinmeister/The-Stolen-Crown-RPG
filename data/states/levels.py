@@ -126,13 +126,13 @@ class LevelState(tools._State):
             player.rect.y = self.game_data['last location'][1] * 32
 
         else:
-            for object in self.renderer.tmx_data.getObjects():
+            for object in self.renderer.tmx_data.objects:
                 properties = object.__dict__
                 if properties['name'] == 'start point':
-                    if last_state == properties['state']:
+                    if last_state == properties['properties']['state']:
                         posx = properties['x'] * 2
                         posy = (properties['y'] * 2) - 32
-                        player = person.Player(properties['direction'],
+                        player = person.Player(properties['properties']['direction'],
                                                self.game_data)
                         player.rect.x = posx
                         player.rect.y = posy
@@ -145,7 +145,7 @@ class LevelState(tools._State):
         """
         blockers = []
 
-        for object in self.renderer.tmx_data.getObjects():
+        for object in self.renderer.tmx_data.objects:
             properties = object.__dict__
             if properties['name'] == 'blocker':
                 left = properties['x'] * 2
@@ -161,7 +161,7 @@ class LevelState(tools._State):
         """
         sprites = pg.sprite.Group()
 
-        for object in self.renderer.tmx_data.getObjects():
+        for object in self.renderer.tmx_data.objects:
             properties = object.__dict__
             if properties['name'] == 'sprite':
                 if 'direction' in properties:
@@ -241,13 +241,13 @@ class LevelState(tools._State):
 
         return sprites
 
-    def assign_dialogue(self, sprite, property_dict):
+    def assign_dialogue(self, sprite, property_dict: dict):
         """
         Assign dialogue from object property dictionaries in tmx maps to sprites.
         """
         dialogue_list = []
-        for i in range(int(property_dict['dialogue length'])):
-            dialogue_list.append(property_dict['dialogue'+str(i)])
+        for i in range(int(property_dict['properties']['dialogue length'])):
+            dialogue_list.append(property_dict['properties']['dialogue'+str(i)])
             sprite.dialogue = dialogue_list
 
         if sprite.name == 'oldman':
@@ -323,7 +323,7 @@ class LevelState(tools._State):
         """
         portal_group = pg.sprite.Group()
 
-        for object in self.renderer.tmx_data.getObjects():
+        for object in self.renderer.tmx_data.objects:
             properties = object.__dict__
             if properties['name'] == 'portal':
                 posx = properties['x'] * 2

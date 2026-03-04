@@ -3,7 +3,7 @@ This is a test of using the pytmx library with Tiled.
 """
 import pygame as pg
 
-from . import pytmx
+import pytmx
 
 
 class Renderer(object):
@@ -19,13 +19,13 @@ class Renderer(object):
 
         tw = self.tmx_data.tilewidth
         th = self.tmx_data.tileheight
-        gt = self.tmx_data.getTileImageByGid
+        gt = self.tmx_data.get_tile_image_by_gid
 
         if self.tmx_data.background_color:
             surface.fill(self.tmx_data.background_color)
 
-        for layer in self.tmx_data.visibleLayers:
-            if isinstance(layer, pytmx.TiledLayer):
+        for layer in self.tmx_data.visible_layers:
+            if isinstance(layer, pytmx.TiledTileLayer):
                 for x, y, gid in layer:
                     tile = gt(gid)
                     if tile:

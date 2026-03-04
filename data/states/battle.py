@@ -1,16 +1,10 @@
 """This is the state that handles battles against
 monsters"""
 import random, sys
-from itertools import izip
 import pygame as pg
 from .. import tools, battlegui, observer, setup
 from .. components import person, attack, attackitems
 from .. import constants as c
-
-
-#Python 2/3 compatibility.
-if sys.version_info[0] == 2:
-    range = xrange
 
 
 class Battle(tools._State):
@@ -188,7 +182,7 @@ class Battle(tools._State):
         pos_list = self.arrow.make_select_action_pos_list()
         state_list = [self.enter_select_enemy_state, self.enter_select_item_state,
                       self.enter_select_magic_state, self.try_to_run_away]
-        return dict(izip(pos_list, state_list))
+        return dict(zip(pos_list, state_list))
 
     def update(self, surface, keys, current_time):
         """

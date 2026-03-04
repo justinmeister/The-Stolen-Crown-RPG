@@ -270,7 +270,7 @@ class SelectArrow(object):
         """
         self.pos_list = self.make_select_action_pos_list()
         if self.index > (len(self.pos_list) - 1):
-            print self.pos_list, self.index
+            print(self.pos_list, self.index)
         self.rect.topleft = self.pos_list[self.index]
 
         self.check_input(keys)

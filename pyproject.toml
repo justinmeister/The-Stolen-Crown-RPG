@@ -1,0 +1,11 @@
+[project]
+name = "the-stolen-crown-rpg"
+version = "0.1.0"
+requires-python = ">=3.14"
+dependencies = [
+    "pygame-ce>=2.5.7",
+    "pytmx",
+]
+
+[tool.uv.sources]
+pytmx = { git = "https://github.com/bitcraft/pytmx" }

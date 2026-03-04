@@ -3,7 +3,7 @@ import pygame as pg
 from .. import setup, tools, tilerender
 from .. import observer
 from .. import constants as c
-import death
+from . import death
  
 
 #Python 2/3 compatibility.
